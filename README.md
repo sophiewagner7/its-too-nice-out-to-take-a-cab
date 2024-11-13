@@ -1,3 +1,5 @@
+By Sophie Wagner and Moacir P. de Sá Pereira
+
 This repo contains a [Quarto book](https://quarto.org/docs/books/) template for the EDAV final project.
 
 ## Follow these instructions carefully
