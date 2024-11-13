@@ -6,7 +6,7 @@ execute:
   echo: true
 
 book:
-  title: "Title TK"
+  title: "Title TK beep"
   author:
     - Sophie Wagner (sw3767)
     - Moacir P. de Sá Pereira (mpd2149)
