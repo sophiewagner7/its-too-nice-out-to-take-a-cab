@@ -6,11 +6,11 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "Title TK"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - Sophie Wagner (sw3767)
+    - Moacir P. de Sá Pereira (mpd2149)
+  repo-url: https://github.com/sophiewagner7/nyc-weather
   date: today
   page-footer:
     right: |
