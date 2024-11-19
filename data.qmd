@@ -2,10 +2,53 @@
 
 ## Description
 
-Identify one or more data sources (see II. D. above) that you propose to draw on for the project. For each, describe how the data are collected and by whom. Describe the format of the data, the frequency of updates, dimensions, and any other relevant information. Note any issues / problems with the data, either known or that you discover. Explain how you plan to import the data. Carefully document your sources with links to the precise data sources that you used. If that is not possible (for example if your data is not available online, then explain that clearly.)
+We are basing our analysis on two datasets, a dataset of taxi use in New
+York and historical weather data. For both datasets, we will limit our
+analysis to 2019–August 2024, in the interest of trying to catch about a
+year of pre-pandemic norms to help interpret pandemic and post-pandemic use
+of taxis.
 
-(suggested: 1/2 page)
+The taxi data are provided by New York’s [Taxi and Limousine
+Commission](https://www.nyc.gov/site/tlc/index.page). They [provide taxi
+data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page), in
+[parquet](https://parquet.apache.org/) format, going back to 2009. Since
+February of 2019 they have also included data on trips serviced by
+companies like Lyft and Uber, which are classified as “high-volume for-hire
+vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag;
+however, at the time of submission, only data through August 2024 were
+available. Our focus is on yellow taxi and HVFHV trips, because our focus
+is on intra-Manhattan trips. Only yellow cabs can pick up passengers in
+most of Manhattan, so we are ignoring green cabs and regular for-hire
+vehicles (town cars and limousines). Yellow cab data have [19
+columns](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf),
+of which the pertient columns for us are pickup/dropoff date and time
+(`tpep_pickup_datetime`/`tpep_dropoff_datetime` in a datetime format), the
+pickup/dropoff locations (`PULocationID`/`DOLocationID` in integer format,
+corresponding to [NYC taxi
+zones](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv)) in
+order to filter on Manhattan-only trips, passenger count (`Passenger_count`
+in integer format), fare amount (`Fare_amount` in integer format), and tip
+amount (`Tip_amount` in integer format).
 
+The historical weather data are provided by the [Global Historical Climate
+Network hourly
+(GHCNh)](https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly),
+which provides hourly weather data going back over two centuries for New
+York City. We will be limiting ourselves to 2019–present, which comes in
+[annual parquet files for download by
+station](https://www.ncei.noaa.gov/oa/global-historical-climatology-network/index.html#hourly/access/by-year/).
+Our station, `KNYC0`, is listed in the GHCNh as `USW00094728`, and it is
+the weather station in Central Park. The data come in over 200 columns to
+account for the variability that can occur in the terse
+[METAR](https://en.wikipedia.org/wiki/METAR) report for airplanes, which is
+also included under `remarks`. The government provides a
+[codebook](https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf).
+We may simply feed the reports to the
+[python-metar](https://github.com/python-metar/python-metar) library, which
+parses the reports for us. As we are interested in what conditions
+determine a “nice” day for not using a taxi, we want to keep as much data
+from the weather report as possible, including temperature, precipitation,
+sky cover, snow, humidity, and so on. 
 
 ## Missing value analysis
 Describe any patterns you discover in missing values. If no values are missing, graphs should still be included showing that.
