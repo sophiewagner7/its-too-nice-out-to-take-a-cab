@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Title TK beep",
+    "title": "“It’s Too Nice Out to Take a Cab”: Weather and Taxi Usage in New York, 2019–2024",
     "section": "",
-    "text": "1 Introduction",
+    "text": "1 Introduction\nExplain why you chose this topic, and the questions you are interested in studying. Provide context for readers who are not familiar with the topic.\n(suggested: 1/2 page)\nAt first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought like conditions, but Sophie suggested crossing in a dataset from a different domain and seeing what kinds of results could emerge. After a bit of discussion, we had a preliminary idea of testing the hypothesis that people use cabs less often when it is “nice” out in Manhattan. That is, they are more inclined to walk to their destination than hail an expensive cab.\nQuickly it was clear, however, that proving this hypothesis would require coming up with a definition of “nice,” so we flipped the project: we’re assuming as true that people are more inclined to walk when the weather is nice, so we are using the taxi data to see if we can define what “nice” weather is. Does it just mean sunny? Does it have a relationship to an absolute or relative temperature, such as it being much warmer than earlier in the day or the day before? And does the effect wear off if there are multiple nice days in a row, and the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
     ]
@@ -14,7 +14,7 @@
     "href": "data.html",
     "title": "2  Data",
     "section": "",
-    "text": "2.1 Description",
+    "text": "2.1 Description\nWe are basing our analysis on two datasets, a dataset of taxi use in New York and historical weather data. For both datasets, we will limit our analysis to 2019–August 2024, in the interest of trying to catch about a year of pre-pandemic norms to help interpret pandemic and post-pandemic use of taxis.\nThe taxi data are provided by New York’s Taxi and Limousine Commission. They provide taxi data, in parquet format, going back to 2009. Since February of 2019 they have also included data on trips serviced by companies like Lyft and Uber, which are classified as “high-volume for-hire vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag; however, at the time of submission, only data through August 2024 were available. Our focus is on yellow taxi and HVFHV trips, because our focus is on intra-Manhattan trips. Only yellow cabs can pick up passengers in most of Manhattan, so we are ignoring green cabs and regular for-hire vehicles (town cars and limousines). Yellow cab data have 19 columns, of which the pertient columns for us are pickup/dropoff date and time (tpep_pickup_datetime/tpep_dropoff_datetime in a datetime format), the pickup/dropoff locations (PULocationID/DOLocationID in integer format, corresponding to NYC taxi zones) in order to filter on Manhattan-only trips, passenger count (Passenger_count in integer format), fare amount (Fare_amount in integer format), and tip amount (Tip_amount in integer format).\nThe historical weather data are provided by the Global Historical Climate Network hourly (GHCNh), which provides hourly weather data going back over two centuries for New York City. We will be limiting ourselves to 2019–present, which comes in annual parquet files for download by station. Our station, KNYC0, is listed in the GHCNh as USW00094728, and it is the weather station in Central Park. The data come in over 200 columns to account for the variability that can occur in the terse METAR report for airplanes, which is also included under remarks. The government provides a codebook. We may simply feed the reports to the python-metar library, which parses the reports for us. As we are interested in what conditions determine a “nice” day for not using a taxi, we want to keep as much data from the weather report as possible, including temperature, precipitation, sky cover, snow, humidity, and so on.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
     ]
@@ -24,7 +24,7 @@
     "href": "data.html#missing-value-analysis",
     "title": "2  Data",
     "section": "2.2 Missing value analysis",
-    "text": "2.2 Missing value analysis",
+    "text": "2.2 Missing value analysis\nDescribe any patterns you discover in missing values. If no values are missing, graphs should still be included showing that.\n(suggested: 2 graphs plus commentary)",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
     ]

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Data – Title TK beep</title>
+<title>2&nbsp; Data – “It’s Too Nice Out to Take a Cab”: Weather and Taxi Usage in New York, 2019–2024</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -96,7 +96,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Title TK beep</a> 
+      <a href="./">“It’s Too Nice Out to Take a Cab”: Weather and Taxi Usage in New York, 2019–2024</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/sophiewagner7/nyc-weather" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
@@ -178,9 +178,14 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="description" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="description"><span class="header-section-number">2.1</span> Description</h2>
+<p>We are basing our analysis on two datasets, a dataset of taxi use in New York and historical weather data. For both datasets, we will limit our analysis to 2019–August 2024, in the interest of trying to catch about a year of pre-pandemic norms to help interpret pandemic and post-pandemic use of taxis.</p>
+<p>The taxi data are provided by New York’s <a href="https://www.nyc.gov/site/tlc/index.page">Taxi and Limousine Commission</a>. They <a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page">provide taxi data</a>, in <a href="https://parquet.apache.org/">parquet</a> format, going back to 2009. Since February of 2019 they have also included data on trips serviced by companies like Lyft and Uber, which are classified as “high-volume for-hire vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag; however, at the time of submission, only data through August 2024 were available. Our focus is on yellow taxi and HVFHV trips, because our focus is on intra-Manhattan trips. Only yellow cabs can pick up passengers in most of Manhattan, so we are ignoring green cabs and regular for-hire vehicles (town cars and limousines). Yellow cab data have <a href="https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf">19 columns</a>, of which the pertient columns for us are pickup/dropoff date and time (<code>tpep_pickup_datetime</code>/<code>tpep_dropoff_datetime</code> in a datetime format), the pickup/dropoff locations (<code>PULocationID</code>/<code>DOLocationID</code> in integer format, corresponding to <a href="https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv">NYC taxi zones</a>) in order to filter on Manhattan-only trips, passenger count (<code>Passenger_count</code> in integer format), fare amount (<code>Fare_amount</code> in integer format), and tip amount (<code>Tip_amount</code> in integer format).</p>
+<p>The historical weather data are provided by the <a href="https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly">Global Historical Climate Network hourly (GHCNh)</a>, which provides hourly weather data going back over two centuries for New York City. We will be limiting ourselves to 2019–present, which comes in <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/index.html#hourly/access/by-year/">annual parquet files for download by station</a>. Our station, <code>KNYC0</code>, is listed in the GHCNh as <code>USW00094728</code>, and it is the weather station in Central Park. The data come in over 200 columns to account for the variability that can occur in the terse <a href="https://en.wikipedia.org/wiki/METAR">METAR</a> report for airplanes, which is also included under <code>remarks</code>. The government provides a <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf">codebook</a>. We may simply feed the reports to the <a href="https://github.com/python-metar/python-metar">python-metar</a> library, which parses the reports for us. As we are interested in what conditions determine a “nice” day for not using a taxi, we want to keep as much data from the weather report as possible, including temperature, precipitation, sky cover, snow, humidity, and so on.</p>
 </section>
 <section id="missing-value-analysis" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</h2>
+<p>Describe any patterns you discover in missing values. If no values are missing, graphs should still be included showing that.</p>
+<p>(suggested: 2 graphs plus commentary)</p>
 
 
 </section>
