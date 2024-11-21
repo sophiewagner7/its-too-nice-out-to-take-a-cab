@@ -13,3 +13,40 @@ The historical weather data are provided by the [Global Historical Climate Netwo
 Describe any patterns you discover in missing values. If no values are missing, graphs should still be included showing that.
 
 (suggested: 2 graphs plus commentary)
+
+
+```{r}
+#| message: false
+#| warning: false
+library(ggplot2)
+library(arrow)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(tidyr)
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+```{r}
+#| fig-height: 3
+#| message: false
+heatmap_data <- df |>
+    mutate(week_start=lubridate::floor_date(date, unit="week"),
+        week = lubridate::week(date),
+        year = lubridate::year(date)) |>
+    group_by(year, week) |>
+    summarize(n_missing=sum(is.na(temperature)))
+
+ggplot(heatmap_data, aes(x = week, y = year, fill = n_missing)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "red", name = "Missing Count") +
+  scale_x_continuous(breaks = seq(1, 52, by = 4)) + 
+  scale_y_continuous(breaks = seq(2019, 2024, by=1))+
+  labs(
+    title = "Number of missing temperature observations by date",
+    x = "Week",
+    y = "Year"
+  ) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
