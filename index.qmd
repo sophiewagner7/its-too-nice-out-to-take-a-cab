@@ -1,25 +1,64 @@
 # Introduction
 
-Explain why you chose this topic, and the questions you are interested in studying. Provide context for readers who are not familiar with the topic.
+At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought like conditions, but Sophie suggested crossing in a dataset from a different domain and seeing what kinds of results could emerge. Instead of just looking at the weather, perhaps we can draw a relationship between human behavioral response to the weather. What might this look like? After a bit of discussion, we had a preliminary idea of testing the hypothesis that people use cabs less often when it is “nice” out in Manhattan. That is, they are more inclined to walk to their destination than hail an expensive cab.
 
-(suggested: 1/2 page)
+Quickly it was clear, however, that proving this hypothesis would require coming up with a definition of “nice,” so we flipped the project: we're assuming as true that people are more inclined to walk when the weather is nice, so we are using the taxi data to see if we can define what “nice” weather is. Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impact people's inclination to walk? And does the effect wear off if there are multiple nice days in a row, and the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead.
 
-At first, Moacir was interested in seeing if there is a relationship
-between “unseasonably” warm weather and New York and drought like
-conditions, but Sophie suggested crossing in a dataset from a different
-domain and seeing what kinds of results could emerge. After a bit of
-discussion, we had a preliminary idea of testing the hypothesis that people
-use cabs less often when it is “nice” out in Manhattan. That is, they are
-more inclined to walk to their destination than hail an expensive cab.
+Overall, our project explores how weather influences the small, everyday decisions which collectively shape urban life. The unique spatial and temporal granularity of taxi data allows us to capture patterns of human mobility with precision. By doing so, we may observe behavioral shifts in response to weather changes in real time. Such a study not only provides a unique lens into how people adapt their transportation preferences due to the weather, but also serves as a microcosm for understanding human responses to environmental factors. Such insights are particularly relevant in a large, dynamic city like New York.
 
-Quickly it was clear, however, that proving this hypothesis would require
-coming up with a definition of “nice,” so we flipped the project: we're
-assuming as true that people are more inclined to walk when the weather is
-nice, so we are using the taxi data to see if we can define what “nice”
-weather is. Does it just mean sunny? Does it have a relationship to an
-absolute or relative temperature, such as it being much warmer than earlier
-in the day or the day before? And does the effect wear off if there are
-multiple nice days in a row, and the novelty of walking gives way to taking
-cabs again? These questions struck us as more amusing and speculative, so
-we decided to pursue them, instead.
+```{r}
+#| message: false
+#| warning: false
+library(ggplot2)
+library(arrow)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(tidyr)
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
+```{r}
+#| warning: false
+df_day <- df |> 
+    group_by(date) |> 
+    summarize(total_trips_day = sum(trip_count)) |> 
+    select(date, total_trips_day)
+df_day |> 
+    mutate(week_start=lubridate::floor_date(date, unit="week")) |>
+    group_by(week_start) |>
+    summarize(avg_trips_day = mean(total_trips_day))|>
+    ggplot(aes(x=week_start, y=avg_trips_day), color="cornflowerblue") +
+        geom_point() +
+        geom_line() + 
+        scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
+        scale_y_continuous(labels = comma) +
+        labs(title="Average daily taxi trips per week, January 2019-December 2024",
+             x = "Date", 
+             y = "Average number of trips in a day") +
+        theme_classic()
+```
+
+```{r}
+#| fig-height: 4
+#| fig-width: 8
+df_day <- df |> 
+    filter(!is.na(temperature)) |>
+    group_by(date) |> 
+    summarize(daily_temp = mean(temperature)) |> 
+    select(date, daily_temp)
+df_day |> 
+    mutate(week_start=lubridate::floor_date(date, unit="week")) |>
+    group_by(week_start) |>
+    summarize(avg_temp_day = mean(daily_temp)) |>
+    ggplot(aes(x=week_start, y=avg_temp_day), color="salmon") +
+        geom_point() +
+        geom_line() + 
+        geom_hline(yintercept=0)+
+        scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
+        labs(title="Average weekly temp, January 2019-December 2024",
+             x = "Date", 
+             y = "Tempurature (Celsius)") +
+        theme_classic()
+```
 

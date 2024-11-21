@@ -8,6 +8,7 @@ analysis to 2019-01-01 00:00:00 – 2024-06-25 23:00:00, in the interest of tryi
 year of pre-pandemic norms to help interpret pandemic and post-pandemic use
 of taxis. The taxi data only go to August, but the weather data only go
 through most of June this year.
+We are basing our analysis on two datasets, a dataset of taxi use in New York and historical weather data. For both datasets, we will limit our analysis to 2019–August 2024, in the interest of trying to catch about a year of pre-pandemic norms to help interpret pandemic and post-pandemic use of taxis.
 
 The taxi data are provided by New York’s [Taxi and Limousine
 Commission](https://www.nyc.gov/site/tlc/index.page). They [provide taxi
@@ -25,6 +26,7 @@ and FHVHV data have [24 columns](https://www.nyc.gov/assets/tlc/downloads/pdf/da
 With our Python scripts, we consolidate the data to create 
 aggregated hourly statistics on trip duration, trip distance, fare amount,
 and tip amount.
+The taxi data are provided by New York’s [Taxi and Limousine Commission](https://www.nyc.gov/site/tlc/index.page). They [provide taxi data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page), in [parquet](https://parquet.apache.org/) format, going back to 2009. Since February of 2019 they have also included data on trips serviced by companies like Lyft and Uber, which are classified as “high-volume for-hire vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag; however, at the time of submission, only data through August 2024 were available. Our focus is on yellow taxi and HVFHV trips, because our focus is on intra-Manhattan trips. Only yellow cabs can pick up passengers in most of Manhattan, so we are ignoring green cabs and regular for-hire vehicles (town cars and limousines). Yellow cab data have [19 columns](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf), of which the pertient columns for us are pickup/dropoff date and time (`tpep_pickup_datetime`/`tpep_dropoff_datetime` in a datetime format), the pickup/dropoff locations (`PULocationID`/`DOLocationID` in integer format, corresponding to [NYC taxi zones](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv)) in order to filter on Manhattan-only trips, passenger count (`Passenger_count` in integer format), fare amount (`Fare_amount` in integer format), and tip amount (`Tip_amount` in integer format).
 
 The historical weather data are provided by the [Global Historical Climate
 Network hourly
@@ -42,6 +44,7 @@ also included under `remarks`. The government provides a
 determine a “nice” day for not using a taxi, we want to keep as much data
 from the weather report as possible, including temperature, precipitation,
 sky cover, snow, humidity, and so on. 
+The historical weather data are provided by the [Global Historical Climate Network hourly (GHCNh)](https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly), which provides hourly weather data going back over two centuries for New York City. We will be limiting ourselves to 2019–present, which comes in [annual parquet files for download by station](https://www.ncei.noaa.gov/oa/global-historical-climatology-network/index.html#hourly/access/by-year/). Our station, `KNYC0`, is listed in the GHCNh as `USW00094728`, and it is the weather station in Central Park. The data come in over 200 columns to account for the variability that can occur in the terse [METAR](https://en.wikipedia.org/wiki/METAR) report for airplanes, which is also included under `remarks`. The government provides a [codebook](https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf). We may simply feed the reports to the [python-metar](https://github.com/python-metar/python-metar) library, which parses the reports for us. As we are interested in what conditions determine a “nice” day for not using a taxi, we want to keep as much data from the weather report as possible, including temperature, precipitation, sky cover, snow, humidity, and so on.
 
 ## Missing value analysis
 
@@ -81,3 +84,47 @@ to see any of the missing data in any plot that includes the entire
 stretch.
 
 (suggested: 2 graphs plus commentary)
+
+
+```{r}
+#| message: false
+#| warning: false
+library(ggplot2)
+library(arrow)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(tidyr)
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+```{r}
+#| fig-height: 3
+#| message: false
+heatmap_data <- df |>
+    mutate(week_start=lubridate::floor_date(date, unit="week"),
+        week = lubridate::week(date),
+        year = lubridate::year(date)) |>
+    group_by(year, week) |>
+    summarize(n_missing=sum(is.na(temperature)))
+
+ggplot(heatmap_data, aes(x = week, y = year, fill = n_missing)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "red", name = "Missing Count") +
+  scale_x_continuous(breaks = seq(1, 52, by = 4)) + 
+  scale_y_continuous(breaks = seq(2019, 2024, by=1))+
+  labs(
+    title = "Number of missing temperature observations by date",
+    x = "Week",
+    y = "Year"
+  ) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#| fig-height: 6
+#| fig-width: 8
+library(redav)
+df |>
+  select(-c(pres_wx_AU3, snow_depth, pres_wx_AU2, sky_cover_2, wind_direction, sky_cover_3, pres_wx_AU1, wind_gust, juno, via)) |>
+  plot_missing(percent=FALSE, max_rows=10, max_cols=10, num_char=7)

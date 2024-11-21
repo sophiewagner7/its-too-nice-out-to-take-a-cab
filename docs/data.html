@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -178,14 +212,76 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="description" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="description"><span class="header-section-number">2.1</span> Description</h2>
-<p>We are basing our analysis on two datasets, a dataset of taxi use in New York and historical weather data. For both datasets, we will limit our analysis to 2019–August 2024, in the interest of trying to catch about a year of pre-pandemic norms to help interpret pandemic and post-pandemic use of taxis.</p>
-<p>The taxi data are provided by New York’s <a href="https://www.nyc.gov/site/tlc/index.page">Taxi and Limousine Commission</a>. They <a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page">provide taxi data</a>, in <a href="https://parquet.apache.org/">parquet</a> format, going back to 2009. Since February of 2019 they have also included data on trips serviced by companies like Lyft and Uber, which are classified as “high-volume for-hire vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag; however, at the time of submission, only data through August 2024 were available. Our focus is on yellow taxi and HVFHV trips, because our focus is on intra-Manhattan trips. Only yellow cabs can pick up passengers in most of Manhattan, so we are ignoring green cabs and regular for-hire vehicles (town cars and limousines). Yellow cab data have <a href="https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf">19 columns</a>, of which the pertient columns for us are pickup/dropoff date and time (<code>tpep_pickup_datetime</code>/<code>tpep_dropoff_datetime</code> in a datetime format), the pickup/dropoff locations (<code>PULocationID</code>/<code>DOLocationID</code> in integer format, corresponding to <a href="https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv">NYC taxi zones</a>) in order to filter on Manhattan-only trips, passenger count (<code>Passenger_count</code> in integer format), fare amount (<code>Fare_amount</code> in integer format), and tip amount (<code>Tip_amount</code> in integer format).</p>
-<p>The historical weather data are provided by the <a href="https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly">Global Historical Climate Network hourly (GHCNh)</a>, which provides hourly weather data going back over two centuries for New York City. We will be limiting ourselves to 2019–present, which comes in <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/index.html#hourly/access/by-year/">annual parquet files for download by station</a>. Our station, <code>KNYC0</code>, is listed in the GHCNh as <code>USW00094728</code>, and it is the weather station in Central Park. The data come in over 200 columns to account for the variability that can occur in the terse <a href="https://en.wikipedia.org/wiki/METAR">METAR</a> report for airplanes, which is also included under <code>remarks</code>. The government provides a <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf">codebook</a>. We may simply feed the reports to the <a href="https://github.com/python-metar/python-metar">python-metar</a> library, which parses the reports for us. As we are interested in what conditions determine a “nice” day for not using a taxi, we want to keep as much data from the weather report as possible, including temperature, precipitation, sky cover, snow, humidity, and so on.</p>
+<p>We are basing our analysis on two datasets, a dataset of taxi use in New York and historical weather data. For both datasets, we will limit our analysis to 2019-01-01 00:00:00 – 2024-06-25 23:00:00, in the interest of trying to catch about a year of pre-pandemic norms to help interpret pandemic and post-pandemic use of taxis. The taxi data only go to August, but the weather data only go through most of June this year. We are basing our analysis on two datasets, a dataset of taxi use in New York and historical weather data. For both datasets, we will limit our analysis to 2019–August 2024, in the interest of trying to catch about a year of pre-pandemic norms to help interpret pandemic and post-pandemic use of taxis.</p>
+<p>The taxi data are provided by New York’s <a href="https://www.nyc.gov/site/tlc/index.page">Taxi and Limousine Commission</a>. They <a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page">provide taxi data</a>, in <a href="https://parquet.apache.org/">parquet</a> format, going back to 2009. Since February of 2019, they have also included data on trips serviced by companies like Lyft and Uber, which are classified as “high-volume for-hire vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag. Our focus is on yellow taxi and HVFHV trips, because our focus is on intra-Manhattan trips. Only yellow cabs can pick up passengers in most of Manhattan, so we are ignoring green cabs and regular for-hire vehicles (town cars and limousines). Yellow cab data have <a href="https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf">19 columns</a>, and FHVHV data have <a href="https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_hvfhs.pdf">24 columns</a>. With our Python scripts, we consolidate the data to create aggregated hourly statistics on trip duration, trip distance, fare amount, and tip amount. The taxi data are provided by New York’s <a href="https://www.nyc.gov/site/tlc/index.page">Taxi and Limousine Commission</a>. They <a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page">provide taxi data</a>, in <a href="https://parquet.apache.org/">parquet</a> format, going back to 2009. Since February of 2019 they have also included data on trips serviced by companies like Lyft and Uber, which are classified as “high-volume for-hire vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag; however, at the time of submission, only data through August 2024 were available. Our focus is on yellow taxi and HVFHV trips, because our focus is on intra-Manhattan trips. Only yellow cabs can pick up passengers in most of Manhattan, so we are ignoring green cabs and regular for-hire vehicles (town cars and limousines). Yellow cab data have <a href="https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf">19 columns</a>, of which the pertient columns for us are pickup/dropoff date and time (<code>tpep_pickup_datetime</code>/<code>tpep_dropoff_datetime</code> in a datetime format), the pickup/dropoff locations (<code>PULocationID</code>/<code>DOLocationID</code> in integer format, corresponding to <a href="https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv">NYC taxi zones</a>) in order to filter on Manhattan-only trips, passenger count (<code>Passenger_count</code> in integer format), fare amount (<code>Fare_amount</code> in integer format), and tip amount (<code>Tip_amount</code> in integer format).</p>
+<p>The historical weather data are provided by the <a href="https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly">Global Historical Climate Network hourly (GHCNh)</a>, which provides hourly weather data going back over two centuries for New York City. The data come in <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/index.html#hourly/access/by-year/">annual parquet files for download by station</a>. Our station, <code>KNYC0</code>, is listed in the GHCNh as <code>USW00094728</code>, and it is the weather station in Central Park. The data come in over 200 columns to account for the variability that can occur in the terse <a href="https://en.wikipedia.org/wiki/METAR">METAR</a> report for airplanes, which is also included under <code>remarks</code>. The government provides a <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf">codebook</a> to describe the remaining data. As we are interested in what conditions determine a “nice” day for not using a taxi, we want to keep as much data from the weather report as possible, including temperature, precipitation, sky cover, snow, humidity, and so on. The historical weather data are provided by the <a href="https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly">Global Historical Climate Network hourly (GHCNh)</a>, which provides hourly weather data going back over two centuries for New York City. We will be limiting ourselves to 2019–present, which comes in <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/index.html#hourly/access/by-year/">annual parquet files for download by station</a>. Our station, <code>KNYC0</code>, is listed in the GHCNh as <code>USW00094728</code>, and it is the weather station in Central Park. The data come in over 200 columns to account for the variability that can occur in the terse <a href="https://en.wikipedia.org/wiki/METAR">METAR</a> report for airplanes, which is also included under <code>remarks</code>. The government provides a <a href="https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf">codebook</a>. We may simply feed the reports to the <a href="https://github.com/python-metar/python-metar">python-metar</a> library, which parses the reports for us. As we are interested in what conditions determine a “nice” day for not using a taxi, we want to keep as much data from the weather report as possible, including temperature, precipitation, sky cover, snow, humidity, and so on.</p>
 </section>
 <section id="missing-value-analysis" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</h2>
-<p>Describe any patterns you discover in missing values. If no values are missing, graphs should still be included showing that.</p>
+<p>The taxi data are notoriously (as in, persistently) messy, registering trips outside the bounds of the asserted date and giving results that seem extremely unlikely, like large negative tips or negative trip durations. To counter these anomalies, we are liming ourselves to trips between one minute and two hours long, and, when consolidating monthly data to yearly data, we filter out all results from other years. In the aggregate, however, the outliers generally wash out, as we have a record of over 500 million yellow cab and Uber/Lyft rides. Nevertheless, there is one data point where no trips are recorded: 2:00am for March 10, 2019. However, there are data on both sides, so we will interpolate results for this time. Who knows what happened to the taxi system that affected both Uber and yellow taxis. Additionally, the tip amounts for Uber/Lyft are almost certainly incorrect, as over 75% of rides report no tip at all. As such, we will drop the tip and fare amounts from our data to account for this. We had suspected that a higher tip percentage might be related to a nice day, even though we assume taxi usage is lower, but the data are simply unreliable.</p>
+<p>For weather, we have a large array of missing values, but the <code>remarks</code> column is missing only 36 entries, for a general station uptime of 99.93%. Many of the columns have many more missing values, but that is because the way the weather works is by reporting a <code>NaN</code> for the absence of data. For example, if there are no clouds in the sky, the sky cover values will be <code>NaN</code>, not something like “Clear.” That said, we have a consecutive period of 24 hours’ worth of missing data across May 31, 2023 to June 1, 2023. This includes missing remarks, suggesting the station was down. In our imagination, a peregrine falcon ate the station.</p>
+<p>The other 12 missing remarks are scattered across the dataset.</p>
+<p>Because we have a total of 48072 points in time in our dataset, it is hard to see any of the missing data in any plot that includes the entire stretch.</p>
 <p>(suggested: 2 graphs plus commentary)</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/complete_weather_and_taxi_data.parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">week_start=</span>lubridate<span class="sc">::</span><span class="fu">floor_date</span>(date, <span class="at">unit=</span><span class="st">"week"</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">week =</span> lubridate<span class="sc">::</span><span class="fu">week</span>(date),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> lubridate<span class="sc">::</span><span class="fu">year</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(year, week) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">n_missing=</span><span class="fu">sum</span>(<span class="fu">is.na</span>(temperature)))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> week, <span class="at">y =</span> year, <span class="at">fill =</span> n_missing)) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"Missing Count"</span>) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">52</span>, <span class="at">by =</span> <span class="dv">4</span>)) <span class="sc">+</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">2019</span>, <span class="dv">2024</span>, <span class="at">by=</span><span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Number of missing temperature observations by date"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Week"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Year"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(redav)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(pres_wx_AU3, snow_depth, pres_wx_AU2, sky_cover_2, wind_direction, sky_cover_3, pres_wx_AU1, wind_gust, juno, via)) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_missing</span>(<span class="at">percent=</span><span class="cn">FALSE</span>, <span class="at">max_rows=</span><span class="dv">10</span>, <span class="at">max_cols=</span><span class="dv">10</span>, <span class="at">num_char=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
