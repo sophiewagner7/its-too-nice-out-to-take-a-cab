@@ -6,6 +6,9 @@ Quickly it was clear, however, that proving this hypothesis would require coming
 
 Overall, our project explores how weather influences the small, everyday decisions which collectively shape urban life. The unique spatial and temporal granularity of taxi data allows us to capture patterns of human mobility with precision. By doing so, we may observe behavioral shifts in response to weather changes in real time. Such a study not only provides a unique lens into how people adapt their transportation preferences due to the weather, but also serves as a microcosm for understanding human responses to environmental factors. Such insights are particularly relevant in a large, dynamic city like New York.
 
+## A glance at the data
+Let's take a quick peek at the data. Below we have weekly averages for daily temperature and taxi rides from January 2019 to June 2024. 
+
 ```{r}
 #| message: false
 #| warning: false
@@ -16,10 +19,6 @@ library(lubridate)
 library(scales)
 library(tidyr)
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
-```
-
-```{r}
-#| warning: false
 df_day <- df |> 
     group_by(date) |> 
     summarize(total_trips_day = sum(trip_count)) |> 
@@ -28,16 +27,20 @@ df_day |>
     mutate(week_start=lubridate::floor_date(date, unit="week")) |>
     group_by(week_start) |>
     summarize(avg_trips_day = mean(total_trips_day))|>
-    ggplot(aes(x=week_start, y=avg_trips_day), color="cornflowerblue") +
-        geom_point() +
-        geom_line() + 
+    ggplot(aes(x=week_start, y=avg_trips_day)) +
+        geom_point(color="cornflowerblue") +
+        geom_line(color="cornflowerblue") + 
         scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
         scale_y_continuous(labels = comma) +
-        labs(title="Average daily taxi trips per week, January 2019-December 2024",
+        labs(title="Average daily taxi trips per week, January 2019 - June 2024",
              x = "Date", 
              y = "Average number of trips in a day") +
         theme_classic()
 ```
+
+Considering the taxi data, there are many narratives that can be told. The most notable observation on the chart is the dramatic decline in ridership in March 2020, coinciding with the beginning of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels. This trend is likely influenced by the shift towards a more work-from-home friendly economic environment, along with other behavioral changes. 
+
+We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year. These could be attributed to behavioral changes around the holidays, including increased travel around the holidays, staying in on the holidays themselves, or different travel patterns due to the weather. We will have to look at this with a lot more granularity in order to parse out further trends in the data. 
 
 ```{r}
 #| fig-height: 4
@@ -51,14 +54,17 @@ df_day |>
     mutate(week_start=lubridate::floor_date(date, unit="week")) |>
     group_by(week_start) |>
     summarize(avg_temp_day = mean(daily_temp)) |>
-    ggplot(aes(x=week_start, y=avg_temp_day), color="salmon") +
-        geom_point() +
-        geom_line() + 
+    ggplot(aes(x=week_start, y=avg_temp_day)) +
+        geom_point(color="cornflowerblue") +
+        geom_line(color="cornflowerblue") + 
         geom_hline(yintercept=0)+
         scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
-        labs(title="Average weekly temp, January 2019-December 2024",
+        labs(title="Average weekly temp, January 2019 - June 2024",
              x = "Date", 
              y = "Tempurature (Celsius)") +
         theme_classic()
 ```
 
+Average weekly temperature looks fairly consistent over time, with expected seasonal peaks and valleys across the year. There may be a subtle trend of slightly higher average temperatures in more recent years, but nothing too definitive. 
+
+As just one data point, temperature provides a limited slice into what may distinguish a "nice day." In the next chapter, we will see that it will be necessary to calculate additional numeric and categorical weather measurements to help establish this definition. Ideas include change in temperature and a simple categorical variable for cloud cover derived from the multiple columns currently devoted to cloud cover. 
