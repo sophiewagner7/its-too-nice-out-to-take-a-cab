@@ -45,10 +45,39 @@ sky cover, snow, humidity, and so on.
 
 ## Missing value analysis
 
-The taxi data is notoriously (as in, persistently) messy, registering trips
-outside the bounds of the asserted date and giving results that seem
-extremely unlikely, like 
+The taxi data are notoriously (as in, persistently) messy, registering
+trips outside the bounds of the asserted date and giving results that seem
+extremely unlikely, like large negative tips or negative trip durations. 
+To counter these anomalies, we are liming ourselves to trips between one
+minute and two hours long, and, when consolidating monthly data to yearly
+data, we filter out all results from other years.
+In
+the aggregate, however, the outliers generally wash out, as we have a
+record of over 500 million yellow cab and Uber/Lyft rides. Nevertheless, there
+is one data point where no trips are recorded: 2:00am for March 10, 2019.
+However, there are data on both sides, so we will interpolate results for
+this time. Who knows what happened to the taxi system that affected both
+Uber and yellow taxis. Additionally, the tip amounts for Uber/Lyft are
+almost certainly incorrect, as over 75% of rides report no tip at all. As
+such, we will drop the tip and fare amounts from our data to account for
+this. We had suspected that a higher tip percentage might be related to a
+nice day, even though we assume taxi usage is lower, but the data are simply
+unreliable.
 
-Describe any patterns you discover in missing values. If no values are missing, graphs should still be included showing that.
+For weather, we have a large array of missing values, but the `remarks`
+column is missing only 36 entries, for a general station uptime of 99.93%.
+Many of the columns have many more missing values, but that is because the
+way the weather works is by reporting a `NaN` for the absence of data. For
+example, if there are no clouds in the sky, the sky cover values will be
+`NaN`, not something like "Clear." That said, we have a consecutive period
+of 24 hours’ worth of missing data across May 31, 2023 to June 1, 2023.
+This includes missing remarks, suggesting the station was down. In our
+imagination, a peregrine falcon ate the station.
+
+The other 12 missing remarks are scattered across the dataset.
+
+Because we have a total of 48072 points in time in our dataset, it is hard
+to see any of the missing data in any plot that includes the entire
+stretch.
 
 (suggested: 2 graphs plus commentary)
