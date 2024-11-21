@@ -32,7 +32,7 @@ df_day |>
         geom_line(color="cornflowerblue") + 
         scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
         scale_y_continuous(labels = comma) +
-        labs(title="Average daily taxi trips per week, January 2019 - June 2024",
+        labs(title="Average daily taxi trips per week, January 2019 – June 2024",
              x = "Date", 
              y = "Average number of trips in a day") +
         theme_classic()
@@ -59,7 +59,7 @@ df_day |>
         geom_line(color="cornflowerblue") + 
         geom_hline(yintercept=0)+
         scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
-        labs(title="Average weekly temp, January 2019 - June 2024",
+        labs(title="Average weekly temp, January 2019 – June 2024",
              x = "Date", 
              y = "Tempurature (Celsius)") +
         theme_classic()
