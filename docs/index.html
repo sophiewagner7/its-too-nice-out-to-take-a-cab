@@ -8,7 +8,7 @@
 
 <meta name="author" content="Sophie Wagner (sw3767)">
 <meta name="author" content="Moacir P. de Sá Pereira (mpd2149)">
-<meta name="dcterms.date" content="2024-11-20">
+<meta name="dcterms.date" content="2024-11-21">
 
 <title>“It’s Too Nice Out to Take a Cab”: Weather and Taxi Usage in New York, 2019–2024</title>
 <style>
@@ -215,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 20, 2024</p>
+      <p class="date">November 21, 2024</p>
     </div>
   </div>
   
@@ -229,8 +229,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought like conditions, but Sophie suggested crossing in a dataset from a different domain and seeing what kinds of results could emerge. Instead of just looking at the weather, perhaps we can draw a relationship between human behavioral response to the weather. What might this look like? After a bit of discussion, we had a preliminary idea of testing the hypothesis that people use cabs less often when it is “nice” out in Manhattan. That is, they are more inclined to walk to their destination than hail an expensive cab.</p>
-<p>Quickly it was clear, however, that proving this hypothesis would require coming up with a definition of “nice,” so we flipped the project: we’re assuming as true that people are more inclined to walk when the weather is nice, so we are using the taxi data to see if we can define what “nice” weather is. Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impact people’s inclination to walk? And does the effect wear off if there are multiple nice days in a row, and the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead.</p>
+<p>At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought like conditions, but Sophie suggested crossing in a dataset from a different domain and seeing what kinds of results could emerge. Instead of just looking at the weather, perhaps we can draw a relationship between human behavioral response to the weather and taxi usage. What might this look like? After a bit of discussion, we had a preliminary idea of testing the hypothesis that people use cabs less often when it is “nice” out in Manhattan. That is, they are more inclined to walk to their destination than hail an expensive cab.</p>
+<p>Quickly it was clear, however, that proving this hypothesis would require coming up with a definition of “nice,” so we flipped the project: we’re assuming as true that people are more inclined to walk when the weather is nice, so we are using the taxi data to see if we can define what “nice” weather is. Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impacting people’s inclination to walk? And does the effect wear off if there are multiple nice days in a row, as the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead.</p>
 <p>Overall, our project explores how weather influences the small, everyday decisions which collectively shape urban life. The unique spatial and temporal granularity of taxi data allows us to capture patterns of human mobility with precision. By doing so, we may observe behavioral shifts in response to weather changes in real time. Such a study not only provides a unique lens into how people adapt their transportation preferences due to the weather, but also serves as a microcosm for understanding human responses to environmental factors. Such insights are particularly relevant in a large, dynamic city like New York.</p>
 <section id="a-glance-at-the-data" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="a-glance-at-the-data"><span class="header-section-number">1.1</span> A glance at the data</h2>
@@ -258,7 +258,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>(<span class="at">color=</span><span class="st">"cornflowerblue"</span>) <span class="sc">+</span> </span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %Y"</span>, <span class="at">date_breaks =</span> <span class="st">"1 year"</span>) <span class="sc">+</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Average daily taxi trips per week, January 2019 - June 2024"</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Average daily taxi trips per week, January 2019 – June 2024"</span>,</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> <span class="st">"Date"</span>, </span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> <span class="st">"Average number of trips in a day"</span>) <span class="sc">+</span></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -290,7 +290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>(<span class="at">color=</span><span class="st">"cornflowerblue"</span>) <span class="sc">+</span> </span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>)<span class="sc">+</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %Y"</span>, <span class="at">date_breaks =</span> <span class="st">"1 year"</span>) <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Average weekly temp, January 2019 - June 2024"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Average weekly temp, January 2019 – June 2024"</span>,</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> <span class="st">"Date"</span>, </span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> <span class="st">"Tempurature (Celsius)"</span>) <span class="sc">+</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
