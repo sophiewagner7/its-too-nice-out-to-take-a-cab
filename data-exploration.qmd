@@ -1,0 +1,95 @@
+---
+title: "data-exploration"
+editor: visual
+---
+
+```{r}
+library(arrow)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
+```{r}
+dfsum <- df |> 
+  mutate(day=wday(date),
+         month=month(date),
+         year=year(date)) |> 
+  group_by(year,month,day) |>
+  summarize(avg_trips = mean(trip_count))
+```
+
+```{r}
+head(dfsum)
+```
+
+```{r}
+ggplot(dfsum, aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
+         geom_tile(color="white") + 
+         scale_fill_gradient(low = "white", high = "red", name = "N trips") +
+         labs(
+          title = "Avg trips day of week",
+          x = "Day of week",
+          y=month) +
+        theme_classic() 
+```
+
+```{r}
+df |> 
+  mutate(day = wday(date, label = TRUE),
+         year = year(date)) |> 
+  ggplot(aes(x=day, y=trip_count))+
+  geom_boxplot() +
+  facet_wrap(~year)
+```
+
+```{r}
+df |> 
+  mutate(month = month(date, label = TRUE),
+         year = year(date)) |> 
+  ggplot(aes(x=month, y=trip_count))+
+  geom_boxplot() +
+  facet_wrap(~year)
+```
+
+```{r}
+dfsum <- df |> 
+  mutate(day = wday(date, label = TRUE), 
+         month = month(date, label = TRUE),
+         year = year(date)) |> 
+  group_by(year, month, day) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop')
+
+ggplot(dfsum, aes(x = day, y = month, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "Avg Trips") +
+  labs(
+    title = "Average Trips by Day of the Week and Month",
+    x = "Day of the Week",
+    y = "Month"
+  ) +
+  theme_classic()
+
+```
+
+```{r}
+dfsum <- df |> 
+  mutate(day = wday(date, label = TRUE), 
+         month = month(date, label = TRUE),
+         year = year(date)) |> 
+  group_by(year, month, day) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop')
+
+ggplot(dfsum, aes(x = day, y = month, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "Avg Trips") +
+  labs(
+    title = "Average Trips by Day of the Week and Month",
+    x = "Day of the Week",
+    y = "Month"
+  ) +
+  theme_classic() +
+  facet_wrap(~year)
+```
