@@ -27,5 +27,6 @@ format:
   html:
     theme: cosmo
     code-fold: true
-
+# bibliography: bib.bib
+# csl: ieee.csl
 
