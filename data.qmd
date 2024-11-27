@@ -131,23 +131,9 @@ As we can see in this chart, the missing temperature data (our most important me
 
 library(redav)
 df |>
-  select(-c(pres_wx_AU3, snow_depth, pres_wx_AU2, sky_cover_2, wind_direction, sky_cover_3, pres_wx_AU1, wind_gust, juno, via)) |>
+  select(-c(juno, via)) |>
   plot_missing(percent=FALSE, max_rows=10, max_cols=10, num_char=6)
 ```
 
-Our second chart shows the distribution of missing data, but only after we have selected out the following columns:
-
-Column | Explanation
-----|----
-`  snow_depth ` | Almost always `NaN`, as it does not report 0 for no snow.
-`  pres_wx_AU1 ` | Automated present weather observation. Sometimes it gives none.
-`  pres_wx_AU2 ` | This is only filled if there is supplemental information for `pres_wx_AU1`.
-`  pres_wx_AU3 ` | This is only filled if there is supplemental information for `pres_wx_AU2`.
-`  sky_cover_2 ` | Only records a second layer of clouds in the sky.
-`  sky_cover_3 ` | Only records a third layer of clouds in the sky.
-`  wind_direction ` | Only records a direction if there is any wind.
-`  wind_gust ` | Only records gusts if there is any wind.
-`  juno ` | Juno seems to have only operated for part of 2019.
-`  via` | Use of Via completely cratered after early 2020.
-
-From the remaining data, we can see how infrequently a wind speed is registered and that the rest of the missing data are scattered in small numbers around the dataset, with almost all of the data making up complete cases (minus the above extracted columns).
+Our second chart shows the distribution of missing data, from which
+we can see how infrequently a wind speed is registered and that the rest of the missing data are scattered in small numbers around the dataset, with almost all of the data making up complete cases (minus the above extracted columns).
