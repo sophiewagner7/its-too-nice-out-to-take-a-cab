@@ -1,1 +1,91 @@
 # Results
+
+## Dealing with the Pandemic
+
+Our intial plan was to contain data from 2019 to get a sense of a
+pre-COVID-19 Pandemic baseline against which we could compare our
+post-Pandemic data. 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+library(scales)
+library(RColorBrewer)
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+classic <- theme_set(theme_minimal())
+
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
+```{r}
+#| fig-width: 10
+custom_label <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-6, suffix = "M")(x))
+}
+
+df |>
+  mutate(year_month = lubridate::ymd(paste(year, month, "01", sep = "-"))) |>
+  pivot_longer(cols=c(
+    "juno", "lyft", "uber", "via", "yellow"
+    ), names_to="car_company", values_to="car_company_trips")  |>
+  mutate(car_company = factor(car_company, levels = c("juno", "via", "lyft", "uber", "yellow"))) |>
+  group_by(year_month, car_company) |>
+  summarize(trips_per_month = sum(car_company_trips), .groups = "drop") |>
+  ggplot(aes(x=year_month, y=trips_per_month, fill=car_company)) +
+    geom_bar(stat = "identity", position = "stack") +
+      labs(
+    title = "Trips per Month by Hired Car Company/Type",
+    x = "Month",
+    y = "Total Trips",
+    fill = "Hired Car Company/Type"
+  ) +
+  scale_fill_brewer(
+    palette = "Set2",
+    labels = c(
+      "yellow" = "Yellow Cab",
+      "juno" = "Juno",
+      "lyft" = "Lyft",
+      "via" = "Via",
+      "uber" = "Uber"
+      )
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
+  scale_y_continuous(labels = custom_label) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom")
+```
+
+Three details jump out from an initial look at managing the Pandemic. 
+First, we can see when the Pandemic hit in March, 2020, 
+but we can see that the ridership was already falling in February,
+even before large-scale shutdowns occurred. 
+Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time, to get a good rhythm of usage.
+
+```{r}
+first_color <- brewer.pal(8, "Set2")[1]
+
+df |>
+  mutate(year_month = lubridate::ymd(paste(year, month, "01", sep = "-"))) |>
+  group_by(year_month) |>
+  summarize(
+    average_trip_distance = mean(trip_distance_mean),
+    average_trip_sd = mean(trip_distance_std_dev),
+    .groups = "drop") |>
+  ggplot(aes(
+    x=year_month, 
+    y=average_trip_distance
+    )) +
+    geom_bar(stat="identity", fill=base_color) +
+    labs(
+      title = "Average Trip Distance by Month (for Trips of Ten or Fewer Miles)",
+      x = "Month",
+      y = "Distance (Miles)",
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
+  # scale_y_continuous(labels = custom_label) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
