@@ -3,11 +3,17 @@
 ## Description
 
 We are basing our analysis on two datasets, a dataset of taxi use in New
-York and historical weather data. For both datasets, we will limit our
-analysis to 2019-01-01 00:00:00 – 2024-06-25 23:00:00, in the interest of trying to catch about a
+York and historical weather data. 
+For both datasets, we initally planned to limit our
+analysis to 2019-02-01 00:00:00 – 2024-06-25 23:00:00, 
+in the interest of trying to catch about a
 year of pre-pandemic norms to help interpret pandemic and post-pandemic use
-of taxis. The taxi data only go to August, but the weather data only go
-through most of June this year.
+of taxis. 
+As noted in [the next chapter](./results), we had to abandon this scope.
+The inital upper bound reflects the extent of the weather data, and we
+initially planned on going back to January of 2019. However, no high-volume
+for-hire vehicle (FHVHV) data are available for January, so we bumped our
+limit to February, 2019.
 
 The taxi data are provided by New York’s [Taxi and Limousine
 Commission](https://www.nyc.gov/site/tlc/index.page). They [provide taxi
@@ -15,17 +21,19 @@ data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page), in
 [parquet](https://parquet.apache.org/) format, going back to 2009. Since
 February of 2019, they have also included data on trips serviced by
 companies like Lyft and Uber, which are classified as “high-volume for-hire
-vehicle” (HVFHV) trips. The data are updated monthly, with a two-month lag.
-Our focus is on yellow taxi and HVFHV trips, because our focus
+vehicle” trips. The data are updated monthly, with a two-month lag.
+Our focus is on yellow taxi and FHVHV trips, because our focus
 is on intra-Manhattan trips. Only yellow cabs can pick up passengers in
 most of Manhattan, so we are ignoring green cabs and regular for-hire
 vehicles (town cars and limousines). Yellow cab data have [19
 columns](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf),
 and FHVHV data have [24 columns](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_hvfhs.pdf).
 With our Python scripts, we consolidate the data to create 
-aggregated hourly statistics on trip duration, trip distance, fare amount,
-and tip amount.
-
+aggregated hourly statistics on trip duration and trip distance. We found
+the transaction data (fare amount and tip amount) noisy with unreliable
+outliers. It also fell outside of our scope of analysis. We also included
+time-delta statistics comparing a point in time with the same point in time
+a week earlier. We did this because taxi data follow weekly patterns.
 
 The historical weather data are provided by the [Global Historical Climate
 Network hourly
@@ -40,9 +48,11 @@ account for the variability that can occur in the terse
 [METAR](https://en.wikipedia.org/wiki/METAR) report for airplanes, which is
 also included under `remarks`. The government provides a
 [codebook](https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/doc/ghcnh_DOCUMENTATION.pdf) to describe the remaining data. As we are interested in what conditions
-determine a “nice” day for not using a taxi, we want to keep as much data
-from the weather report as possible, including temperature, precipitation,
-sky cover, snow, humidity, and so on. 
+determine a “nice” day for not using a taxi, we aimed to keep a wide array
+of data, including temperature, precipitation, wind, sky cover, humidity, and so on. 
+We badly wanted to include snow data, but snow has been so infrequent
+during this window that we folded the snow numbers into the general
+precipitation numbers. 
 
 ## Missing value analysis
 
@@ -50,10 +60,10 @@ The taxi data are notoriously (as in, persistently) messy, registering
 trips outside the bounds of the time window and giving results that seem
 extremely unlikely, like large negative tips or negative trip durations. 
 To counter these anomalies, we are limiting ourselves to trips between one
-minute and two hours long, and, when consolidating monthly data to yearly
+minute and two hours long as well as trips of ten or fewer miles. 
+Similarly, and, when consolidating monthly data to yearly
 data, we filter out all results from other years.
-In
-the aggregate, however, the outliers generally wash out, as we have a
+In the aggregate, however, the outliers generally wash out, as we have a
 record of over 500 million yellow cab and Uber/Lyft rides. Nevertheless, there
 is one data point where no trips are recorded: 2:00am on March 10, 2019.
 However, there are data on both sides, so we will interpolate results for
@@ -68,16 +78,15 @@ unreliable.
 For weather, we have a large array of missing values, but the `remarks`
 column is missing only 36 entries, for a general station uptime of 99.93%.
 Many of the columns have many more missing values, but that is because the
-way the weather data work is by reporting a `NaN` for the absence of data. For
-example, if there are no clouds in the sky, the sky cover values will be
-`NaN`, not something like "Clear." That said, we have a consecutive period
+way the weather data work is by reporting a `NaN` for the absence of data. 
+That said, we have a consecutive period
 of 24 hours’ worth of missing data across May 31, 2023 to June 1, 2023.
 This includes missing remarks, suggesting the station was down. In our
 imagination, a peregrine falcon ate the station.
 
 The other 12 missing remarks are scattered across the dataset.
 
-Because we have a total of 48,072 points in time in our dataset, it is hard
+Because we have a total of 47,328 points in time in our dataset, it is hard
 to see any of the missing data in any plot that includes the entire
 stretch.
 
