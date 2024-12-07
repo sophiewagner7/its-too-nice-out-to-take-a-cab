@@ -1,1 +1,150 @@
 # Results
+
+## Dealing with the Pandemic
+
+Our intial plan was to contain data from 2019 to get a sense of a
+pre-COVID-19 Pandemic baseline against which we could compare our
+post-Pandemic data. 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+library(scales)
+library(RColorBrewer)
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+classic <- theme_set(theme_minimal())
+
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
+```{r}
+#| fig-height: 6 
+#| fig-width: 10
+custom_label <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-6, suffix = "M")(x))
+}
+
+df |>
+  mutate(year_month = lubridate::ymd(paste(year, month, "01", sep = "-"))) |>
+  pivot_longer(cols=c(
+    "juno", "lyft", "uber", "via", "yellow"
+    ), names_to="car_company", values_to="car_company_trips")  |>
+  mutate(car_company = factor(car_company, levels = c("juno", "via", "lyft", "uber", "yellow"))) |>
+  group_by(year_month, car_company) |>
+  summarize(trips_per_month = sum(car_company_trips), .groups = "drop") |>
+  ggplot(aes(
+    x=year_month, 
+    y=trips_per_month, 
+    fill=car_company
+    )) +
+    geom_bar(stat = "identity", position = "stack") +
+      labs(
+    title = "Trips per Month by Hired Car Company/Type",
+    x = "Month",
+    y = "Total Trips",
+    fill = "Hired Car Company/Type"
+  ) +
+  scale_fill_brewer(
+    palette = "Set2",
+    labels = c(
+      "yellow" = "Yellow Cab",
+      "juno" = "Juno",
+      "lyft" = "Lyft",
+      "via" = "Via",
+      "uber" = "Uber"
+      )
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
+  scale_y_continuous(labels = custom_label) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom") 
+```
+
+Three details jump out from an initial look at managing the Pandemic. 
+First, we can see when the Pandemic hit in March, 2020, 
+but we can see that the ridership was already falling in February,
+even before large-scale shutdowns occurred. 
+Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time, to get a good rhythm of usage.
+
+```{r}
+#| fig-height: 6
+first_color <- brewer.pal(8, "Set2")[1]
+
+df |>
+  mutate(year_month = as.Date(format(date, "%Y-%m-01"))) |>
+  group_by(year_month) |>
+  summarize(
+    monthly_trips = sum(trip_count),
+    monthly_half_mile = sum(half_mile_trips),
+    monthly_one_mile = sum(one_mile_trips),
+    monthly_two_mile = sum(two_mile_trips),
+    monthly_three_mile = sum(three_mile_trips),
+    monthly_five_mile = sum(five_mile_trips),
+    monthly_more_than_five = monthly_trips - monthly_half_mile - monthly_one_mile - monthly_two_mile - monthly_three_mile - monthly_five_mile,
+    pct_half_mile = monthly_half_mile / monthly_trips,
+    pct_one_mile = monthly_one_mile / monthly_trips,
+    pct_two_mile = monthly_two_mile / monthly_trips,
+    pct_three_mile = monthly_three_mile / monthly_trips,
+    pct_five_mile = monthly_five_mile / monthly_trips,
+    pct_more_than_five = monthly_more_than_five / monthly_trips,
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(
+    "pct_half_mile",
+    "pct_one_mile",
+    "pct_two_mile",
+    "pct_three_mile",
+    "pct_five_mile",
+    "pct_more_than_five",
+    ),
+    names_to = "pct_trip_distance_group",
+    values_to = "pct_trip_distance_count"
+  ) |>
+  mutate(pct_trip_distance_group = factor(
+    pct_trip_distance_group, levels = c(
+      "pct_more_than_five",
+      "pct_five_mile",
+      "pct_three_mile",
+      "pct_two_mile",
+      "pct_one_mile",
+      "pct_half_mile"
+    ))) |>
+  ggplot(aes(
+    x=year_month,
+    y= pct_trip_distance_count,
+    fill = pct_trip_distance_group
+    )) +
+    geom_bar(stat="identity", position="stack") +
+    labs(
+      title = "Distribution of Taxi and Uber/Lyft Trip Distances under Ten Miles in Manhattan",
+      x = "Month",
+      y = "Percentage of Trips",
+      fill = "Trip Distance"
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
+  scale_fill_brewer(
+    palette = "Set2",
+    labels = c(
+      "pct_more_than_five" = "Five to Ten Miles",
+      "pct_five_mile" = "Three to Five Miles",
+      "pct_three_mile" = "Two to Three Miles",
+      "pct_two_mile" = "One to Two Miles",
+      "pct_one_mile" = "Half Mile to One Miles",
+      "pct_half_mile" = "Under Half a Mile"
+    )
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom")
+
+```
+In addition to using hired cars less often after the Pandemic, perhaps as a consequence of less business-related travel because of flexible work schedules, we see a second behavioral change in the post-Pandemic era, even if it is slight: for the class of trips we are observing, they run longer. Trips of one mile make up a smaller percentage of the total, while trips of more than three miles make up a larger percentage of the total since the onset of the Pandemic. 
+
+Both analyses suggest certainly abandoning pre-Pandemic data as well as all of the 2020 data. While the shift in typical distances smooths out already at the beginning of 2021, the number of trips does not reach its new normal until around October 2021, suggesting that is the true step into the post-Pandemic order.
+
+## Patterns across Hours, Days, and Seasons
