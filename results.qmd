@@ -65,9 +65,7 @@ df |>
 ```
 
 Three details jump out from an initial look at managing the Pandemic. 
-First, we can see when the Pandemic hit in March, 2020, 
-but we can see that the ridership was already falling in February,
-even before large-scale shutdowns occurred. 
+First, we can see when the Pandemic hit in March, 2020. The "start" of the pandemic in the US is generally considered to have taken place mid-March (March 17, 2020) [cite], and we do in fact see ridership fall by approximately half that of February. In April 2020, when large-scale shutdowns were firmly in place, we see the lowest ridership of the entire period. 
 Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time, to get a good rhythm of usage.
 
 ```{r}
@@ -128,7 +126,7 @@ df |>
   ) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
   scale_fill_brewer(
-    palette = "Set2",
+    palette = "Blues",
     labels = c(
       "pct_more_than_five" = "Five to Ten Miles",
       "pct_five_mile" = "Three to Five Miles",
