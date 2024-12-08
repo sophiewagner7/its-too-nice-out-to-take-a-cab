@@ -14,6 +14,8 @@ library(tidyverse)
 library(arrow)
 library(scales)
 library(RColorBrewer)
+library(dplyr)
+library(patchwork)
 
 base_color <- brewer.pal(n = 3, name = "Set2")[1]
 classic <- theme_set(theme_minimal())
@@ -146,3 +148,125 @@ In addition to using hired cars less often after the Pandemic, perhaps as a cons
 Both analyses suggest certainly abandoning pre-Pandemic data as well as all of the 2020 data. While the shift in typical distances smooths out already at the beginning of 2021, the number of trips does not reach its new normal until around October 2021, suggesting that is the true step into the post-Pandemic order.
 
 ## Patterns across Hours, Days, and Seasons
+
+In order to determine variations in taxi usage, we needed to establish a baseline "normal" in order to verify fluctuations in the data. How can we infer an abberration if we don't know what normal is? How does cab usage regularly fluctate across the week according to work-life patterns, and how does it fluctuate by season?
+
+### When did the pandemic "end"?: a calendar view approach
+As mentioned previously, we suspected that cab usage returned to somewhat of a normal around October 2021. The calendar view of taxi usage provides support to that argument.
+```{r}
+#| fig-width: 10
+df |> 
+  mutate(day = wday(date, label = TRUE), 
+         month = month(date, label = TRUE),
+         year = year(date),
+         day_label = factor(substr(day, 1, 2), 
+                      levels = c("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"))) |> 
+  group_by(year, month, day) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = month, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "Avg Trips") +
+  labs(
+    title = "Average Trips by Day of the Week and Month",
+    x = "Day of the Week",
+    y = "Month"
+  ) +
+  theme_minimal() +
+  facet_wrap(~year, ncol=6)
+```
+
+{description}
+
+
+```{r}
+#| fig-height: 7
+#| fig-width: 7
+plot1 <- df |> 
+  filter(date < as.Date("2020-03-01")) |> 
+  mutate(day=wday(date, label=T),
+         month=month(date, label=T),
+         year=year(date)) |> 
+  group_by(year,month,day) |>
+  summarize(avg_trips = mean(trip_count)) |>
+  ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
+  geom_tile(color="white") +
+  scale_fill_gradient(low = "white", high = "red", name = "N trips") +
+  labs(title = "Pre-pandemic (Jan 2019 - Feb 2020)", x = "Day of the week", y = "Month") +
+  theme_minimal() +
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+  
+plot2 <- df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+    mutate(day=wday(date, label=T),
+         month=month(date, label=T),
+         year=year(date)) |> 
+  group_by(year,month,day) |>
+  summarize(avg_trips = mean(trip_count)) |> 
+  ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
+  geom_tile(color="white") +
+  scale_fill_gradient(low = "white", high = "red", name = "N trips") +
+  labs(title = "Post-pandemic (Oct 2021 - Jul 2024)", x = "Day of the week", y = "Month") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+
+(plot1 / plot2) + plot_annotation(title="Average number of trips by day of the week and month")
+```
+
+continue describing months and day of week
+add the combined (full time data) plot here as well. This shows that it makes a lot of sense to break off from the pandemic data bc there is such a difference! The sheer volume in ridership obscures pattens 
+
+```{r}
+#| fig-height: 7
+#| fig-width: 7
+plot1 <- df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  mutate(day = wday(date, label = TRUE))|> 
+  group_by(day, hour) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = hour, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "N Trips") +
+  labs(
+    title = "Pre-pandemic (Jan 2019 - Feb 2020)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()+
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+
+plot2 <- df |> 
+  filter(date < as.Date("2020-03-01")) |> 
+  mutate(day = wday(date, label = TRUE))|> 
+  group_by(day, hour) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = hour, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "N Trips") +
+  labs(
+    title = "Post-pandemic (Oct 2021-Jul 2024)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()+
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+
+(plot1 / plot2) + plot_annotation(title="Average number of trips by day of the week and hour")
+```
+
+describe day of week and hour
+-workday consistency
+-uptick in usage fri sat night
+Realization that it makes sense to compare usage to the week before at the same time since there is relative consistency here -- greater variation bt hours/ diff days of the week
+Also, note that its pretty consistent pre-pandemic vs post
+
+
