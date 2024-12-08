@@ -187,7 +187,7 @@ plot1 <- df |>
          month=month(date, label=T),
          year=year(date)) |> 
   group_by(year,month,day) |>
-  summarize(avg_trips = mean(trip_count)) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |>
   ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
   geom_tile(color="white") +
   scale_fill_gradient(low = "white", high = "red", name = "N trips") +
@@ -203,7 +203,7 @@ plot2 <- df |>
          month=month(date, label=T),
          year=year(date)) |> 
   group_by(year,month,day) |>
-  summarize(avg_trips = mean(trip_count)) |> 
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
   ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
   geom_tile(color="white") +
   scale_fill_gradient(low = "white", high = "red", name = "N trips") +
