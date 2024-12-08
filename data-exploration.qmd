@@ -8,59 +8,132 @@ library(arrow)
 library(ggplot2)
 library(dplyr)
 library(lubridate)
-
+library(patchwork)
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 ```
 
+## March 2020
+
+```{r}
+library(scales)
+df_mar2020 <- df |> 
+  filter (date >= as.Date("2020-03-01") & date < as.Date("2020-04-01"))
+
+df_mar2020 |> 
+    group_by(date) |> 
+    summarize(total_trips_day = sum(trip_count),
+              avg_trips_day = mean(total_trips_day)) |> 
+    ggplot(aes(x=date, y=avg_trips_day)) +
+        geom_point(color="cornflowerblue") +
+        geom_line(color="cornflowerblue") + 
+        scale_y_continuous(label = scales::comma) +
+        labs(title="Average daily taxi trips, March 2020",
+             x = "Date", 
+             y = "Average number of trips in a day") +
+        theme_classic()
+```
+
+## Average trips by day of the week and month
+
 ```{r}
 dfsum <- df |> 
-  mutate(day=wday(date),
-         month=month(date),
+  mutate(day=wday(date, label=T),
+         month=month(date, label=T),
          year=year(date)) |> 
   group_by(year,month,day) |>
   summarize(avg_trips = mean(trip_count))
-```
-
-```{r}
-head(dfsum)
-```
-
-```{r}
 ggplot(dfsum, aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
          geom_tile(color="white") + 
          scale_fill_gradient(low = "white", high = "red", name = "N trips") +
          labs(
-          title = "Avg trips day of week",
-          x = "Day of week",
-          y=month) +
+          title = "Average trips by day of the week and month, Jan 2019 - Jul 2024",
+          x = "Day of the week",
+          y = "Month") +
         theme_classic() 
 ```
 
+plot1\<- ggplot(dfsum_prep, aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) + geom_tile(color="white") + scale_fill_gradient(low = "white", high = "red", name = "N trips") + labs(title = "Pre-pandemic (Jan 2019 - Feb 2020)", x = "Day of the week", y = "Month") + theme_classic() + theme(plot.title = element_text(size=10, face="bold"))
+
 ```{r}
-df |> 
-  mutate(day = wday(date, label = TRUE),
-         year = year(date)) |> 
-  ggplot(aes(x=day, y=trip_count))+
-  geom_boxplot() +
-  facet_wrap(~year)
+df_prep <- df |> 
+  filter(date <= as.Date("2020-03-01"))
+dfsum_prep <- df_prep |> 
+    mutate(day=wday(date, label=T),
+         month=month(date, label=T),
+         year=year(date)) |> 
+  group_by(year,month,day) |>
+  summarize(avg_trips = mean(trip_count))
+  
+plot1 <- ggplot(dfsum_prep, aes(x=as.factor(day), 
+                                y=as.factor(month), 
+                                fill=avg_trips)) +
+  geom_tile(color="white") +
+  scale_fill_gradient(low = "white", high = "red", name = "N trips") +
+  labs(title = "Pre-pandemic (Jan 2019 - Feb 2020)", x = "Day of the week", y = "Month") +
+  theme_minimal() +
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
 ```
 
 ```{r}
-df |> 
-  mutate(month = month(date, label = TRUE),
-         year = year(date)) |> 
-  ggplot(aes(x=month, y=trip_count))+
-  geom_boxplot() +
-  facet_wrap(~year)
+#| fig-height: 7
+#| fig-width: 7
+plot1 <- df |> 
+  filter(date < as.Date("2020-03-01")) |> 
+  mutate(day=wday(date, label=T),
+         month=month(date, label=T),
+         year=year(date)) |> 
+  group_by(year,month,day) |>
+  summarize(avg_trips = mean(trip_count)) |>
+  ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
+  geom_tile(color="white") +
+  scale_fill_gradient(low = "white", high = "red", name = "N trips") +
+  labs(title = "Pre-pandemic (Jan 2019 - Feb 2020)", x = "Day of the week", y = "Month") +
+  theme_minimal() +
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+  
+plot2 <- df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+    mutate(day=wday(date, label=T),
+         month=month(date, label=T),
+         year=year(date)) |> 
+  group_by(year,month,day) |>
+  summarize(avg_trips = mean(trip_count)) |> 
+  ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
+  geom_tile(color="white") +
+  scale_fill_gradient(low = "white", high = "red", name = "N trips") +
+  labs(title = "Post-pandemic (Oct 2021 - Jul 2024)", x = "Day of the week", y = "Month") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+
+(plot1 / plot2) + plot_annotation(title="Average number of trips by day of the week and month")
 ```
 
 ```{r}
+#| fig-height: 7
+#| fig-width: 7
+(plot1 / plot2) + plot_annotation(title="Average number of trips by day of the week and month")
+```
+
+## Average trips by day of the week, month, and year
+
+```{r}
+#| fig-width: 10
 dfsum <- df |> 
   mutate(day = wday(date, label = TRUE), 
          month = month(date, label = TRUE),
          year = year(date)) |> 
   group_by(year, month, day) |>
   summarize(avg_trips = mean(trip_count), .groups = 'drop')
+
+dfsum <- dfsum |> 
+  mutate(day = factor(substr(day, 1, 2), 
+                      levels = c("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")))
 
 ggplot(dfsum, aes(x = day, y = month, fill = avg_trips)) +
   geom_tile(color = "white") + 
@@ -70,29 +143,11 @@ ggplot(dfsum, aes(x = day, y = month, fill = avg_trips)) +
     x = "Day of the Week",
     y = "Month"
   ) +
-  theme_classic()
-
-```
-
-```{r}
-dfsum <- df |> 
-  mutate(day = wday(date, label = TRUE), 
-         month = month(date, label = TRUE),
-         year = year(date)) |> 
-  group_by(year, month, day) |>
-  summarize(avg_trips = mean(trip_count), .groups = 'drop')
-
-ggplot(dfsum, aes(x = day, y = month, fill = avg_trips)) +
-  geom_tile(color = "white") + 
-  scale_fill_gradient(low = "white", high = "red", name = "Avg Trips") +
-  labs(
-    title = "Average Trips by Day of the Week and Month",
-    x = "Day of the Week",
-    y = "Month"
-  ) +
-  theme_classic() +
+  theme_minimal() +
   facet_wrap(~year, ncol=6)
 ```
+
+## Average trips by day of week & hour of day
 
 ```{r}
 dfsum <- df |> 
@@ -100,67 +155,71 @@ dfsum <- df |>
   group_by(day, hour) |>
   summarize(avg_trips = mean(trip_count), .groups = 'drop')
 
-ggplot(dfsum, aes(x = day, y = hour, fill = avg_trips)) +
+plot1 <- ggplot(dfsum, aes(x = day, y = hour, fill = avg_trips)) +
   geom_tile(color = "white") + 
   scale_fill_gradient(low = "white", high = "red", name = "Avg Trips") +
   labs(
-    title = "Average Trips by Day of the Week and Hour",
+    title = "(Jan 2019-Jul 2024)",
     x = "Day of the Week",
     y = "Hour"
   ) +
-  theme_classic()
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()
 ```
 
 ```{r}
-dfsum <- df |> 
-  mutate(day=wday(date),
-         month=month(date),
-         year=year(date)) |> 
-  group_by(year,month,day) |>
-  summarize(avg_trips = mean(trip_count))
-```
+#| fig-height: 7
+#| fig-width: 7
+plot1 <- df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  mutate(day = wday(date, label = TRUE))|> 
+  group_by(day, hour) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = hour, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "N Trips") +
+  labs(
+    title = "Pre-pandemic (Jan 2019 - Feb 2020)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()+
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
 
-```{r}
-df |> 
-  ggplot(aes(x=trip_distance_median, y=fare_amount_median)) +
-  geom_point()
-```
+plot2 <- df |> 
+  filter(date < as.Date("2020-03-01")) |> 
+  mutate(day = wday(date, label = TRUE))|> 
+  group_by(day, hour) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = hour, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "N Trips") +
+  labs(
+    title = "Post-pandemic (Oct 2021-Jul 2024)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()+
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
 
-```{r}
-df |> filter(is.na(trip_distance_median))
-```
-
-```{r}
-head(df)
-```
-
-```{r}
-head(df, 30)
-```
-
-```{r}
-boxplot(x=df$trip_count)
-```
-
-```{r}
-df |> 
-  ggplot(aes(x=trip_distance_mean)) + geom_histogram(binwidth=0.5)
-```
-
-```{r}
-quantile(df$trip_distance_mean, na.rm=TRUE)
+(plot1 / plot2) + plot_annotation(title="Average number of trips by day of the week and hour")
 ```
 
 ```{r}
 df$rain <- as.factor(ifelse(df$precipitation != 0, "Raining", "Not raining"))
 df |> filter(rain=="Raining") |>  nrow()
-  
 ```
 
 ```{r}
 df |> 
   group_by(rain) |> 
-  summarize(mean_ct = mean(trip_count))
+  nrow()
 ```
 
 ```{r}
@@ -169,15 +228,430 @@ df |>
 ```
 
 ```{r}
-
-```
-
-`{|>}   summarize(mean_rain=mean(precipitation)) |>    print()`
-
-```{r}
 df |> 
   filter(pres_wx_AU1 == "-RA:02") |> 
   nrow()
+```
+
+```{r}
+
+```
+
+```{r}
+df |> 
+  mutate(day = wday(date, label = TRUE), 
+         month = month(date, label = TRUE),
+         year = year(date),
+         day_label = factor(substr(day, 1, 2), 
+                      levels = c("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"))) |> 
+  group_by(year, month, day) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = month, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "Avg Trips") +
+  labs(
+    title = "Average Trips by Day of the Week and Month",
+    x = "Day of the Week",
+    y = "Month"
+  ) +
+  theme_minimal() +
+  facet_wrap(~year, ncol=6)
+```
+
+# Exploration round 2: comparing ridership and weather changes
+
+```{r}
+head(df)
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-03-01") & date <= as.Date("2023-06-01") & precipitation != 0) |> 
+  ggplot(aes(x=date, y=precipitation)) +
+  geom_col()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01")) |> 
+  pivot_longer(cols=c(trip_count_change_since_prev_week, trip_distance_mean_change_since_prev_week, precipitation_change_since_prev_day), values_to = "change_value", names_to = "change_type") |> 
+  ggplot(aes(x=date, y=change_value, color=change_type)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+library(GGally)
+df |> 
+  filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01")) |> 
+  mutate(
+    trip_count_change_normalized = (trip_count_change_since_prev_week - min(trip_count_change_since_prev_week)) /
+                                   (max(trip_count_change_since_prev_week) - min(trip_count_change_since_prev_week)),
+    trip_distance_mean_change_normalized = (trip_distance_mean_change_since_prev_week - min(trip_distance_mean_change_since_prev_week)) /
+                                           (max(trip_distance_mean_change_since_prev_week) - min(trip_distance_mean_change_since_prev_week)),
+    precipitation_change_normalized = (precipitation_change_since_prev_day - min(precipitation_change_since_prev_day)) /
+                                       (max(precipitation_change_since_prev_day) - min(precipitation_change_since_prev_day)),
+  ) |> 
+  pivot_longer(cols=c(trip_count_change_normalized, trip_distance_mean_change_normalized, precipitation_change_normalized), names_to="change_item", values_to="change_value") |>
+  ggplot(aes(x=date, y=change_value, color=change_item))+
+  geom_line()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01") & precipitation_change_since_prev_day !=0) |> 
+  select(precipitation_change_since_prev_day) |> 
+  head(50)
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01")) |> 
+  mutate(day = wday(date, label = TRUE),
+         week_start=lubridate::floor_date(date, unit="week"))|> 
+  ggplot(aes(x = day, y = hour, fill = precipitation_change_since_prev_day)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, 
+                       name = "Precipitation\nChange") +
+  labs(
+    title = "Precipitation change may 2023",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_classic()+
+  facet_wrap(~week_start, ncol=5)
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01")) |> 
+  mutate(day = wday(date, label = TRUE),
+         week_start=lubridate::floor_date(date, unit="week"))|> 
+  ggplot(aes(x = day, y = hour, fill = trip_count_change_since_prev_week)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, 
+                       name = "Trip ct change") +
+  labs(
+    title = "Trip count change may 2023",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_classic()+
+  facet_wrap(~week_start, ncol=5)
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01")) |> 
+  mutate(day = wday(date, label = TRUE),
+         week_start=lubridate::floor_date(date, unit="week"))|> 
+  ggplot(aes(x = day, y = hour, fill = trip_distance_mean_change_since_prev_week)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, 
+                       name = "Trip distance \nchange") +
+  labs(
+    title = "Trip mean distance change may 2023",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_classic()+
+  facet_wrap(~week_start, ncol=5)
+```
+
+no – we do need to ggparcoord this shit. unique id will be date + hour. and then normalized columns
+
+```{r}
+col_indices <- match(c("precipitation_change_since_prev_day", "trip_count_change_since_prev_week", "trip_distance_mean_change_since_prev_week"), colnames(df))
+df |> 
+  filter(date>=as.Date("2023-05-01") & date < as.Date("2023-06-01")) |> 
+  mutate(rained=as.factor(ifelse(precipitation!=0, "Rain", "No rain"))) |> 
+  ggparcoord(columns=col_indices, groupColumn="rained", alphaLines=0.3, scale = "uniminmax") 
+
+
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2023-05-01") & date < as.Date("2023-06-01")) |> 
+  mutate(rained = as.factor(ifelse(precipitation != 0, "Rain", "No rain"))) |> 
+  rename(
+    Precipitation_Change = precipitation_change_since_prev_day,
+    Trip_Count_Change = trip_count_change_since_prev_week,
+    Trip_Distance_Change = trip_distance_mean_change_since_prev_week
+  ) |> 
+  ggparcoord(columns = col_indices, groupColumn = "rained", alphaLines = 0.3, scale = "uniminmax") +
+  labs(y = "Normalized values") +
+  theme_minimal()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01") & precipitation_change_since_prev_day !=0) |> 
+  mutate(rained = as.factor(ifelse(precipitation != 0, "Rain", "No rain"))) |> 
+  rename(
+    Precipitation_Change = precipitation_change_since_prev_day,
+    Trip_Count_Change = trip_count_change_since_prev_week,
+    Trip_Distance_Change = trip_distance_mean_change_since_prev_week
+  ) |> 
+  ggparcoord(columns = col_indices, groupColumn = "rained", alphaLines = 0.3, scale = "uniminmax") +
+  labs(y = "Normalized values") +
+  theme_minimal()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01") & 
+           precipitation_change_since_prev_day != 0) |> 
+  mutate(rained = as.factor(ifelse(precipitation != 0, "Rain", "No rain"))) |> 
+  ggplot(aes(x=precipitation_change_since_prev_day, y=trip_count_change_since_prev_week, color=rained)) +
+  geom_point(alpha=0.3)
+
+  
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  mutate(rush_hour = ifelse((!day_of_week %in% c(5,6) & hour %in% c(7,8,9,17,18,19)), T, F)) |> 
+  ggplot(aes(x=trip_count, color=rush_hour))+
+  geom_boxplot()
+  
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  mutate(rush_hour = ifelse((!day_of_week %in% c(5,6) & hour %in% c(7,8,9,17,18,19)), T, F)) |> 
+  filter(rush_hour==T) |> 
+  ggplot(aes(x=trip_count))+
+  geom_histogram()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  mutate(rush_hour = ifelse((!day_of_week %in% c(5,6) & hour %in% c(7,8,9,17,18,19)), T, F)) |> 
+  filter(rush_hour==T) |> 
+  ggplot(aes(x=trip_count))+
+  geom_histogram()
+```
+
+```{r}
+library(timeDate)
+us_holidays <- as.Date(holidayNYSE(c(2021,2022,2023,2024)))
+df$working_day <- ifelse(!df$date %in% us_holidays & !df$day_of_week %in% c(5,6), T, F)
+df$rush_hour <- ifelse(df$working_day==T & df$hour %in% c(7,8,9,17,18,19), T, F)
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  filter(rush_hour==T) |> 
+  ggplot(aes(x=trip_count))+
+  geom_histogram()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  filter(rush_hour==T) |>
+  filter(trip_count <5000) |> 
+  ggplot(aes(x=month)) +
+  geom_bar()
+```
+
+```{r}
+df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  filter(rush_hour==T & trip_count <5000) |> 
+  select(date) |> 
+  head(50)
+```
+
+steps
+
+-   find better filter for holidays because that one is apparently not working
+
+-   look at distribution of trip counts by weather status
+
+-   create categorical indicator for temp / weather conditions
+
+-   plotly: select weather condition, month, day of week/weekends, rush hour/ off-peak– see how each weather condition changes the distribution ?
+
+    -   ex have that day of the week/hour thing
+
+    -   each selection will then filter to days with that range of temp/rain /no rain/ month/ season/ holiday
+
+    -   so it would be like ok if its a friday and its a holiday and its raining, vs a friday and a holiday and its not raining
+
+## Rain vs. no rain: avg trips
+
+```{r}
+plot1<-df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  filter(precipitation != 0) |> 
+  mutate(day = wday(date, label = TRUE))|> 
+  group_by(day, hour) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = hour, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "N Trips") +
+  labs(
+    title = "Rain",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()+
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+
+plot2<-  df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  filter(precipitation == 0) |> 
+  mutate(day = wday(date, label = TRUE))|> 
+  group_by(day, hour) |>
+  summarize(avg_trips = mean(trip_count), .groups = 'drop') |> 
+  ggplot(aes(x = day, y = hour, fill = avg_trips)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "red", name = "N Trips") +
+  labs(
+    title = "No rain",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks=seq(0,23, by=3))+
+  theme_minimal()+
+    theme(plot.title = element_text(size=11),
+        legend.key.size = unit(0.5, 'cm'),
+        legend.title = element_text(size=10))
+
+plot1 / plot2
+```
+
+## Difference in average trips if its raining vs not (reference)
+
+```{r}
+#| fig-height: 7
+#| fig-width: 7
+rain_diff <- df |> 
+  filter(date < as.Date("2020-03-01")) |> 
+  mutate(day = wday(date, label = TRUE)) |> 
+  group_by(day, hour, rain = precipitation != 0) |> 
+  summarize(avg_trips = mean(trip_count), .groups = "drop") |> 
+  pivot_wider(names_from = rain, values_from = avg_trips, names_prefix = "rain_") |> 
+  mutate(diff = rain_TRUE - rain_FALSE)
+
+plot1<- ggplot(rain_diff, aes(x = day, y = hour, fill = diff)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red", midpoint = 0, 
+    name = "Difference\n(Trips)"
+  ) +
+  labs(
+    title = "Difference in Avg Trips: Raining vs Not Raining (Pre pandemic)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks = seq(0, 23, by = 3)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 11),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 10)
+  )
+rain_diff <- df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  mutate(day = wday(date, label = TRUE)) |> 
+  group_by(day, hour, rain = precipitation != 0) |> 
+  summarize(avg_trips = mean(trip_count), .groups = "drop") |> 
+  pivot_wider(names_from = rain, values_from = avg_trips, names_prefix = "rain_") |> 
+  mutate(diff = rain_TRUE - rain_FALSE)
+
+plot2 <- ggplot(rain_diff, aes(x = day, y = hour, fill = diff)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red", midpoint = 0, 
+    name = "Difference\n(Trips)"
+  ) +
+  labs(
+    title = "Difference in Avg Trips: Raining vs Not Raining (Post pandemic)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks = seq(0, 23, by = 3)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 11),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 10)
+  )
+plot1/plot2
+```
+
+### Rush hour only
+
+```{r}
+rain_diff <- df |> 
+  filter(date >= as.Date("2021-10-01")) |> 
+  filter(rush_hour==T) |> 
+  mutate(day = wday(date, label = TRUE)) |> 
+  group_by(day, hour, rain = precipitation != 0) |> 
+  summarize(avg_trips = mean(trip_count), .groups = "drop") |> 
+  pivot_wider(names_from = rain, values_from = avg_trips, names_prefix = "rain_") |> 
+  mutate(diff = rain_TRUE - rain_FALSE)
+
+plot1<-ggplot(rain_diff, aes(x = day, y = hour, fill = diff)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red", midpoint = 0, 
+    name = "Difference\n(Trips)"
+  ) +
+  labs(
+    title = "Difference in Avg Trips: Raining vs Not Raining (Post pandemic)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks = seq(0, 23, by = 3)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 11),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 10)
+  )
+rain_diff <- df |> 
+  filter(date < as.Date("2020-03-01")) |> 
+  filter(rush_hour==T) |> 
+  mutate(day = wday(date, label = TRUE)) |> 
+  group_by(day, hour, rain = precipitation != 0) |> 
+  summarize(avg_trips = mean(trip_count), .groups = "drop") |> 
+  pivot_wider(names_from = rain, values_from = avg_trips, names_prefix = "rain_") |> 
+  mutate(diff = rain_TRUE - rain_FALSE)
+
+plot2 <- ggplot(rain_diff, aes(x = day, y = hour, fill = diff)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red", midpoint = 0, 
+    name = "Difference\n(Trips)"
+  ) +
+  labs(
+    title = "Difference in Avg Trips: Raining vs Not Raining (Pre pandemic)",
+    x = "Day of the Week",
+    y = "Hour"
+  ) +
+  scale_y_continuous(breaks = seq(0, 23, by = 3)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 11),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 10)
+  )
+
+plot2/plot1
 ```
 
 ```{r}
