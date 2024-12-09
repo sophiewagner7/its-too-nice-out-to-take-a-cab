@@ -1,0 +1,14 @@
+## Comparing Different Times to Gauge Behavior Change
+
+The patterns of taxi usage complicate how we can try to analyze weather effects. 
+That is, the strong weekly cycle of increasing ridership as the week goes on
+contrasts with the relative sense of a “nice” day. 
+If we typically take a cab on Friday, 
+but elect not to on a specific Friday because the weather is nice,
+we are not probably comparing that Friday’s weather to the previous Friday’s.
+Instead, we are likely comparing to yesterday’s weather or even this 
+morning’s weather.
+
+This means that while taxi ridership has to be compared against 
+data from a week previous, 
+weather data has to be compared against data from a day previous.

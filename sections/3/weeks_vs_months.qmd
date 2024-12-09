@@ -1,0 +1,43 @@
+## Weeks vs. Months
+
+```{r}
+post_pandemic_df |>
+  group_by(month) |>
+  mutate(
+    standardized_rides = (trip_count- min(trip_count)) / (max(trip_count) - min(trip_count))
+  ) |>
+  ungroup() |>
+  mutate(group="month") |>
+  rename(group_value = month) |>
+  bind_rows(
+    post_pandemic_df |>
+      group_by(day_of_week) |>
+      mutate(
+        standardized_rides = (trip_count - min(trip_count)) / (max(trip_count) - min(trip_count))
+      ) |>
+      ungroup() |>
+      mutate(group="day_of_week") |>
+      rename(group_value = day_of_week)
+  ) |>
+  ggplot(aes(x = as.factor(group_value), y = standardized_rides, fill = group)) +
+    geom_boxplot() +
+    labs(
+      title = "Standardized Rides by Month and Day of the Week",
+      x = "Group",
+      y = "Standardized Ride Count",
+      fill = "Group"
+    ) + 
+    facet_wrap(~group, scales="free_x") 
+
+```
+
+```{r}
+ggplot(post_pandemic_df, aes(x = trip_count)) +
+  geom_histogram(bins = 100, fill = "skyblue" ) +
+  labs(
+    title = "Histogram of Rides",
+    x = "Rides",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
