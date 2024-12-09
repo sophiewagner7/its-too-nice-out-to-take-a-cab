@@ -17,6 +17,13 @@ classic <- theme_set(theme_minimal())
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 ```
 
+```{r}
+# Add a month_abbr column.
+df <- df |>
+  mutate(month_abbr = factor(month.abb[month], levels = month.abb)) 
+```
+
+
 {{< include sections/3/1_dealing_with_the_pandemic.qmd >}}
 
 ```{r}
@@ -42,7 +49,9 @@ perh. side thing on just Saturday.
 
 filter df down to just rush hour on non-holiday weekdays.
 
-## Patterns in weather data? - Moacir
+<!-- ## (3.3) Patterns in weather data? - Moacir -->
+
+{{< include sections/3/3_patterns_in_weather_data.qmd >}}
 
 Yes. Use filtered Data. We are telling a story here that is taking a trip.
 
@@ -212,7 +221,4 @@ Realization that it makes sense to compare usage to the week before at the same 
 Also, note that its pretty consistent pre-pandemic vs post
 
 
-{{< include sections/3/weeks_vs_months.qmd >}}
 
-
-{{< include sections/3/time_shift.qmd >}}

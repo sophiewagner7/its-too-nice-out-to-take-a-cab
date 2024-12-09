@@ -1,0 +1,109 @@
+## Patterns in Weather Data
+
+We chose to limit our weather analysis to three variables: 
+temperature, cloud cover, and rain. 
+This provides three kinds of variables (numeric, categorical, boolean) 
+while also giving a sense of easy to understand information that might be used
+by a traveler electing to walk or not. 
+That is, a consideration of whether it is sunny or not is perhaps 
+clearer to a person choosing to ride the cab than the dew point.
+
+```{r}
+df |> 
+  ggplot(aes(x = month_abbr, y = temperature)) +
+    geom_boxplot(fill=base_color) +
+    labs(
+      title = "Temperature Distribution",
+      x = "Month",
+      y = "Temperature (°C)",
+    ) 
+```
+ 
+ **discussion**
+ 
+ Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.
+ 
+ Value | Description
+ ---|---
+ 0 | Clear
+ -1 | Few clouds
+ -2 | Scattered clouds
+ -3 | Broken clouds
+ -4 | Overcast
+ 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# Factorize cloud_cover
+
+df <- df |>
+  mutate(cloud_cover = factor(cloud_cover, 
+    levels = c(0, -1, -2, -3, -4),
+    labels = c("Clear", "Few Clouds", "Scattered Clouds", "Broken Clouds", "Overcast"),
+    ordered = TRUE))
+```
+ 
+ 
+```{r}
+df |>
+  group_by(month_abbr, cloud_cover) |>
+  tally() |>
+  group_by(month_abbr) |>
+  mutate(percentage = n / sum(n) * 100) |>
+  ungroup() |>
+ggplot(aes(x = month_abbr, y = percentage, fill = as.factor(cloud_cover))) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(
+    title = "Percentage of Cloud Cover by Month",
+    x = "Month",
+    y = "Percentage",
+    fill = "Cloud Cover"
+  ) +
+  scale_fill_brewer(
+    palette = "GnBu"
+  ) +
+  theme_minimal()
+```
+ 
+
+Cloud cover less obviously seasonal than temperature, and in general days are clear. Likely won't tell us much
+otoh makes cloudy days jump out.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# Booleanize rain 
+
+df <- df |>
+  mutate(rain = as.factor(
+    ifelse(precipitation != 0, T, F)
+    # ifelse(precipitation > 0.1 , T, F)
+    )
+  )
+```
+
+```{r}
+df |>
+  group_by(date = as.Date(date)) |>
+  summarize(
+    rain_day = any(rain == TRUE),
+    across(c(year, month_abbr), ~ first(.))
+  ) |>
+  group_by(year, month_abbr) |>
+  summarize(
+    rainy_days = sum(rain_day), .groups = "drop",
+  ) |>
+  group_by(month_abbr) |>
+  summarize(avg_rainy_days = mean(rainy_days)) |>
+  ggplot(aes(x = month_abbr, y = avg_rainy_days)) +
+  geom_bar(stat = "identity", fill = base_color) +
+  labs(
+    title = "Average Number of Days with at Least Trace Amounts of Rain",
+    x = "Month",
+    y = "Average Rainy Days"
+  )
+```

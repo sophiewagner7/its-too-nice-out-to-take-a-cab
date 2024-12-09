@@ -48,7 +48,7 @@ df |>
 ```
 
 Three details jump out from an initial look at managing the Pandemic. 
-First, we can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.[@shapiro2020][@nysdoh] The uncertainty over this initial wave halved the March ridership totals in comparison to February. Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.
+First, we can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.[@shapiro2020] [@nysdoh] The uncertainty over this initial wave halved the March ridership totals in comparison to February. Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.
 
 ```{r}
 #| fig-height: 6
@@ -87,12 +87,12 @@ df |>
   ) |>
   mutate(pct_trip_distance_group = factor(
     pct_trip_distance_group, levels = c(
-      "pct_more_than_five",
-      "pct_five_mile",
-      "pct_three_mile",
-      "pct_two_mile",
+      "pct_half_mile",
       "pct_one_mile",
-      "pct_half_mile"
+      "pct_two_mile",
+      "pct_three_mile",
+      "pct_five_mile",
+      "pct_more_than_five"
     ))) |>
   ggplot(aes(
     x=year_month,
@@ -108,7 +108,7 @@ df |>
   ) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
   scale_fill_brewer(
-    palette = "Blues",
+    palette = "GnBu",
     labels = c(
       "pct_more_than_five" = "Five to Ten Miles",
       "pct_five_mile" = "Three to Five Miles",
