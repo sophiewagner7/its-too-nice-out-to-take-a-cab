@@ -1,0 +1,51 @@
+<!-- ## Weather vs. Trips. -->
+
+Now that we have refocused our attention to a smaller subset of the data, 
+we can look at some initial relationships between the two central 
+taxi variables (`trip_count` and the various distance bands) and the three
+weather variables, (`temperature`, `cloud_cover`, and `rain`).
+
+```{r}
+df |>
+  mutate(
+    up_to_ten_mile_trips = trip_count - rowSums(across(ends_with("mile_trips")))
+  ) |>
+  pivot_longer(
+    cols=c(ends_with("mile_trips")),
+    names_to="trip_type",
+    values_to="trip_type_count",
+  ) |>
+  mutate(trip_type = factor(trip_type, 
+    levels = c(
+      "half_mile_trips", 
+      "one_mile_trips", 
+      "two_mile_trips", 
+      "five_mile_trips", 
+      "up_to_ten_mile_trips"
+      ),
+    labels = c(
+      "Under Half-Mile Trips",
+      "Under One-Mile Trips",
+      "Under Two-Mile Trips",
+      "Under Five-Mile Trips",
+      "Under Ten-Mile Trips"
+    ),
+    ordered = TRUE))
+  # select(date, hour, trip_type, trip_type_count)
+  group_by(trip_type) |>
+  ggplot(aes(x = trip_type_count, y = temperature)) +
+    geom_hex() + 
+    scale_x_continuous(
+      labels = label_number(scale_cut = cut_short_scale()),  
+      breaks = pretty_breaks(n = 3)
+    ) + 
+    scale_fill_distiller(
+      palette = "GnBu"
+    ) + 
+    labs(
+      title = "Temperature Distribution",
+      x = "Trip Count",
+      y = "Temperature (°C)",
+    ) +
+  facet_wrap(~ trip_type, ncol = 3, nrow = 2) 
+```

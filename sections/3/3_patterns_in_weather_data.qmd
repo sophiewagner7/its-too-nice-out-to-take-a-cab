@@ -1,4 +1,4 @@
-## Patterns in Weather Data
+<!-- ## Patterns in Weather Data -->
 
 We chose to limit our weather analysis to three variables: 
 temperature, cloud cover, and rain. 
