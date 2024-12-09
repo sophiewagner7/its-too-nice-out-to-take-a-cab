@@ -67,8 +67,7 @@ df |>
 ```
 
 Three details jump out from an initial look at managing the Pandemic. 
-First, we can see when the Pandemic hit in March, 2020. The "start" of the pandemic in the US is generally considered to have taken place mid-March (March 17, 2020) [cite], and we do in fact see ridership fall by approximately half that of February. In April 2020, when large-scale shutdowns were firmly in place, we see the lowest ridership of the entire period. 
-Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time, to get a good rhythm of usage.
+First, we can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.[@shapiro2020][@nysdoh] The uncertainty over this initial wave halved the March ridership totals in comparison to February. Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.
 
 ```{r}
 #| fig-height: 6
@@ -151,8 +150,12 @@ Both analyses suggest certainly abandoning pre-Pandemic data as well as all of t
 
 In order to determine variations in taxi usage, we needed to establish a baseline "normal" in order to verify fluctuations in the data. How can we infer an abberration if we don't know what normal is? How does cab usage regularly fluctate across the week according to work-life patterns, and how does it fluctuate by season?
 
-### When did the pandemic "end"?: a calendar view approach
-As mentioned previously, we suspected that cab usage returned to somewhat of a normal around October 2021. The calendar view of taxi usage provides support to that argument.
+### When Did the Pandemic “End”?: A Calendar View Approach
+
+As mentioned previously, 
+we suspected from our initial charts that cab usage returned to somewhat of a normal around October 2021. 
+The calendar view of taxi usage supports that view.
+
 ```{r}
 #| fig-width: 10
 df |> 
@@ -175,7 +178,13 @@ df |>
   facet_wrap(~year, ncol=6)
 ```
 
-{description}
+We can see that in general for 2021, perhaps starting with March, 
+the daily and monthly fluctuations were established that have persisted into 2024, 
+but from the slightly lighter hue of the 2021 numbers, 
+we know that ridership was still establishing its new norms. 
+Compare, for example, Fridays and Saturdays in March and April. 
+October 2021 appears the first month with a weekly rhythm and total 
+numbers in line with future Octobers.
 
 
 ```{r}
@@ -191,7 +200,7 @@ plot1 <- df |>
   ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
   geom_tile(color="white") +
   scale_fill_gradient(low = "white", high = "red", name = "N trips") +
-  labs(title = "Pre-pandemic (Jan 2019 - Feb 2020)", x = "Day of the week", y = "Month") +
+  labs(title = "Pre-pandemic (Jan 2019 -- Feb 2020)", x = "Day of the week", y = "Month") +
   theme_minimal() +
     theme(plot.title = element_text(size=11),
         legend.key.size = unit(0.5, 'cm'),
@@ -207,7 +216,7 @@ plot2 <- df |>
   ggplot(aes(x=as.factor(day), y=as.factor(month), fill=avg_trips)) +
   geom_tile(color="white") +
   scale_fill_gradient(low = "white", high = "red", name = "N trips") +
-  labs(title = "Post-pandemic (Oct 2021 - Jul 2024)", x = "Day of the week", y = "Month") +
+  labs(title = "Post-pandemic (Oct 2021 -- Jul 2024)", x = "Day of the week", y = "Month") +
   theme_minimal() +
   theme(plot.title = element_text(size=11),
         legend.key.size = unit(0.5, 'cm'),

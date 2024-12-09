@@ -14,6 +14,7 @@ library(tidyverse) # pivot
 library(GGally) # ggparcoord
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 ```
+
 ```{r}
 df$pre_pandemic <- ifelse(df$date < as.Date("2020-03-01"),T,F)
 df$post_pandemic <- ifelse(df$date >= as.Date("2021-10-01"), T, F)
@@ -170,7 +171,6 @@ plot2 <- df |>
 (plot1 / plot2) + plot_annotation(title="Average number of trips by day of the week and hour")
 ```
 
-
 # Exploration round 2: comparing ridership and weather changes
 
 ```{r}
@@ -178,12 +178,14 @@ df$rain <- as.factor(ifelse(df$precipitation != 0, T, F))
 ```
 
 Looking at a slice of the data:
+
 ```{r}
 df |> 
   filter(date >= as.Date("2023-03-01") & date <= as.Date("2023-06-01") & rain==T) |> 
   ggplot(aes(x=date, y=precipitation)) +
   geom_col()
 ```
+
 ```{r}
 df |> 
   filter(date >= as.Date("2023-05-01") & date <= as.Date("2023-06-01")) |> 
@@ -241,9 +243,9 @@ df |>
   facet_wrap(~week_start, ncol=5)
 ```
 
-## ggparcoord: change in rain, change in travel 
+## ggparcoord: change in rain, change in travel
 
-Difficult to tell anything from these plots. Let's take a look using `ggparcoord`. 
+Difficult to tell anything from these plots. Let's take a look using `ggparcoord`.
 
 ```{r}
 col_indices <- match(c("precipitation_change_since_prev_day", "trip_count_change_since_prev_week", "trip_distance_mean_change_since_prev_week"), colnames(df))  # Get col indices
@@ -259,6 +261,7 @@ df |>
   labs(title="All hours May 2023",y = "Normalized values") +
   theme_minimal()
 ```
+
 Only looking at days it rained:
 
 ```{r}
@@ -278,6 +281,7 @@ df |>
 ## Rush hour, work days, etc.
 
 Creating rush hour variable:
+
 ```{r}
 library(timeDate)
 
@@ -335,6 +339,7 @@ df |>
   facet_wrap(~post_pandemic, ncol=1) +
   labs(title = "Trip count distribution by Rain status, pre and post pandemic")
 ```
+
 ```{r}
 df |> 
   filter(pandemic==F) |> 
@@ -345,13 +350,10 @@ df |>
   labs(title = "Mean trip distance by Rain status, pre and post pandemic")
 ```
 
-
-
 ```{r}
 df$evening_rush <- ifelse(df$rush_hour==T & df$hour > 12, T, F)
 df$morning_rush <- ifelse(df$rush_hour==T & df$hour < 12, T, F)
 ```
-
 
 ## Difference in average trips if its raining vs not (reference)
 
@@ -476,8 +478,7 @@ plot2/plot1
 
 ## Cleveland dot plots :: difference based on Rain status
 
-Does it vary by month of the year? (i.e. seasons have an impact?)
-Filtered to RUSH HOUR ONLY & working days only to maintain some constancy
+Does it vary by month of the year? (i.e. seasons have an impact?) Filtered to RUSH HOUR ONLY & working days only to maintain some constancy
 
 ```{r}
 df |> 
@@ -502,7 +503,6 @@ df |>
   labs(title="Impact of rain on avg dist of rush hr trips by month", x = "Average Distance", y = "Month") +
   theme_minimal()
 ```
-
 
 ```{r}
 df |> 
@@ -569,4 +569,3 @@ df |>
   labs(title="Impact of rain on avg num rush hr trips by month", x = "Average N Trips", y = "Month") +
   theme_minimal()
 ```
-
