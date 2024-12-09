@@ -22,6 +22,10 @@ book:
     - results.qmd
     - d3graph.qmd
     - conclusion.qmd
+    - references.qmd
+editor_options:
+  markdown:
+    extensions: -smart
 
 format:
   html:
