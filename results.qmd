@@ -1,10 +1,29 @@
 # Results
 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+library(scales)
+library(RColorBrewer)
+library(dplyr)
+library(patchwork)
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+classic <- theme_set(theme_minimal())
+
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
 {{< include sections/3/1_dealing_with_the_pandemic.qmd >}}
 
-### when did the pandemic end? (perh part of previous section.)
-
-goal: get rid of pandemic data.
+```{r}
+# Filter out pre- and during-Pandemic data.
+df <- df |>
+  filter(df$date >= as.Date("2021-10-01"))
+```
   
 ## Patterns in Taxi Data - 
 
@@ -65,10 +84,6 @@ In order to determine variations in taxi usage, we needed to establish a baselin
 
 ### When Did the Pandemic “End”?: A Calendar View Approach
 
-```{r}
-post_pandemic_df <- df |>
-  filter(df$date >= as.Date("2021-10-01"))
-```
 
 As mentioned previously, 
 we suspected from our initial charts that cab usage returned to somewhat of a normal around October 2021. 

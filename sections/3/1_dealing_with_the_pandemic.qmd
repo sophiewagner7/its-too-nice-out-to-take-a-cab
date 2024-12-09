@@ -5,23 +5,6 @@ pre-COVID-19 Pandemic baseline against which we could compare our
 post-Pandemic data. 
 
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
-library(tidyverse)
-library(arrow)
-library(scales)
-library(RColorBrewer)
-library(dplyr)
-library(patchwork)
-
-base_color <- brewer.pal(n = 3, name = "Set2")[1]
-classic <- theme_set(theme_minimal())
-
-df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
-```
-
-```{r}
 #| fig-height: 6 
 #| fig-width: 10
 custom_label <- function(x) {
@@ -140,6 +123,20 @@ df |>
         legend.position = "bottom")
 
 ```
-In addition to using hired cars less often after the Pandemic, perhaps as a consequence of less business-related travel because of flexible work schedules, we see a second behavioral change in the post-Pandemic era, even if it is slight: for the class of trips we are observing, they run longer. Trips of one mile make up a smaller percentage of the total, while trips of more than three miles make up a larger percentage of the total since the onset of the Pandemic. 
 
-Both analyses suggest certainly abandoning pre-Pandemic data as well as all of the 2020 data. While the shift in typical distances smooths out already at the beginning of 2021, the number of trips does not reach its new normal until around October 2021, suggesting that is the true step into the post-Pandemic order.
+In addition to using hired cars less often after the Pandemic, 
+perhaps as a consequence of less business-related travel because of flexible work schedules, 
+we see a second behavioral change in the post-Pandemic era, 
+even if it is slight: 
+for the class of trips we are observing, they run longer. 
+Trips of one mile make up a smaller percentage of the total, 
+while trips of more than three miles make up a larger 
+percentage of the total since the onset of the Pandemic. 
+
+Both analyses suggest certainly abandoning pre-Pandemic 
+data as well as all of the 2020 data. 
+While the shift in typical distances smooths out already at the beginning of 2021, 
+the number of trips does not reach its new normal until around October 2021, 
+suggesting that is the true step into the post-Pandemic order.
+
+Moving forward, we will focus only on data from October 2021 onward, then.
