@@ -193,6 +193,12 @@ div.csl-indent {
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -204,7 +210,10 @@ div.csl-indent {
    
   <ul>
   <li><a href="#dealing-with-the-pandemic" id="toc-dealing-with-the-pandemic" class="nav-link active" data-scroll-target="#dealing-with-the-pandemic"><span class="header-section-number">3.1</span> Dealing with the Pandemic</a></li>
-  <li><a href="#patterns-across-hours-days-and-seasons" id="toc-patterns-across-hours-days-and-seasons" class="nav-link" data-scroll-target="#patterns-across-hours-days-and-seasons"><span class="header-section-number">3.2</span> Patterns across Hours, Days, and Seasons</a></li>
+  <li><a href="#patterns-across-hours-days-and-seasons" id="toc-patterns-across-hours-days-and-seasons" class="nav-link" data-scroll-target="#patterns-across-hours-days-and-seasons"><span class="header-section-number">3.2</span> Patterns across Hours, Days, and Seasons</a>
+  <ul class="collapse">
+  <li><a href="#when-did-the-pandemic-end-a-calendar-view-approach" id="toc-when-did-the-pandemic-end-a-calendar-view-approach" class="nav-link" data-scroll-target="#when-did-the-pandemic-end-a-calendar-view-approach"><span class="header-section-number">3.2.1</span> When Did the Pandemic “End”?: A Calendar View Approach</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sophiewagner7/nyc-weather/edit/main/results.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/sophiewagner7/nyc-weather/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -283,7 +292,7 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>Three details jump out from an initial look at managing the Pandemic. First, we can see when the Pandemic hit in March, 2020, but we can see that the ridership was already falling in February, even before large-scale shutdowns occurred. Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.<span class="citation" data-cites="lunden2019"><a href="#ref-lunden2019" role="doc-biblioref">[1]</a></span> Via also stopped its ride-sharing operations in December 2021.<span class="citation" data-cites="fingas2021"><a href="#ref-fingas2021" role="doc-biblioref">[2]</a></span> The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time, to get a good rhythm of usage.</p>
+<p>Three details jump out from an initial look at managing the Pandemic. First, we can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.[<span class="citation" data-cites="shapiro2020"><a href="references.html#ref-shapiro2020" role="doc-biblioref">[1]</a></span>]<span class="citation" data-cites="nysdoh"><a href="references.html#ref-nysdoh" role="doc-biblioref">[2]</a></span> The uncertainty over this initial wave halved the March ridership totals in comparison to February. Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.<span class="citation" data-cites="lunden2019"><a href="references.html#ref-lunden2019" role="doc-biblioref">[3]</a></span> Via also stopped its ride-sharing operations in December 2021.<span class="citation" data-cites="fingas2021"><a href="references.html#ref-fingas2021" role="doc-biblioref">[4]</a></span> The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -343,7 +352,7 @@ div.csl-indent {
 <span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %Y"</span>, <span class="at">date_breaks =</span> <span class="st">"3 months"</span>) <span class="sc">+</span></span>
 <span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"Set2"</span>,</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
 <span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
 <span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>      <span class="st">"pct_more_than_five"</span> <span class="ot">=</span> <span class="st">"Five to Ten Miles"</span>,</span>
 <span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>      <span class="st">"pct_five_mile"</span> <span class="ot">=</span> <span class="st">"Three to Five Miles"</span>,</span>
@@ -370,16 +379,156 @@ div.csl-indent {
 </section>
 <section id="patterns-across-hours-days-and-seasons" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="patterns-across-hours-days-and-seasons"><span class="header-section-number">3.2</span> Patterns across Hours, Days, and Seasons</h2>
+<p>In order to determine variations in taxi usage, we needed to establish a baseline “normal” in order to verify fluctuations in the data. How can we infer an abberration if we don’t know what normal is? How does cab usage regularly fluctate across the week according to work-life patterns, and how does it fluctuate by season?</p>
+<section id="when-did-the-pandemic-end-a-calendar-view-approach" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="when-did-the-pandemic-end-a-calendar-view-approach"><span class="header-section-number">3.2.1</span> When Did the Pandemic “End”?: A Calendar View Approach</h3>
+<p>As mentioned previously, we suspected from our initial charts that cab usage returned to somewhat of a normal around October 2021. The calendar view of taxi usage supports that view.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> <span class="fu">month</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">day_label =</span> <span class="fu">factor</span>(<span class="fu">substr</span>(day, <span class="dv">1</span>, <span class="dv">2</span>), </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Su"</span>, <span class="st">"Mo"</span>, <span class="st">"Tu"</span>, <span class="st">"We"</span>, <span class="st">"Th"</span>, <span class="st">"Fr"</span>, <span class="st">"Sa"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, month, day) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_trips =</span> <span class="fu">mean</span>(trip_count), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> month, <span class="at">fill =</span> avg_trips)) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"Avg Trips"</span>) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Trips by Day of the Week and Month"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Day of the Week"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Month"</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>year, <span class="at">ncol=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="results_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that in general for 2021, perhaps starting with March, the daily and monthly fluctuations were established that have persisted into 2024, but from the slightly lighter hue of the 2021 numbers, we know that ridership was still establishing its new norms. Compare, for example, Fridays and Saturdays in March and April. October 2021 appears the first month with a weekly rhythm and total numbers in line with future Octobers.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-03-01"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">day=</span><span class="fu">wday</span>(date, <span class="at">label=</span>T),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">month=</span><span class="fu">month</span>(date, <span class="at">label=</span>T),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">year=</span><span class="fu">year</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year,month,day) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_trips =</span> <span class="fu">mean</span>(trip_count), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(day), <span class="at">y=</span><span class="fu">as.factor</span>(month), <span class="at">fill=</span>avg_trips)) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color=</span><span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"N trips"</span>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Pre-pandemic (Jan 2019 -- Feb 2020)"</span>, <span class="at">x =</span> <span class="st">"Day of the week"</span>, <span class="at">y =</span> <span class="st">"Month"</span>) <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">'cm'</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>plot2 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2021-10-01"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">day=</span><span class="fu">wday</span>(date, <span class="at">label=</span>T),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">month=</span><span class="fu">month</span>(date, <span class="at">label=</span>T),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">year=</span><span class="fu">year</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year,month,day) <span class="sc">|&gt;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_trips =</span> <span class="fu">mean</span>(trip_count), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(day), <span class="at">y=</span><span class="fu">as.factor</span>(month), <span class="at">fill=</span>avg_trips)) <span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color=</span><span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"N trips"</span>) <span class="sc">+</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Post-pandemic (Oct 2021 -- Jul 2024)"</span>, <span class="at">x =</span> <span class="st">"Day of the week"</span>, <span class="at">y =</span> <span class="st">"Month"</span>) <span class="sc">+</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>),</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">'cm'</span>),</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>(plot1 <span class="sc">/</span> plot2) <span class="sc">+</span> <span class="fu">plot_annotation</span>(<span class="at">title=</span><span class="st">"Average number of trips by day of the week and month"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="results_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>continue describing months and day of week add the combined (full time data) plot here as well. This shows that it makes a lot of sense to break off from the pandemic data bc there is such a difference! The sheer volume in ridership obscures pattens</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2021-10-01"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))<span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(day, hour) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_trips =</span> <span class="fu">mean</span>(trip_count), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> hour, <span class="at">fill =</span> avg_trips)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"N Trips"</span>) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Pre-pandemic (Jan 2019 - Feb 2020)"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Day of the Week"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Hour"</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">23</span>, <span class="at">by=</span><span class="dv">3</span>))<span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">'cm'</span>),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plot2 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-03-01"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))<span class="sc">|&gt;</span> </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(day, hour) <span class="sc">|&gt;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_trips =</span> <span class="fu">mean</span>(trip_count), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> hour, <span class="at">fill =</span> avg_trips)) <span class="sc">+</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> </span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"N Trips"</span>) <span class="sc">+</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Post-pandemic (Oct 2021-Jul 2024)"</span>,</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Day of the Week"</span>,</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Hour"</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">23</span>, <span class="at">by=</span><span class="dv">3</span>))<span class="sc">+</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>),</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">'cm'</span>),</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>(plot1 <span class="sc">/</span> plot2) <span class="sc">+</span> <span class="fu">plot_annotation</span>(<span class="at">title=</span><span class="st">"Average number of trips by day of the week and hour"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="results_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>describe day of week and hour -workday consistency -uptick in usage fri sat night Realization that it makes sense to compare usage to the week before at the same time since there is relative consistency here – greater variation bt hours/ diff days of the week Also, note that its pretty consistent pre-pandemic vs post</p>
 
 
-<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-shapiro2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">E. Shapiro, <span>“New <span>York City Public Schools</span> to <span>Close</span> to <span>Slow Spread</span> of <span>Coronavirus</span>,”</span> <em>The New York Times: New York</em>, Mar. 15, 2020. Accessed: Dec. 08, 2024. [Online]. Available: <a href="https://www.nytimes.com/2020/03/15/nyregion/nyc-schools-closed.html">https://www.nytimes.com/2020/03/15/nyregion/nyc-schools-closed.html</a></div>
+</div>
+<div id="ref-nysdoh" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">New York State Department of Health, <span>“Positive <span>Tests Over Time</span>, by <span>Region</span> and <span>County</span>.”</span> Accessed: Dec. 08, 2024. [Online]. Available: <a href="https://coronavirus.health.ny.gov/positive-tests-over-time-region-and-county">https://coronavirus.health.ny.gov/positive-tests-over-time-region-and-county</a></div>
+</div>
 <div id="ref-lunden2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">I. Lunden, <span>“Juno shuts down its operations in <span>NYC</span> as owner <span>Gett</span> signs strategic partnership with <span>Lyft</span>.”</span> Accessed: Nov. 27, 2024. [Online]. Available: <a href="https://techcrunch.com/2019/11/18/juno-shuts-down-its-operations-in-nyc-as-owner-gett-signs-strategic-partnership-with-lyft/">https://techcrunch.com/2019/11/18/juno-shuts-down-its-operations-in-nyc-as-owner-gett-signs-strategic-partnership-with-lyft/</a></div>
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">I. Lunden, <span>“Juno shuts down its operations in <span>NYC</span> as owner <span>Gett</span> signs strategic partnership with <span>Lyft</span>.”</span> Accessed: Nov. 27, 2024. [Online]. Available: <a href="https://techcrunch.com/2019/11/18/juno-shuts-down-its-operations-in-nyc-as-owner-gett-signs-strategic-partnership-with-lyft/">https://techcrunch.com/2019/11/18/juno-shuts-down-its-operations-in-nyc-as-owner-gett-signs-strategic-partnership-with-lyft/</a></div>
 </div>
 <div id="ref-fingas2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">J. Fingas, <span>“Via’s personal ride-hailing will shut down next week.”</span> Accessed: Nov. 27, 2024. [Online]. Available: <a href="https://www.engadget.com/via-ride-hailing-service-shutdown-231321466.html">https://www.engadget.com/via-ride-hailing-service-shutdown-231321466.html</a></div>
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">J. Fingas, <span>“Via’s personal ride-hailing will shut down next week.”</span> Accessed: Nov. 27, 2024. [Online]. Available: <a href="https://www.engadget.com/via-ride-hailing-service-shutdown-231321466.html">https://www.engadget.com/via-ride-hailing-service-shutdown-231321466.html</a></div>
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->
