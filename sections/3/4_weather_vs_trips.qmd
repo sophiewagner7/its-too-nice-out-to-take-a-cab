@@ -8,6 +8,9 @@ weather variables, (`temperature`, `cloud_cover`, and `rain`).
 ```{r}
 df |>
   mutate(
+    temperature = round(temperature)
+  ) |>
+  mutate(
     up_to_ten_mile_trips = trip_count - rowSums(across(ends_with("mile_trips")))
   ) |>
   pivot_longer(
@@ -20,32 +23,87 @@ df |>
       "half_mile_trips", 
       "one_mile_trips", 
       "two_mile_trips", 
+      "three_mile_trips", 
       "five_mile_trips", 
       "up_to_ten_mile_trips"
       ),
     labels = c(
-      "Under Half-Mile Trips",
-      "Under One-Mile Trips",
-      "Under Two-Mile Trips",
-      "Under Five-Mile Trips",
-      "Under Ten-Mile Trips"
+      "Up to Half-Mile Trips",
+      "Up to One-Mile Trips",
+      "Up to Two-Mile Trips",
+      "Up to Three-Mile Trips",
+      "Up to Five-Mile Trips",
+      "Up to Ten-Mile Trips"
     ),
-    ordered = TRUE))
+    ordered = TRUE)) |>
   # select(date, hour, trip_type, trip_type_count)
-  group_by(trip_type) |>
-  ggplot(aes(x = trip_type_count, y = temperature)) +
-    geom_hex() + 
-    scale_x_continuous(
-      labels = label_number(scale_cut = cut_short_scale()),  
+  group_by(trip_type, temperature) |>
+  summarize(
+    avg_trips_by_degree=mean(trip_type_count),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(temperature, avg_trips_by_degree)) +
+    geom_point(color=base_color, size=1, alpha=0.5) +
+    scale_y_continuous(
+      labels = thousands,
       breaks = pretty_breaks(n = 3)
-    ) + 
-    scale_fill_distiller(
-      palette = "GnBu"
-    ) + 
-    labs(
-      title = "Temperature Distribution",
-      x = "Trip Count",
-      y = "Temperature (°C)",
     ) +
-  facet_wrap(~ trip_type, ncol = 3, nrow = 2) 
+    geom_smooth(color=secondary_color, method="loess", size=1, se=TRUE, alpha=0.15)+
+    # scale_fill_distiller(
+    #   palette = "GnBu"
+    # ) +
+    labs(
+      title = "Average Trips Per Hour by Integral Temperature across Six Trip Distance Types",
+      y = "Average Trips per Hour",
+      x = temp_label,
+      fill = "Count"
+    ) +
+  facet_wrap(~ trip_type, ncol = 3, nrow = 2, scales="free_y")
+```
+
+
+```{r}
+df |>
+  mutate(
+    up_to_ten_mile_trips = trip_count - rowSums(across(ends_with("mile_trips")))
+  ) |>
+  pivot_longer(
+    cols=c(ends_with("mile_trips")),
+    names_to="trip_type",
+    values_to="trip_type_count",
+  ) |>
+  mutate(trip_type = factor(trip_type, 
+    levels = c(
+      "half_mile_trips", 
+      "one_mile_trips", 
+      "two_mile_trips", 
+      "three_mile_trips", 
+      "five_mile_trips", 
+      "up_to_ten_mile_trips"
+      ),
+    labels = c(
+      "Up to Half-Mile Trips",
+      "Up to One-Mile Trips",
+      "Up to Two-Mile Trips",
+      "Up to Three-Mile Trips",
+      "Up to Five-Mile Trips",
+      "Up to Ten-Mile Trips"
+    ),
+    ordered = TRUE)) |>
+    group_by(trip_type, cloud_cover) |>
+    tally(wt = trip_type_count) |>
+    group_by(trip_type) |>
+    mutate(percentage = n / sum(n)) |>
+  ggplot(aes(percentage, trip_type, fill=cloud_cover)) +
+    geom_bar(stat = "identity", position = "stack") +
+    scale_fill_brewer(
+      palette = "GnBu"
+    )  +
+    scale_x_continuous(label=percent)+
+    labs(
+      title = "Distribution of Trips by Cloud Cover",
+      y = "Trip Type",
+      x = "Percent of Trips",
+      fill = "Cloud Cover"
+    ) 
 ```
