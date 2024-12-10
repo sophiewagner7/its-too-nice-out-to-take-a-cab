@@ -10,9 +10,29 @@ library(scales)
 library(RColorBrewer)
 library(dplyr)
 library(patchwork)
+# library(ggridges)
+# library(vcd)
+
+# Use like: scale_y_continuous(labels = millions) + 
+millions <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-6, suffix = "M")(x))
+}
+
+# Use like: scale_y_continuous(labels = thousands) + 
+thousands <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
+}
+
+# Use in mutate: mutate(foo= standardize(bar))
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
 
 base_color <- brewer.pal(n = 3, name = "Set2")[1]
+secondary_color <- brewer.pal(n=3, name = "Set2")[2]
 classic <- theme_set(theme_minimal())
+
+temp_label <- "Temperature (°C)"
 
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 ```
@@ -50,18 +70,14 @@ perh. side thing on just Saturday.
 filter df down to just rush hour on non-holiday weekdays.
 
 <!-- ## (3.3) Patterns in weather data? - Moacir -->
+## Patterns in Weather Data
 
 {{< include sections/3/3_patterns_in_weather_data.qmd >}}
 
-Yes. Use filtered Data. We are telling a story here that is taking a trip.
-
-  Just by month.
-
-  - temp - min/max/avg per month? - candlestick
-  - rain - number of rainy days per month - bar chart
-  - clouds - number of ovc/broken/etc. days per month - stacked bar chart
-
 ## Weather vs. Trips.
+
+{{< include sections/3/4_weather_vs_trips.qmd >}}
+
 
 This is establishing the relationship. Standardize:
 

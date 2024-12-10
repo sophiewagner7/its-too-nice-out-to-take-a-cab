@@ -15,7 +15,7 @@ df |>
     labs(
       title = "Temperature Distribution",
       x = "Month",
-      y = "Temperature (°C)",
+      y = temp_label
     ) 
 ```
  
