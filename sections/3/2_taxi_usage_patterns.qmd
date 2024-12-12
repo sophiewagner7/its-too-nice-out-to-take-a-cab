@@ -182,7 +182,7 @@ df |>
   theme(legend.position="bottom")
 ```
 
-Even within the weekday rush hour subset, ridership varies... We see that Mondays have the lowest median trip counts and the most compact IQR. I tie this to the fact that Monday is a common WFH day (explaining lower average) and people tend to be consistent in their behavior at the start of the week (less variability). Tuesday through Thursday we see a pretty consistent median and variability. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. Friday we see the largest spread between morning and evening trips, likely because people engage in social activities after work. 
+Even within the weekday rush hour subset, ridership varies. We see that Mondays have the lowest median trip counts and the most compact IQR, which could be related to Monday as a common WFH day (explaining lower average) and people tend to be consistent in their behavior at the start of the week (less variability). Tuesday through Thursday, we see a pretty consistent median and variabilty. Friday, we see the highest variability, likely because people engage in social activities after work. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather conditions. 
 
 ```{r}
 df |> 
@@ -193,6 +193,6 @@ df |>
   theme_minimal() 
 ```
 
-Looking at the trend by month, we can see some seasonality. July and August have the edian trip counts and tighter distributions. From this we may be able to infer that there is reduced ridership during summer months, perhaps due to vacations, lighter commuting schedules, or more people deciding not to take a cab if it is nice out! January shows another low median, maybe indicating continued end-of-year holidays and vacations. February through June is fairly consistent in terms of median and IQR.
+Looking at the trend by month, we can see some seasonality. July and August have the lowest median trip counts and tighter distributions. From this we may be able to infer that there is reduced ridership during summer months, perhaps due to vacations, lighter commuting schedules, or more people deciding not to take a cab if it is nice out! January shows another low median, maybe indicating continued end-of-year holidays and vacations. February through June is fairly consistent in terms of median and IQR.
 
 Even within rush hour periods, external factors like days of the week and time of year still appear to have some influence on ridership. This is important to note because it will impact how we assess changes in ridership due to weather conditions later on.
