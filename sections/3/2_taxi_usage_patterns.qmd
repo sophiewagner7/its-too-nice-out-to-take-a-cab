@@ -1,0 +1,279 @@
+## Patterns in taxi data
+
+The goal of our analysis is to see trends in rider usage in relationship with changes in the weather. In order to make claims about these relationships, we need to limit other components that may influence taxi ridership. Therefore, we explored variations in taxi usage based on hour of the day, day of the week, and month of the year. For instance, comparing ridership at 3 AM on a Wednesday to 5 PM on a Thursday would be misleading since baseline usage at these times differs inherently. Establishing a consistent baseline for "normal" taxi ridership allows for more meaningful comparisons and insights. But to establish a baseline, we also just need to see what the patterns even are in the data. In the following section we look at hourly, day of the week, and monthly/seasonal trends. 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(arrow)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+library(scales)
+library(patchwork)
+library(ggrepel)
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+classic <- theme_set(theme_minimal())
+
+df <- read_parquet("../../data/complete_weather_and_taxi_data.parquet")
+df <- df |> 
+  filter(date >= as.Date("2021-10-01"))
+```
+
+### Hourly patterns
+
+An interesting result of our analysis is that trip distance did not appear to have any relationship with day of the week or month of the year. However, it did have some variation by time of day. 
+
+```{r}
+#| fig-height: 6
+df |>
+  group_by(hour) |>
+  summarize(
+    monthly_trips = sum(trip_count),
+    monthly_half_mile = sum(half_mile_trips),
+    monthly_one_mile = sum(one_mile_trips),
+    monthly_two_mile = sum(two_mile_trips),
+    monthly_three_mile = sum(three_mile_trips),
+    monthly_five_mile = sum(five_mile_trips),
+    monthly_more_than_five = monthly_trips - monthly_half_mile - monthly_one_mile - monthly_two_mile - monthly_three_mile - monthly_five_mile,
+    pct_half_mile = monthly_half_mile / monthly_trips,
+    pct_one_mile = monthly_one_mile / monthly_trips,
+    pct_two_mile = monthly_two_mile / monthly_trips,
+    pct_three_mile = monthly_three_mile / monthly_trips,
+    pct_five_mile = monthly_five_mile / monthly_trips,
+    pct_more_than_five = monthly_more_than_five / monthly_trips,
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(
+    "pct_half_mile",
+    "pct_one_mile",
+    "pct_two_mile",
+    "pct_three_mile",
+    "pct_five_mile",
+    "pct_more_than_five",
+    ),
+    names_to = "pct_trip_distance_group",
+    values_to = "pct_trip_distance_count"
+  ) |>
+  mutate(pct_trip_distance_group = factor(
+    pct_trip_distance_group, levels = c(
+      "pct_more_than_five",
+      "pct_five_mile",
+      "pct_three_mile",
+      "pct_two_mile",
+      "pct_one_mile",
+      "pct_half_mile"
+    ))) |>
+  ggplot(aes(
+    x=hour,
+    y= pct_trip_distance_count,
+    fill = pct_trip_distance_group
+    )) +
+    geom_bar(stat="identity", position="stack") +
+    labs(
+      title = "Distribution of Taxi and Uber/Lyft Trip Distances under Ten Miles \nby Hour of Day",
+      x = "Hour",
+      y = "Percentage of Trips",
+      fill = "Trip Distance"
+  ) +
+  scale_fill_brewer(
+    palette = "Blues",
+    labels = c(
+      "pct_more_than_five" = "Five to Ten Miles",
+      "pct_five_mile" = "Three to Five Miles",
+      "pct_three_mile" = "Two to Three Miles",
+      "pct_two_mile" = "One to Two Miles",
+      "pct_one_mile" = "Half Mile to One Miles",
+      "pct_half_mile" = "Under Half a Mile"
+    )
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  theme(legend.position = "bottom") 
+```
+
+Only time-dependent factor it seems in the distribution of trip distances is by hour of the day. Day of the week and month do not appear to have any influence on trip distance. People seem to take more long trips on average late at night to the early hours of the morning. The distribution of trip distances appears to stabilize between 7am and 7pm, with higher proportion of shorter-distance trips compared to long. This is important because we likely need to consider not only how frequently its used but what its used for based on hour - something we hadn't necessarily anticipated. 
+
+With respect to trip volume, there is a significant variation by time of day as anticipated. When plotting all dates, we noticed some clustering in trip counts by hour, and were able to decipher that this behavior is largely related to the day of the week. 
+
+```{r}
+df |> 
+  mutate(
+    day = weekdays(date), 
+    is_weekend = factor(ifelse(day %in% c("Saturday", "Sunday"), "Weekend", "Weekday"),
+                        levels = c("Weekend", "Weekday")),
+    day = factor(day, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) 
+  ) |> 
+  group_by(day, hour, is_weekend) |> 
+  summarize(mean_trip_count = mean(trip_count, na.rm = TRUE), .groups = "drop") |> 
+  ggplot(aes(x = hour, y = mean_trip_count, group = day, color = is_weekend)) +
+  geom_line(size = 1) +
+  geom_text_repel(
+    data = df_labeled |> filter(hour == max(hour)), 
+    aes(label = day),
+    nudge_x = 1,
+    size = 3,
+    fontface="bold"
+  ) +
+  scale_color_manual(
+    values = c("Weekend" = brewer.pal(n = 3, name = "Set2")[1], "Weekday" = brewer.pal(n = 3, name = "Set2")[2]),
+    labels = c("Weekend", "Weekday"),
+    name = "Day Type"
+  ) +
+  scale_x_continuous(breaks = seq(0, 23, by = 3)) +
+  labs(
+    title = "Trip Counts by Hour with Day of Week Labels",
+    x = "Hour of the Day",
+    y = "Average Trip Count",
+    color = "Day Type"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+It appears that weekdays follow a somewhat similar trend by hour, and weekends follow a different pattern, with saturday and sunday starting the same (carry over ridership of people going out late the previous night) but have different activity in the evening (less people taking cabs late on a sunday night before the workweek). It makes sense to stick to weekdays where the pattern is more consistent. 
+We also notice that in the weekday plot there is strong bimodality during rush hour periods (7am-9am, 5pm-7pm). Perhaps we should limit our focus to just rush hour during working days to limit some variability or influence of time on taxi usage. Logically we might frame it as taking a taxi to and from work, but if its a nice day, I might decide to walk home from the office. If it's below freezing, I am not going to go out of my way to walk 40 minutes home, though! 
+
+```{r}
+# Establishing working day and rush hour
+library(timeDate)
+
+all_dates <- seq.Date(as.Date("2021-01-01"), as.Date("2024-12-31"), by = "day")
+us_holidays <- as.Date(holidayNYSE(c(2019:2024)))
+
+get_columbus_day <- function(year) {
+  october_dates <- seq.Date(as.Date(paste(year, "10-01", sep = "-")), as.Date(paste(year, "10-31", sep = "-")), by = "day")
+  mondays <- october_dates[weekdays(october_dates) == "Monday"]
+  mondays[2]
+}
+get_black_friday <- function(year) {
+  november_dates <- seq.Date(as.Date(paste(year, "11-01", sep = "-")), as.Date(paste(year, "11-30", sep = "-")), by = "day")
+  thursdays <- november_dates[weekdays(november_dates) == "Thursday"]
+  thanksgiving <- thursdays[4] 
+  thanksgiving + 1 
+}
+christmaseve_to_new_years <- as.Date(unlist(lapply(2021:2024, function(year) {
+  seq.Date(as.Date(paste(year, "12-24", sep = "-")), as.Date(paste(year, "12-31", sep = "-")), by = "day")
+})))
+
+columbus_days <- as.Date(sapply(2021:2024, get_columbus_day))
+black_fridays <- as.Date(sapply(2021:2024, get_black_friday))
+
+working_days <- all_dates[
+  !weekdays(all_dates) %in% c("Saturday", "Sunday") & 
+  !(all_dates %in% us_holidays) & 
+  !(all_dates %in% columbus_days) & 
+  !(all_dates %in% black_fridays) & 
+  !(all_dates %in% christmaseve_to_new_years) & 
+  (format(as.Date(all_dates), "%m-%d") != "11-11")
+]
+
+df$working_day <- ifelse(df$date %in% working_days, T, F)
+df$rush_hour <- ifelse(df$working_day==T & df$hour %in% c(7,8,9,17,18,19), T, F)
+```
+
+
+Now we are going to see what limiting to working days / rush_hour times does to our distribution:
+
+```{r}
+p1 <- ggplot(df |> filter(rush_hour==T) |> 
+               mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |> 
+               filter(isWeekday(date)),
+             aes(x = day, y = trip_count)) +
+  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1, fill=base_color) +
+  labs(
+    title = "Trip Count by Day of Week",
+    x = "Day of Week",
+    y = "Trip Count",
+  ) +
+  theme_minimal() 
+
+p2 <- ggplot(df |> filter(rush_hour==T) |> 
+               mutate(month = factor(month(date, label = TRUE, abbr = TRUE), levels = month.abb)),
+             aes(x = month, y = trip_count)) +
+  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1, fill=base_color) +
+  labs(
+    title = "Trip Count by Month",
+    x = "Month",
+    y = "Trip Count"
+  )+
+  theme_minimal()
+
+p1 + p2 + plot_layout(axis_titles = "collect") 
+```
+For day of week, we see that Mondays have the lowest average trip counts and the most compact IQR. In contrast, Fridays exhibit the highest variability in trip counts. This may indicate that there is some variability in behavior possibly related to evening social activities or end-of-week patterns. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather coniditions. 
+
+Looking at patterns by month, we notice some seasonality. 
+- July and August have the lowest median trip counts and tighter distributions. From this we may be able to infer that there is reduced ridership during summer months, perhaps due to vacations, lighter commuting schedules, or more people deciding not to take a cab if it is nice out!
+- January shows another low median, possibly reflecting winter vacations or end-of-year events.
+- From February through June, trip counts show consistent median values and relatively stable variability, indicating regular commuting patterns during these months.
+
+Days of the week and month of the year do still appear to have some influence on ridership even after this control. This will impact how we consider how to assess change in ridership later on. What do we compare a day with?
+
+
+
+### (Perh.) Morning vs Evening commutes
+(Optional) is it helpful to visualize morning vs evening rush hour? 
+Logic: Morning commuters may be more rigid about travel (e.g., office workers) compared to evening commuters (leisure or flexible activities). 
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+fill_colors <- brewer.pal(8, "Set2")[1:2]
+df <- df |> mutate(rush_hour_group = as.factor(case_when(
+                    rush_hour==T & hour %in% c(7,8,9) ~ "Morning rush hour (7-9am)",
+                    rush_hour==T & hour %in% c(17,18,19) ~ "Evening rush hour (5-7pm)"
+                  )))
+p1 <- ggplot(df |> filter(rush_hour==T) |> 
+               mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |> 
+               filter(isWeekday(date)),
+             aes(x = day, y = trip_count, fill = rush_hour_group)) +
+  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
+  labs(
+    title = "Trip Count by Day of Week",
+    x = "Day of Week",
+    y = "Trip Count",
+    fill = ""
+  ) +
+  scale_fill_manual(
+    values = fill_colors
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") 
+
+p2 <- ggplot(df |> filter(rush_hour==T) |> 
+               mutate(month = factor(month(date, label = TRUE, abbr = TRUE), levels = month.abb)),
+             aes(x = month, y = trip_count, fill = rush_hour_group)) +
+  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
+  labs(
+    title = "Trip Count by Month",
+    x = "Month",
+    y = "Trip Count",
+    fill = ""
+  ) +
+  scale_fill_manual(
+    values = fill_colors
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") 
+
+combined_plot <- p1 + p2 +
+  plot_layout(axis_titles = "collect", guides = "collect") + 
+  plot_annotation(title = NULL) 
+
+# Display the plot
+combined_plot & theme(legend.position = "bottom") 
+```
+
+
+
+
+
+
+
+
+
+
+
