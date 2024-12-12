@@ -41,6 +41,7 @@ df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 # Add a month_abbr column.
 df <- df |>
   mutate(month_abbr = factor(month.abb[month], levels = month.abb)) 
+
 ```
 
 ## A New Normal: How the COVID-19 Pandemic Reshaped Taxi Ridership Patterns
@@ -53,12 +54,46 @@ df <- df |>
   filter(df$date >= as.Date("2021-10-01"))
 ```
   
-<!-- (3.2) Patterns in taxi data with time - Sophie -->
-## Patterns in Taxi Data
+## Patterns in Taxi Data 
+
+```{r}
+#| message: false
+#| warning: false
+# Pivot by trip distance bin.
+pivot_trip_distance_df <- df |>
+  mutate(
+    temperature = round(temperature)
+  ) |>
+  mutate(
+    up_to_ten_mile_trips = trip_count - rowSums(across(ends_with("mile_trips")))
+  ) |>
+  pivot_longer(
+    cols=c(ends_with("mile_trips")),
+    names_to="trip_type",
+    values_to="trip_type_count",
+  ) |>
+  mutate(trip_type = factor(trip_type, 
+    levels = c(
+      "half_mile_trips", 
+      "one_mile_trips", 
+      "two_mile_trips", 
+      "three_mile_trips", 
+      "five_mile_trips", 
+      "up_to_ten_mile_trips"
+      ),
+    labels = c(
+      "Up to Half-Mile Trips",
+      "Up to One-Mile Trips",
+      "Up to Two-Mile Trips",
+      "Up to Three-Mile Trips",
+      "Up to Five-Mile Trips",
+      "Up to Ten-Mile Trips"
+    ),
+    ordered = TRUE)) 
+```
 
 {{< include sections/3/2_taxi_usage_patterns.qmd >}}
 
-<!-- ## (3.3) Patterns in weather data? - Moacir -->
 ## Patterns in Weather Data
 
 {{< include sections/3/3_patterns_in_weather_data.qmd >}}
