@@ -2,10 +2,12 @@
 
 Now that we have refocused our attention to a smaller subset of the data, 
 we can look at some initial relationships between the two central 
-taxi variables (`trip_count` and the various distance bands) and the three
+taxi variables (`trip_count` and its various distance bands) and the three
 weather variables, (`temperature`, `cloud_cover`, and `rain`).
 
 ```{r}
+#| message: false
+#| warning: false
 pivot_trip_distance_df <- df |>
   mutate(
     temperature = round(temperature)
@@ -50,9 +52,6 @@ pivot_trip_distance_df |>
       breaks = pretty_breaks(n = 3)
     ) +
     geom_smooth(color=secondary_color, method="loess", linewidth=1, se=TRUE, alpha=0.15)+
-    # scale_fill_distiller(
-    #   palette = "GnBu"
-    # ) +
     labs(
       title = "Average Hourly Trips Per Hour by Integral Temperature across Trip Distance",
       y = "Average Hourly Trips",
@@ -61,7 +60,9 @@ pivot_trip_distance_df |>
     ) +
   facet_wrap(~ trip_type, ncol = 3, nrow = 2, scales="free_y")
 ```
-
+In retrospect, our distance bins may have been a bit optimistic, 
+as no matter how nice it is, there is probably not much of a difference between a five-mile and ten-mile trip if you would rather walk. But on the shorter trips, 
+where the choice between taxi and walk might be more salient, especially during rush hour, 
 
 ```{r}
 pivot_trip_distance_df |>

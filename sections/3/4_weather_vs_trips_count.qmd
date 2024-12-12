@@ -1,9 +1,4 @@
-
-```{r}
-#| echo: false
-df$rain <- as.factor(ifelse(df$precipitation != 0, "Raining", "Not raining"))
-```
-
+### Count of trips 
 
 ```{r}
 #| message: false
@@ -13,11 +8,23 @@ df |>
   summarize(avg_trips_by_degree=mean(trip_count), .groups = "drop") |>
   ggplot(aes(x = temperature, y = avg_trips_by_degree)) +
   geom_point(alpha = 0.9, color = base_color) +
-  geom_smooth(method = "loess", se = T, color = base_color, alpha=0.15) +
+  geom_smooth(method = "loess", se = T, color = secondary_color, alpha=0.15) +
   scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
-  labs(title = "Trip Count vs. Temperature", x = "Temperature (°C)", y = "Trip Count") +
+  labs(
+    title = "Hourly Trip Count by Integral Temperature", 
+    x = "Temperature (°C)", 
+    y = "Hourly Trip Count") +
   theme_minimal()
 ```
+
+Here we see our first possible indication of “nice”: it is not nice when it is 30° outside. Additionally, 
+we see a pronounced dip at 20°, suggesting that is a great time for walking. It is neither too hot, nor too cold.  
+
+
+
+
+
+
 We see a higher amount of variability in the lower temperatures. We see an increase in trip count at higher temps, specifically above 30* celsius. This may make sense. If it is hot out maybe I dont want to walk. 
 
 On the other hand it levels out in moderate temperatures 

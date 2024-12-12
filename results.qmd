@@ -98,10 +98,12 @@ pivot_trip_distance_df <- df |>
 
 {{< include sections/3/3_patterns_in_weather_data.qmd >}}
 
-## Weather vs. Trips: Can we define "nice" weather by looking at ridership patterns?
-## Weather vs. Trips.
+## Weather vs. Trips: Can We Define “Nice” Weather from Ridership Patterns? 
+
+{{< include sections/3/4_weather_vs_trips_count.qmd >}}
 
 {{< include sections/3/4_weather_vs_trips.qmd >}}
+
 
 
 This is establishing the relationship. Standardize:
@@ -116,7 +118,6 @@ two variable fights:
   - scatterplot
   - boxplot/cat vs num
   
-{{< include sections/3/4_weather_vs_trips_count.qmd >}}
   
 ## Timeshifts
 

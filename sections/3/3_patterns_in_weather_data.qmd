@@ -20,7 +20,28 @@ df |>
 ```
 
 As noted earlier, the temperature fluctuates as we would expect. What struck us in these boxplots is how the outliers are distributed, particularly in March, April, and May, which can run hot. This is a fantastic opportunity for seasonal analysis in limiting our investigation, but we have already trimmed our data down so much. Preparing for a specific springtime analysis would require reconsidering how we collect and pre-process our data.
- 
+
+Another point of analysis, however, is to note that everything below -10° or above 30° or so seems to be an outlier. If we consider the distribution all temperatures, we can see that those tails are small and long and might affect the analysis we do moving forward.
+
+```{r}
+#| message: false
+df |>
+  ggplot(aes(temperature)) +
+  geom_histogram(color="white", fill=base_color) +
+  scale_y_continuous(labels=thousands) +
+  labs(
+    title = "Distribution of Integral Temperatures", x = "Temperature (°C)", y = "Count")
+``` 
+
+Moving forward, we will limit our analysis to temperatures between -5° and 30°.
+
+```{r}
+df <- df |>
+  filter(temperature >= -5) |>
+  filter(temperature <= 30)
+```
+
+
 Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.
  
  Value | Description
