@@ -1,76 +1,10 @@
-### Count of trips 
-
 
 ```{r}
 #| echo: false
-#| message: false
-#| warning: false
-# library(tidyverse)
-# library(arrow)
-# library(scales)
-# library(RColorBrewer)
-# library(dplyr)
-# library(patchwork)
-# # library(ggridges)
-# library(vcd)
-# # library(ggmosaic)
-# library(lubridate)
-# library(timeDate)
-# library(ggrepel)
-# thousands <- function(x) {
-#   ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
-# }
-# 
-# df <- df <- read_parquet("../../data/complete_weather_and_taxi_data.parquet")
-# df <- df |> 
-#   mutate(
-#     rush_hour_group = as.factor(case_when(
-#       hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
-#       hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)"
-#     )),
-#     rain = as.factor(ifelse(precipitation != 0, "Raining", "Not raining"))
-#     # cloud_cover.f = factor(
-#     #   case_when(
-#     #     cloud_cover == 0 ~ "Clear",
-#     #     cloud_cover == -1 ~ "Few",
-#     #     cloud_cover == -2 ~ "Scattered",
-#     #     cloud_cover == -3 ~ "Broken",
-#     #     cloud_cover == -4 ~ "Overcast"
-#     #   ),
-#     #   levels = c("Clear", "Few", "Scattered", "Broken", "Overcast"),
-#     #   ordered = TRUE
-#     # )
-#   )
-
-df <- df |> mutate(
-  rush_hour_group = as.factor(case_when(
-      hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
-      hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)"
-    )),
-    rain = as.factor(ifelse(precipitation != 0, "Raining", "Not raining"))
-)
+df$rain <- as.factor(ifelse(df$precipitation != 0, "Raining", "Not raining"))
 ```
 
 
-original plot: 
-```{r}
-#| message: false
-ggplot(df, aes(x = temperature, y = trip_count)) +
-  geom_point(alpha = 0.2, color = base_color) +
-  scale_y_continuous(
-      labels = thousands,
-      breaks = pretty_breaks(n = 3)
-    ) +
-  geom_smooth(method = "loess", se = T, color = base_color) +
-  labs(
-    title = "Trip Count vs. Temperature",
-    x = "Temperature (°C)",
-    y = "Trip Count"
-  ) +
-  theme_minimal()
-```
-
-**Should plot above be replaced with this? Used your method of average by degree:**
 ```{r}
 #| message: false
 df |>
@@ -88,38 +22,25 @@ We see a higher amount of variability in the lower temperatures. We see an incre
 
 On the other hand it levels out in moderate temperatures 
 
-old plot:
 ```{r}
-ggplot(df, aes(x = cloud_cover, y = trip_count)) +
-  geom_point(position="jitter", alpha=0.3, color=base_color) +
-  geom_boxplot(alpha=0.1, fill="white", outlier.alpha=1, outlier.color="black", linewidth=0.55) +
-  labs(title = "Trip Count by Cloud Cover", x = "Cloud Cover", y = "Trip Count") +
-  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
-  theme_minimal()
-```
-The vast majority of days are either clear or overcast. This doesn't really tell us much - those values are very similar, the middle plots could really just be explained by variability and smaller sample size. potensh remove --unless we just want for due diligence. 
-
-**Below I tried to redo this to line up with your color scheme but u cant see clear at all lol**
-
-```{r}
-ggplot(df, aes(x = cloud_cover, y = trip_count, color=cloud_cover)) +
-  geom_point(position="jitter", alpha=0.5) +
-  geom_boxplot(alpha=0.1, fill="white", outlier.alpha=1, color="black", outlier.color="black", linewidth=0.55) +
-  scale_color_brewer(palette = "GnBu") +
-  labs(title = "Trip Count by Cloud Cover", x = "Cloud Cover", y = "Trip Count") +
+ggplot(df, aes(x = cloud_cover, y = trip_count, fill=cloud_cover)) +
+  geom_point(position="jitter", alpha=0.5, color="lightgrey") +
+  geom_boxplot(alpha=0.7, outlier.alpha=1, color="black", outlier.color="black", linewidth=0.55) +
+  scale_fill_brewer(palette = "GnBu") +
+  scale_y_continuous(labels=thousands, breaks = pretty_breaks(n = 3)) +
+  labs(title = "Distribution of trip counts by over", x = "Cloud Cover", y = "Trip Count", fill="Cloud Cover") +
   theme_minimal() +
   theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank())
 ```
 
-
+The vast majority of days are either clear or overcast. This doesn't really tell us much - those values are very similar, the middle plots could really just be explained by variability and smaller sample size. potensh remove --unless we just want for due diligence. 
 
 ```{r}
-#| fig-width: 10
-#| fig-height: 6
 ggplot(df, aes(x = trip_count, fill = rain)) +
   geom_density(alpha = 0.7) +
   scale_fill_manual(values = c("Not raining" = "grey", "Raining" = "cornflowerblue")) +
-  labs(title = "Density of trip count by Rain Status", x = "Number of trips in an hour", y = "Density", fill = "Rain Status") +
+  scale_x_continuous(labels=thousands)+
+  labs(title = "Density of trip count by rain status", x = "Number of trips in an hour", y = "Density", fill = "Rain Status") +
   theme_minimal()
 ```
 

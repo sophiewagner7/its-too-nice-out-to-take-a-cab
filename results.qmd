@@ -44,6 +44,7 @@ df <- df |>
 
 ```
 
+## A New Normal: How the COVID-19 Pandemic Reshaped Taxi Ridership Patterns
 
 {{< include sections/3/1_dealing_with_the_pandemic.qmd >}}
 
