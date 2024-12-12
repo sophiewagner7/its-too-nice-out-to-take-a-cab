@@ -26,6 +26,8 @@ book:
 editor_options:
   markdown:
     extensions: -smart
+resources: 
+  - data-for-d3.csv
 
 format:
   html:

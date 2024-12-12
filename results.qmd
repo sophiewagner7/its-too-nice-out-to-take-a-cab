@@ -82,6 +82,8 @@ two variable fights:
   
 ## Timeshifts
 
+{{< include sections/3/5_timeshifts.qmd >}}
+
 ### last week vs. yesterday
 
 Chat piece about doing this weird choice.
