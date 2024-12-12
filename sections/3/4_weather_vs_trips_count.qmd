@@ -5,84 +5,62 @@
 #| echo: false
 #| message: false
 #| warning: false
-library(arrow)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(RColorBrewer)
-library(scales)
-library(patchwork)
-library(ggrepel)
+# library(tidyverse)
+# library(arrow)
+# library(scales)
+# library(RColorBrewer)
+# library(dplyr)
+# library(patchwork)
+# # library(ggridges)
+# library(vcd)
+# # library(ggmosaic)
+# library(lubridate)
+# library(timeDate)
+# library(ggrepel)
+# thousands <- function(x) {
+#   ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
+# }
+# 
+# df <- df <- read_parquet("../../data/complete_weather_and_taxi_data.parquet")
+# df <- df |> 
+#   mutate(
+#     rush_hour_group = as.factor(case_when(
+#       hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
+#       hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)"
+#     )),
+#     rain = as.factor(ifelse(precipitation != 0, "Raining", "Not raining"))
+#     # cloud_cover.f = factor(
+#     #   case_when(
+#     #     cloud_cover == 0 ~ "Clear",
+#     #     cloud_cover == -1 ~ "Few",
+#     #     cloud_cover == -2 ~ "Scattered",
+#     #     cloud_cover == -3 ~ "Broken",
+#     #     cloud_cover == -4 ~ "Overcast"
+#     #   ),
+#     #   levels = c("Clear", "Few", "Scattered", "Broken", "Overcast"),
+#     #   ordered = TRUE
+#     # )
+#   )
 
-base_color <- brewer.pal(n = 3, name = "Set2")[1]
-rain_color <- brewer.pal(n = 3, name = "Set2")[3]
-classic <- theme_set(theme_minimal())
-
-df <- read_parquet("../../data/complete_weather_and_taxi_data.parquet")
-df <- df |> 
-  filter(date >= as.Date("2021-10-01"))
-
-# Establishing working day and rush hour
-library(timeDate)
-
-all_dates <- seq.Date(as.Date("2021-01-01"), as.Date("2024-12-31"), by = "day")
-us_holidays <- as.Date(holidayNYSE(c(2019:2024)))
-
-get_columbus_day <- function(year) {
-  october_dates <- seq.Date(as.Date(paste(year, "10-01", sep = "-")), as.Date(paste(year, "10-31", sep = "-")), by = "day")
-  mondays <- october_dates[weekdays(october_dates) == "Monday"]
-  mondays[2]
-}
-get_black_friday <- function(year) {
-  november_dates <- seq.Date(as.Date(paste(year, "11-01", sep = "-")), as.Date(paste(year, "11-30", sep = "-")), by = "day")
-  thursdays <- november_dates[weekdays(november_dates) == "Thursday"]
-  thanksgiving <- thursdays[4] 
-  thanksgiving + 1 
-}
-christmaseve_to_new_years <- as.Date(unlist(lapply(2021:2024, function(year) {
-  seq.Date(as.Date(paste(year, "12-24", sep = "-")), as.Date(paste(year, "12-31", sep = "-")), by = "day")
-})))
-
-columbus_days <- as.Date(sapply(2021:2024, get_columbus_day))
-black_fridays <- as.Date(sapply(2021:2024, get_black_friday))
-
-working_days <- all_dates[
-  !weekdays(all_dates) %in% c("Saturday", "Sunday") & 
-  !(all_dates %in% us_holidays) & 
-  !(all_dates %in% columbus_days) & 
-  !(all_dates %in% black_fridays) & 
-  !(all_dates %in% christmaseve_to_new_years) & 
-  (format(as.Date(all_dates), "%m-%d") != "11-11")
-]
-
-df$working_day <- ifelse(df$date %in% working_days, T, F)
-df$rush_hour <- ifelse(df$working_day==T & df$hour %in% c(7,8,9,17,18,19), T, F)
-df <- df |> 
-  filter(rush_hour == T) |> 
-  mutate(
-    rush_hour_group = as.factor(case_when(
+df <- df |> mutate(
+  rush_hour_group = as.factor(case_when(
       hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
       hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)"
     )),
-    rain = as.factor(ifelse(precipitation != 0, "Raining", "Not raining")),
-    cloud_cover.f = factor(
-      case_when(
-        cloud_cover == 0 ~ "Clear",
-        cloud_cover == -1 ~ "Few",
-        cloud_cover == -2 ~ "Scattered",
-        cloud_cover == -3 ~ "Broken",
-        cloud_cover == -4 ~ "Overcast"
-      ),
-      levels = c("Clear", "Few", "Scattered", "Broken", "Overcast"),
-      ordered = TRUE
-    )
-  )
+    rain = as.factor(ifelse(precipitation != 0, "Raining", "Not raining"))
+)
 ```
 
 
+original plot: 
 ```{r}
+#| message: false
 ggplot(df, aes(x = temperature, y = trip_count)) +
   geom_point(alpha = 0.2, color = base_color) +
+  scale_y_continuous(
+      labels = thousands,
+      breaks = pretty_breaks(n = 3)
+    ) +
   geom_smooth(method = "loess", se = T, color = base_color) +
   labs(
     title = "Trip Count vs. Temperature",
@@ -91,20 +69,47 @@ ggplot(df, aes(x = temperature, y = trip_count)) +
   ) +
   theme_minimal()
 ```
+
+**Should plot above be replaced with this? Used your method of average by degree:**
+```{r}
+#| message: false
+df |>
+  mutate(temperature = round(temperature)) |>
+  group_by(temperature) |>
+  summarize(avg_trips_by_degree=mean(trip_count), .groups = "drop") |>
+  ggplot(aes(x = temperature, y = avg_trips_by_degree)) +
+  geom_point(alpha = 0.9, color = base_color) +
+  geom_smooth(method = "loess", se = T, color = base_color, alpha=0.15) +
+  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
+  labs(title = "Trip Count vs. Temperature", x = "Temperature (°C)", y = "Trip Count") +
+  theme_minimal()
+```
 We see a higher amount of variability in the lower temperatures. We see an increase in trip count at higher temps, specifically above 30* celsius. This may make sense. If it is hot out maybe I dont want to walk. 
 
+On the other hand it levels out in moderate temperatures 
 
+old plot:
 ```{r}
-ggplot(df, aes(x = cloud_cover.f, y = trip_count) )+
+ggplot(df, aes(x = cloud_cover, y = trip_count)) +
   geom_point(position="jitter", alpha=0.3, color=base_color) +
   geom_boxplot(alpha=0.1, fill="white", outlier.alpha=1, outlier.color="black", linewidth=0.55) +
-  labs(title = "Trip Count by Cloud Cover",
-       x = "Cloud Cover",
-       y = "Trip Count") +
-  theme_minimal() 
-
+  labs(title = "Trip Count by Cloud Cover", x = "Cloud Cover", y = "Trip Count") +
+  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
+  theme_minimal()
 ```
-The vast majority of days are either clear or overcast. This doesn't really tell us much - those values are very similar, the middle plots could really just be explained by variability and smaller sample size. potensh remove unless we just want for due diligence. 
+The vast majority of days are either clear or overcast. This doesn't really tell us much - those values are very similar, the middle plots could really just be explained by variability and smaller sample size. potensh remove --unless we just want for due diligence. 
+
+**Below I tried to redo this to line up with your color scheme but u cant see clear at all lol**
+
+```{r}
+ggplot(df, aes(x = cloud_cover, y = trip_count, color=cloud_cover)) +
+  geom_point(position="jitter", alpha=0.5) +
+  geom_boxplot(alpha=0.1, fill="white", outlier.alpha=1, color="black", outlier.color="black", linewidth=0.55) +
+  scale_color_brewer(palette = "GnBu") +
+  labs(title = "Trip Count by Cloud Cover", x = "Cloud Cover", y = "Trip Count") +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank())
+```
 
 
 
@@ -113,35 +118,24 @@ The vast majority of days are either clear or overcast. This doesn't really tell
 #| fig-height: 6
 ggplot(df, aes(x = trip_count, fill = rain)) +
   geom_density(alpha = 0.7) +
-  labs(
-    title = "Density of trip count by Rain Status",
-    x = "Number of trips in an hour",
-    y = "Density",
-    fill = "Rain Status"
-  ) +
   scale_fill_manual(values = c("Not raining" = "grey", "Raining" = "cornflowerblue")) +
+  labs(title = "Density of trip count by Rain Status", x = "Number of trips in an hour", y = "Density", fill = "Rain Status") +
   theme_minimal()
-
 ```
-The density curves for both "Not Raining" and "Raining" largely overlap, suggesting that rain has some, but not a substantial, impact on trip count distribution.
-The Raining distribution appears slightly shifted towards higher trip counts compared to Not Raining - this could indicate a slight increase in trip demand during rainy periods, potentially due to fewer people walking or biking. The tail is slightly longer on the right side, suggesting that extreme trip counts (higher demand) might occur more frequently during rain.
 
-Perhaps: 
+The plot above may suggest that there is greater ridership when it is raining. While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for "Raining" days (blue) appears to be slightly shifted towards higher trip counts compared to "Not raining" days (grey). This could indicate a slight increase in trip demand during rainy periods, potentially due to fewer people walking or biking. Moreover, we see more extreme values in the "Raining" distribution: the tail is slightly longer on the right side, suggests that more extreme trip counts (i.e. higher demand) occurs more frequently during rain.
 
+**Perhaps include:**
+I made the plot below just to test again that idea of does rain impact evening rush hour more than morning rush hour. Below, we can see the evening rush hour (**I need to reorder these still**) has a slightly higher median AND IQR for raining vs not raining. Idk I think this is somewhat of note -- people are perhaps more flexible in the evening. I might not be planning to walk to work on any given day, but in the summer when it is nice out sometimes I spontaneously walk home from work instead of my usual transportation. 
 
 ```{r}
+#| warning: false
 ggplot(df, aes(x = rush_hour_group, y = trip_count, fill = rain)) +
-  geom_boxplot(alpha = 0.7, outlier.shape = NA) + #
-  labs(
-    title = "Trip Count distribution by rain and rush_hour group",
-    x = "",
-    y = "Trip Count",
-    fill = "Rain Status"
-  ) +
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   scale_fill_manual(values = c("Not raining" = "grey", "Raining" = "cornflowerblue")) +
-  scale_color_manual(values = c("Not raining" = "grey", "Raining" = "cornflowerblue")) +
+  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
+  labs(title = "Trip Count distribution by rain and rush_hour group", x = "", y = "Trip Count", fill = "Rain Status") +
   theme_minimal()
-
 ```
 
 Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines. 

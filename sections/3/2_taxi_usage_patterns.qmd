@@ -1,4 +1,3 @@
-## Patterns in taxi data
 
 The goal of our analysis is to see trends in rider usage in relationship with changes in the weather. In order to make claims about these relationships, we need to limit other components that may influence taxi ridership. Therefore, we explored variations in taxi usage based on hour of the day, day of the week, and month of the year. For instance, comparing ridership at 3 AM on a Wednesday to 5 PM on a Thursday would be misleading since baseline usage at these times differs inherently. Establishing a consistent baseline for "normal" taxi ridership allows for more meaningful comparisons and insights. But to establish a baseline, we also just need to see what the patterns even are in the data. In the following section we look at hourly, day of the week, and monthly/seasonal trends. 
 
@@ -71,15 +70,17 @@ df |>
     )
   ) +
   scale_y_continuous(labels = label_percent()) +
-  theme(legend.position = "bottom") 
+  theme(legend.position = "bottom")
 ```
 
-Only time-dependent factor it seems in the distribution of trip distances is by hour of the day. Day of the week and month do not appear to have any influence on trip distance. People seem to take more long trips on average late at night to the early hours of the morning. The distribution of trip distances appears to stabilize between 7am and 7pm, with higher proportion of shorter-distance trips compared to long. This is important because we likely need to consider not only how frequently its used but what its used for based on hour - something we hadn't necessarily anticipated. 
+Rider behavior does seem to be influenced by time of day. From the plot above we can see that longer trups are more common during the late-night and early-morning hours. Perhaps this indicates that people travel greater distances for late-night activities. The distribution of trip distances appears to stabilize between 7am and 7pm, with higher proportion of shorter-distance trips compared to long. Interestingly, time of day was the only time-measure that seemed to impact this aspect of rider behavior: day of the week and month do not appear to have any influence on trip distance. This information isn't totally revolutionary, though it may underscore the importance of focusing on particular hours to account for variability in trip length or usage patterns.
 
-With respect to trip volume, there is a significant variation by time of day as anticipated. When plotting all dates, we noticed some clustering in trip counts by hour, and were able to decipher that this behavior is largely related to the day of the week. 
+### Variations in ridership: rush hour analysis
+
+With respect to trip volume, there is a significant variation by time of day as anticipated. When plotting all dates, we noticed some clustering in trip counts by hour, and were able to decipher that this behavior is largely related to the day of the week.  
 
 ```{r}
-df |> 
+temp_df <- df |> 
   mutate(
     day = weekdays(date), 
     is_weekend = factor(ifelse(day %in% c("Saturday", "Sunday"), "Weekend", "Weekday"),
@@ -87,18 +88,19 @@ df |>
     day = factor(day, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) 
   ) |> 
   group_by(day, hour, is_weekend) |> 
-  summarize(mean_trip_count = mean(trip_count, na.rm = TRUE), .groups = "drop") |> 
+  summarize(mean_trip_count = mean(trip_count, na.rm = TRUE), .groups = "drop")
+temp_df |> 
   ggplot(aes(x = hour, y = mean_trip_count, group = day, color = is_weekend)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   geom_text_repel(
-    data = df_labeled |> filter(hour == max(hour)), 
+    data = temp_df|> filter(hour == max(hour)), 
     aes(label = day),
     nudge_x = 1,
     size = 3,
     fontface="bold"
   ) +
   scale_color_manual(
-    values = c("Weekend" = brewer.pal(n = 3, name = "Set2")[1], "Weekday" = brewer.pal(n = 3, name = "Set2")[2]),
+    values = c("Weekend" = base_color, "Weekday" = secondary_color),
     labels = c("Weekend", "Weekday"),
     name = "Day Type"
   ) +
@@ -111,17 +113,18 @@ df |>
   ) +
   theme_minimal() +
   theme(legend.position = "bottom")
-
 ```
-It appears that weekdays follow a somewhat similar trend by hour, and weekends follow a different pattern, with saturday and sunday starting the same (carry over ridership of people going out late the previous night) but have different activity in the evening (less people taking cabs late on a sunday night before the workweek). It makes sense to stick to weekdays where the pattern is more consistent. 
-We also notice that in the weekday plot there is strong bimodality during rush hour periods (7am-9am, 5pm-7pm). Perhaps we should limit our focus to just rush hour during working days to limit some variability or influence of time on taxi usage. Logically we might frame it as taking a taxi to and from work, but if its a nice day, I might decide to walk home from the office. If it's below freezing, I am not going to go out of my way to walk 40 minutes home, though! 
+
+After identifying clusters in ridership patterns, we were able to delineate that a major source of variation in rider usage of hours of the day came from if it was a weekday or weekend. It appears that weekdays follow a somewhat similar trend by hour, with weekends exhibiting more unique trends. Saturday and Sunday show similar ridership in the morning (relatively high, carryover ridership from people going out late the previous night). However, Sunday has noticeably lower ridership in the evening; logically this makes sense as people are likely not engaging in as much nighttime activity before the workweek begins again. Because these patterns are distinct from one another and differ from the work-week trends, it will likely be better to stick to weekdays moving forward where the pattern is more consistent. 
+
+Looking at weekdays,we notice strong bimodality during rush hour periods (7am-9am, 5pm-7pm). Perhaps we should limit our focus to just rush hour during working days to limit some variability or influence of time on taxi usage. Logically we might frame it as taking a taxi to and from work, but if its a nice day, I might decide to walk home from the office. If it's below freezing, I am not going to go out of my way to walk 40 minutes home, though!
+
+**Conclusion**: Moving forward, we'll restrict the analysis to non-holiday weekday rush hour periods (7-9 AM and 5-7 PM) to reduce variability and emphasize patterns tied to commuting behavior.
 
 ```{r}
-# Establishing working day and rush hour
-library(timeDate)
-
-all_dates <- seq.Date(as.Date("2021-01-01"), as.Date("2024-12-31"), by = "day")
-us_holidays <- as.Date(holidayNYSE(c(2019:2024)))
+# Filtering to working days and rush hour only
+all_dates <- seq.Date(as.Date("2021-10-01"), as.Date("2024-12-31"), by = "day")
+us_holidays <- as.Date(holidayNYSE(c(2021:2024)))
 
 get_columbus_day <- function(year) {
   october_dates <- seq.Date(as.Date(paste(year, "10-01", sep = "-")), as.Date(paste(year, "10-31", sep = "-")), by = "day")
@@ -155,102 +158,55 @@ df$rush_hour <- ifelse(df$working_day==T & df$hour %in% c(7,8,9,17,18,19), T, F)
 df <- df |> filter(rush_hour==T)
 ```
 
+### Day of week and seasonal patterns
 
-Now we are going to see what limiting to working days / rush_hour times does to our distribution:
+Now that we are focused only on rush hour times, let's take a look at any other day of the week and seasonal patterns.
 
 ```{r}
-p1 <- ggplot(df |> 
-               mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |> 
-               filter(isWeekday(date)),
-             aes(x = day, y = trip_count)) +
-  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1, fill=base_color) +
-  labs(
-    title = "Trip Count by Day of Week",
-    x = "Day of Week",
-    y = "Trip Count",
-  ) +
+p1 <- ggplot(df |>
+  mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |>
+      filter(isWeekday(date)), aes(x = day, y = trip_count))+
+  geom_boxplot(fill=base_color, color = "black", outlier.color = "black", outlier.size = 1) +
+  labs(title = "Trip Count by Day of Week", x = "Day of Week", y = "Trip Count") +
   theme_minimal() 
 
-p2 <- ggplot(df |> 
-               mutate(month = factor(month(date, label = TRUE, abbr = TRUE), levels = month.abb)),
-             aes(x = month, y = trip_count)) +
-  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1, fill=base_color) +
-  labs(
-    title = "Trip Count by Month",
-    x = "Month",
-    y = "Trip Count"
-  )+
-  theme_minimal()
 
-p1 + p2 + plot_layout(axis_titles = "collect") 
+p2 <- ggplot(df,aes(x = month_abbr, y = trip_count)) +
+  geom_boxplot(fill=base_color, color = "black", outlier.color = "black", outlier.size = 1) +
+  labs(title = "Trip Count by Month", x = "Month", y = "Trip Count") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+p1 + p2 +
+  plot_layout(axis_titles = "collect")
 ```
-For day of week, we see that Mondays have the lowest average trip counts and the most compact IQR. In contrast, Fridays exhibit the highest variability in trip counts. This may indicate that there is some variability in behavior possibly related to evening social activities or end-of-week patterns. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather coniditions. 
 
-Looking at patterns by month, we notice some seasonality. 
-- July and August have the lowest median trip counts and tighter distributions. From this we may be able to infer that there is reduced ridership during summer months, perhaps due to vacations, lighter commuting schedules, or more people deciding not to take a cab if it is nice out!
-- January shows another low median, possibly reflecting winter vacations or end-of-year events.
-- From February through June, trip counts show consistent median values and relatively stable variability, indicating regular commuting patterns during these months.
+Even within the weekday rush hour subset, ridership varies... We see that Mondays have the lowest median trip counts and the most compact IQR. I tie this to the fact that Monday is a common WFH day (explaining lower average) and people tend to be consistent in their behavior at the start of the week (less variability). Tuesday through Thursday we see a pretty consistent median and variabilty. Friday we see the highest variability, likely because people engage in social activities after work. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather coniditions. 
 
-Days of the week and month of the year do still appear to have some influence on ridership even after this control. This will impact how we consider how to assess change in ridership later on. What do we compare a day with?
+Looking at the trend by month, we can see some seasonality. July and August have the edian trip counts and tighter distributions. From this we may be able to infer that there is reduced ridership during summer months, perhaps due to vacations, lighter commuting schedules, or more people deciding not to take a cab if it is nice out! January shows another low median, maybe indicating continued end-of-year holidays and vacations. February through June is fairly consistent in terms of median and IQR.
 
+Even within rush hour periods, external factors like days of the week and time of year still appear to have some influence on ridership. This is important to note because it will impact how we assess changes in ridership due to weather conditions later on.
 
+**(Optional) Exploring morning and evening rush hour...**
 
-### (Perh.) Morning vs Evening commutes
-(Optional) is it helpful to visualize morning vs evening rush hour? 
-Logic: Morning commuters may be more rigid about travel (like going to office) compared to evening commuters (leisure or flexible activities). 
+- perhaps morning vs evening rush
+Logic: Morning commuters may be more rigid about travel (e.g., office workers) compared to evening commuters (leisure or flexible activities).
+
 ```{r}
-#| fig-width: 10
-#| fig-height: 5
-fill_colors <- brewer.pal(8, "Set2")[1:2]
-df <- df |> mutate(rush_hour_group = as.factor(case_when(
-                    hour %in% c(7,8,9) ~ "Morning rush hour (7-9am)",
-                    hour %in% c(17,18,19) ~ "Evening rush hour (5-7pm)"
-                  )))
-p1 <- ggplot(df |> 
-               mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |> 
-               filter(isWeekday(date)),
-             aes(x = day, y = trip_count, fill = rush_hour_group)) +
+df <- df |> mutate(
+ rush_hour_group = case_when(
+    hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
+    hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)",
+  ) |> 
+  factor(levels = c("Morning rush hour (7-9am)", "Evening rush hour (5-7pm)"), ordered = TRUE)
+)
+df |>
+  mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |>
+      filter(isWeekday(date)) |> 
+  ggplot(aes(x = day, y = trip_count, fill=rush_hour_group))+
   geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
-  labs(
-    title = "Trip Count by Day of Week",
-    x = "Day of Week",
-    y = "Trip Count",
-    fill = ""
-  ) +
-  scale_fill_manual(
-    values = fill_colors
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom") 
-
-p2 <- ggplot(df |> 
-               mutate(month = factor(month(date, label = TRUE, abbr = TRUE), levels = month.abb)),
-             aes(x = month, y = trip_count, fill = rush_hour_group)) +
-  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
-  labs(
-    title = "Trip Count by Month",
-    x = "Month",
-    y = "Trip Count",
-    fill = ""
-  ) +
-  scale_fill_manual(
-    values = fill_colors
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom") 
-
-(p1 + p2 +
-  plot_layout(axis_titles = "collect", guides = "collect") + 
-  plot_annotation(title = NULL) ) & theme(legend.position = "bottom") 
+  labs(title = "Trip Count by Day of Week", x = "Day of Week", y = "Trip Count", fill="Rush Hour Group") +
+  scale_fill_manual(values=c(base_color, secondary_color)) +
+  theme_minimal() 
 ```
-
-
-
-
-
-
-
-
-
-
 
