@@ -1,5 +1,25 @@
 # Data
 
+```{r}
+#| fig-height: 3
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+library(lubridate)
+library(scales)
+library(RColorBrewer)
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+classic <- theme_set(theme_minimal())
+
+temp_label <- "Temperature (°C)"
+
+df <- read_parquet("data/pset4_complete_weather_and_taxi_data.parquet")
+```
+
+
 ## Description
 
 We are basing our analysis on two datasets, a dataset of taxi use in New
@@ -91,36 +111,26 @@ to see any of the missing data in any plot that includes the entire
 stretch.
 
 ```{r}
-#| fig-height: 3
 #| message: false
 #| warning: false
-library(ggplot2)
-library(arrow)
-library(dplyr)
-library(lubridate)
-library(scales)
-library(tidyr)
-df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
-
-heatmap_data <- df |>
-    mutate(week_start=lubridate::floor_date(date, unit="week"),
-        week = lubridate::week(date),
-        year = lubridate::year(date)) |>
-    group_by(year, week) |>
-    summarize(n_missing=sum(is.na(temperature)))
-
-ggplot(heatmap_data, aes(x = week, y = year, fill = n_missing)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient(low = "white", high = "red", name = "Missing Count") +
-  scale_x_continuous(breaks = seq(1, 52, by = 4)) + 
-  scale_y_continuous(breaks = seq(2019, 2024, by=1))+
-  labs(
-    title = "Number of Missing Temperature Observations by Date",
-    x = "Week of Year",
-    y = "Year"
-  ) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+df |>
+  mutate(
+    week_start=lubridate::floor_date(date, unit="week"),
+    week = lubridate::week(date),
+    year = lubridate::year(date)) |>
+  group_by(year, week) |>
+  summarize(n_missing=sum(is.na(temperature))) |>
+  ggplot(aes(x = week, y = year, fill = n_missing)) +
+    geom_tile(color = "white") +
+    scale_fill_distiller(palette="Greens", name = "Missing Count", direction=1) +
+    scale_x_continuous(breaks = seq(1, 52, by = 4)) + 
+    scale_y_continuous(breaks = seq(2019, 2024, by=1))+
+    labs(
+      title = "Number of Missing Temperature Observations by Date",
+      x = "Week of Year",
+      y = "Year"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 As we can see in this chart, the missing temperature data (our most important metric, we suspect) are mostly centered in that 24-hour period when the station recorded no data. The other gaps are scattered across the data, with a tilt toward the older data. This is why we are confident in simply interpolating data for the missing values. Another option is to derive the temperature from the point in time’s METAR report, but we suspect the METAR reports for the missing data may be unparseable, in general.
@@ -131,9 +141,17 @@ As we can see in this chart, the missing temperature data (our most important me
 
 library(redav)
 df |>
-  select(-c(juno, via)) |>
+  select(-c(pres_wx_AU3, snow_depth, pres_wx_AU2, sky_cover_2, wind_direction, sky_cover_3, pres_wx_AU1, wind_gust, juno, via)) |>
   plot_missing(percent=FALSE, max_rows=10, max_cols=10, num_char=6)
 ```
 
 Our second chart shows the distribution of missing data, from which
 we can see how infrequently a wind speed is registered and that the rest of the missing data are scattered in small numbers around the dataset, with almost all of the data making up complete cases (minus the above extracted columns).
+
+In the end, we shed so much data that the missing data become almost negligible. We combine several different descriptions of sky cover and precipitation to derive two new columns, `cloud_cover` and `precipitation`. We add in temperature, and that is about it. For the days when data are missing, we assume clear skies and no precipitation and interpolate the temperature from neighboring values.
+
+For details on pre-processing the data, please see:
+
+- [pre_process_taxi_data.ipynb](https://github.com/sophiewagner7/its-too-nice-out-to-take-a-cab/blob/main/notebooks/pre_process_taxi_data.ipynb)
+- [pre_process_weather_data.ipynb](https://github.com/sophiewagner7/its-too-nice-out-to-take-a-cab/blob/main/notebooks/pre_process_weather_data.ipynb)
+- [consolidate_data](https://github.com/sophiewagner7/its-too-nice-out-to-take-a-cab/blob/main/notebooks/consolidate_data.ipynb)
