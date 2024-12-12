@@ -173,13 +173,14 @@ working_days <- all_dates[
 
 df$working_day <- ifelse(df$date %in% working_days, T, F)
 df$rush_hour <- ifelse(df$working_day==T & df$hour %in% c(7,8,9,17,18,19), T, F)
+df <- df |> filter(rush_hour==T)
 ```
 
 
 Now we are going to see what limiting to working days / rush_hour times does to our distribution:
 
 ```{r}
-p1 <- ggplot(df |> filter(rush_hour==T) |> 
+p1 <- ggplot(df |> 
                mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |> 
                filter(isWeekday(date)),
              aes(x = day, y = trip_count)) +
@@ -191,7 +192,7 @@ p1 <- ggplot(df |> filter(rush_hour==T) |>
   ) +
   theme_minimal() 
 
-p2 <- ggplot(df |> filter(rush_hour==T) |> 
+p2 <- ggplot(df |> 
                mutate(month = factor(month(date, label = TRUE, abbr = TRUE), levels = month.abb)),
              aes(x = month, y = trip_count)) +
   geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1, fill=base_color) +
@@ -217,16 +218,16 @@ Days of the week and month of the year do still appear to have some influence on
 
 ### (Perh.) Morning vs Evening commutes
 (Optional) is it helpful to visualize morning vs evening rush hour? 
-Logic: Morning commuters may be more rigid about travel (e.g., office workers) compared to evening commuters (leisure or flexible activities). 
+Logic: Morning commuters may be more rigid about travel (like going to office) compared to evening commuters (leisure or flexible activities). 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
 fill_colors <- brewer.pal(8, "Set2")[1:2]
 df <- df |> mutate(rush_hour_group = as.factor(case_when(
-                    rush_hour==T & hour %in% c(7,8,9) ~ "Morning rush hour (7-9am)",
-                    rush_hour==T & hour %in% c(17,18,19) ~ "Evening rush hour (5-7pm)"
+                    hour %in% c(7,8,9) ~ "Morning rush hour (7-9am)",
+                    hour %in% c(17,18,19) ~ "Evening rush hour (5-7pm)"
                   )))
-p1 <- ggplot(df |> filter(rush_hour==T) |> 
+p1 <- ggplot(df |> 
                mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |> 
                filter(isWeekday(date)),
              aes(x = day, y = trip_count, fill = rush_hour_group)) +
@@ -243,7 +244,7 @@ p1 <- ggplot(df |> filter(rush_hour==T) |>
   theme_minimal() +
   theme(legend.position = "bottom") 
 
-p2 <- ggplot(df |> filter(rush_hour==T) |> 
+p2 <- ggplot(df |> 
                mutate(month = factor(month(date, label = TRUE, abbr = TRUE), levels = month.abb)),
              aes(x = month, y = trip_count, fill = rush_hour_group)) +
   geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
@@ -259,12 +260,9 @@ p2 <- ggplot(df |> filter(rush_hour==T) |>
   theme_minimal() +
   theme(legend.position = "bottom") 
 
-combined_plot <- p1 + p2 +
+(p1 + p2 +
   plot_layout(axis_titles = "collect", guides = "collect") + 
-  plot_annotation(title = NULL) 
-
-# Display the plot
-combined_plot & theme(legend.position = "bottom") 
+  plot_annotation(title = NULL) ) & theme(legend.position = "bottom") 
 ```
 
 
