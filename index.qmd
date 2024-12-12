@@ -10,11 +10,9 @@ library(scales)
 library(RColorBrewer)
 library(lubridate)
 
-# Use like: scale_y_continuous(labels = thousands) + 
-thousands <- function(x) {
-  ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
+double_scale <- function(x) {
+  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
 }
-
 base_color <- brewer.pal(n = 3, name = "Set2")[1]
 secondary_color <- brewer.pal(n=3, name = "Set2")[2]
 classic <- theme_set(theme_minimal())
@@ -39,10 +37,6 @@ Let's take a quick peek at the data. Below we have weekly averages for daily tax
 #| message: false
 #| warning: false
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
-
-double_scale <- function(x) {
-  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
-}
 
 df |> 
   group_by(date) |> 
