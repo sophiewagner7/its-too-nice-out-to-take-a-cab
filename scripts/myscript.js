@@ -49,7 +49,20 @@ inputDiv.append("label")
   .text("Temperature (°C)")
    
 // Define our margins.
-const margin = {top: 20, right: 30, bottom: 30, left: 40};
+const margin = {top: 20, right: 30, bottom: 35, left: 55};
+
+// Set fixed x-axis label.
+svg.append("g")
+  .append("text")
+    .style("font-size", 10)
+    .attr("text-anchor", "end")
+    .attr("transform", `translate (${width - margin.right}, ${height - margin.bottom + 30})`)
+    .text("Temperature (°C) →");
+const yAxisLabel = svg.append("text")
+    .style("font-size", 10)
+    .attr("text-anchor", "end")
+    .attr("transform", `translate(${margin.left - 45}, ${margin.top}) rotate(-90)`)
+    .text(`More average hourly rides taken yesterday than at ${temperature}° →`);
 
 // Create target <g>s.
 const plot = svg.append("g")
@@ -119,9 +132,10 @@ const makeChart = (temperature, csvData) => {
   bars.exit()
     .remove();
       
+  // Do some side effects.
   xG.call(xAxis);
   yG.call(yAxis);
-    
+  yAxisLabel.text(`More average hourly rides taken yesterday than at ${temperature}° →`);
   title.text(`Difference in Average Hourly Trips at ${temperature}° against the Temperature the Previous Day`);
   text.text(`Since October 2021, an average of ${f(meanTrips)} taxi and 
   Uber/Lyft rides have been taken in an hour when the weather was ${temperature}°.`);
