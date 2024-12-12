@@ -163,22 +163,47 @@ df <- df |> filter(rush_hour==T)
 Now that we are focused only on rush hour times, let's take a look at any other day of the week and seasonal patterns.
 
 ```{r}
-p1 <- ggplot(df |>
-  mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |>
-      filter(isWeekday(date)), aes(x = day, y = trip_count))+
-  geom_boxplot(fill=base_color, color = "black", outlier.color = "black", outlier.size = 1) +
-  labs(title = "Trip Count by Day of Week", x = "Day of Week", y = "Trip Count") +
+# p1 <- ggplot(df |>
+#   mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |>
+#       filter(isWeekday(date)), aes(x = day, y = trip_count))+
+#   geom_boxplot(fill=base_color, color = "black", outlier.color = "black", outlier.size = 1) +
+#   labs(title = "Trip Count by Day of Week", x = "Day of Week", y = "Trip Count") +
+#   theme_minimal() 
+
+
+p1 <- df |> 
+    mutate(rush_hour_group = "Overall") |> 
+    mutate(rush_hour_group = factor(rush_hour_group, 
+                                    levels = c("Overall", "Morning rush hour (7-9am)", "Evening rush hour (5-7pm)"), ordered = TRUE)) |> 
+  ggplot(aes(x = month_abbr, y = trip_count, fill=rush_hour_group)) +
+  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
+  scale_fill_manual(values = c("Overall" = base_color, 
+                               "Morning rush hour (7-9am)" = secondary_color, 
+                               "Evening rush hour (5-7pm)" = brewer.pal(n = 8, name = "Set2")[3])) +
+   scale_y_continuous(label=thousands)+
+  labs(title = "Number of trips by month", x = "Month", y = "Number of trips", fill="") +
   theme_minimal() 
 
+df <- df |> mutate(
+ rush_hour_group = case_when(
+    hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
+    hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)",
+    .default = "Overall"
+  ) |> 
+  factor(levels = c("Overall", "Morning rush hour (7-9am)", "Evening rush hour (5-7pm)"), ordered = TRUE)
+)
+p2 <- df |>
+  mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |>
+  ggplot(aes(x = day, y = trip_count, fill=rush_hour_group)) +
+  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
+  scale_y_continuous(label=thousands)+
+  scale_fill_manual(values = c("Overall" = base_color, 
+                               "Morning rush hour (7-9am)" = secondary_color, 
+                               "Evening rush hour (5-7pm)" = brewer.pal(n = 8, name = "Set2")[3])) +
+  labs(title = "Number of trips by day of the week", x = "Day of week", y = "Number of trips", fill="") +
+  theme_minimal() 
 
-p2 <- ggplot(df,aes(x = month_abbr, y = trip_count)) +
-  geom_boxplot(fill=base_color, color = "black", outlier.color = "black", outlier.size = 1) +
-  labs(title = "Trip Count by Month", x = "Month", y = "Trip Count") +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-p1 + p2 +
-  plot_layout(axis_titles = "collect")
+(p1 / p2)
 ```
 
 Even within the weekday rush hour subset, ridership varies... We see that Mondays have the lowest median trip counts and the most compact IQR. I tie this to the fact that Monday is a common WFH day (explaining lower average) and people tend to be consistent in their behavior at the start of the week (less variability). Tuesday through Thursday we see a pretty consistent median and variabilty. Friday we see the highest variability, likely because people engage in social activities after work. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather coniditions. 
@@ -191,22 +216,3 @@ Even within rush hour periods, external factors like days of the week and time o
 
 - perhaps morning vs evening rush
 Logic: Morning commuters may be more rigid about travel (e.g., office workers) compared to evening commuters (leisure or flexible activities).
-
-```{r}
-df <- df |> mutate(
- rush_hour_group = case_when(
-    hour %in% c(7, 8, 9) ~ "Morning rush hour (7-9am)",
-    hour %in% c(17, 18, 19) ~ "Evening rush hour (5-7pm)",
-  ) |> 
-  factor(levels = c("Morning rush hour (7-9am)", "Evening rush hour (5-7pm)"), ordered = TRUE)
-)
-df |>
-  mutate(day = factor(wday(date, label = TRUE, abbr = TRUE), levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))) |>
-      filter(isWeekday(date)) |> 
-  ggplot(aes(x = day, y = trip_count, fill=rush_hour_group))+
-  geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
-  labs(title = "Trip Count by Day of Week", x = "Day of Week", y = "Trip Count", fill="Rush Hour Group") +
-  scale_fill_manual(values=c(base_color, secondary_color)) +
-  theme_minimal() 
-```
-
