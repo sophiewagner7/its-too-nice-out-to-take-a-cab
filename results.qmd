@@ -8,12 +8,7 @@ library(tidyverse)
 library(arrow)
 library(scales)
 library(RColorBrewer)
-library(dplyr)
 library(patchwork)
-# library(ggridges)
-library(vcd)
-library(ggrepel)
-# library(ggmosaic)
 library(lubridate)
 library(timeDate)
 library(ggrepel)
@@ -68,6 +63,7 @@ df <- df |>
 {{< include sections/3/3_patterns_in_weather_data.qmd >}}
 
 ## Weather vs. Trips: Can we define "nice" weather by looking at ridership patterns?
+## Weather vs. Trips.
 
 {{< include sections/3/4_weather_vs_trips.qmd >}}
 
