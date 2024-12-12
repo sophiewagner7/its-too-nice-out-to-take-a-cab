@@ -87,7 +87,6 @@ d3.select("#temperature").on("input", function() {
 
 const makeChart = (temperature, csvData) => {
   const {meanTrips, data} = filterData(temperature, csvData);
-  console.log(data);
   const x = data.map(n => n[0]);
   const y = data.map(n => n[1]);
   const xScale = d3.scaleBand(
