@@ -22,6 +22,7 @@ library(lubridate)
 library(scales)
 library(tidyr)
 library(forcats)
+library(RColorBrewer)
 custom_scale <- function(x) {
   ifelse(
     x == 0, 
@@ -33,6 +34,7 @@ custom_scale <- function(x) {
     )
   )
 }
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 df |> 
   group_by(date) |> 
@@ -47,15 +49,19 @@ df |>
   mutate(avg_day_metric=fct_recode(avg_day_metric, "Average daily trips"="avg_trips_day", "Average temperature (°C)"="avg_temp_day")) |> 
   mutate(avg_day_metric=fct_rev(avg_day_metric)) |> 
   ggplot(aes(x = week_start, y = avg_day_value)) +
-  geom_point(color = "cornflowerblue") +
-  geom_line(color = "cornflowerblue") +
-  facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1) +
+  geom_point(color = base_color) +
+  geom_line(color = base_color) +
+  facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1, strip.position="top") +
   scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
   scale_y_continuous(labels=custom_scale) +
-  labs(title = "Average Daily Trips and Weekly Temperature, January 2019 – June 2024",
+  labs(title = "Ridership and temperature trends, Jan 2019 – June 2024",
        x = "Date",
        y = "") +
-  theme_minimal()
+  theme_minimal() +
+    theme(
+    strip.text = element_text(hjust = 0, vjust = 0.5, face="bold"),
+    strip.placement = "outside" 
+  )
 ```
 
 🚕 Considering the taxi data, the most notable observation is the dramatic drop in ridership in March 2020, coinciding with the beginning of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels, reflecting increased work-from-home and other behavioral shifts. We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year, possibly tied to holiday travel patterns, weather, or other behavioral changes.
