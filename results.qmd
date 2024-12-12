@@ -55,20 +55,8 @@ df <- df |>
   
 ## Patterns in Taxi Data - 
 
-### Hourly
 
-### Weekly
-
-### Monthly/Seasonal
-
-- what's our goal here? target rush hour / non-holiday weekdays.
-
-Why talk about monthly? We have to / diligence. 
-Also to discard it because we don't have all day.
-
-perh. side thing on just Saturday.
-
-filter df down to just rush hour on non-holiday weekdays.
+{{< include sections/3/2_taxi_usage_patterns.qmd >}}
 
 <!-- ## (3.3) Patterns in weather data? - Moacir -->
 ## Patterns in Weather Data
