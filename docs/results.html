@@ -217,7 +217,7 @@ div.csl-indent {
   <li><a href="#day-of-week-and-seasonal-patterns" id="toc-day-of-week-and-seasonal-patterns" class="nav-link" data-scroll-target="#day-of-week-and-seasonal-patterns"><span class="header-section-number">3.2.3</span> Day of week and seasonal patterns</a></li>
   </ul></li>
   <li><a href="#patterns-in-weather-data" id="toc-patterns-in-weather-data" class="nav-link" data-scroll-target="#patterns-in-weather-data"><span class="header-section-number">3.3</span> Patterns in Weather Data</a></li>
-  <li><a href="#weather-vs.-trips." id="toc-weather-vs.-trips." class="nav-link" data-scroll-target="#weather-vs.-trips."><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips.</a>
+  <li><a href="#weather-vs.-trips-can-we-define-nice-weather-by-looking-at-ridership-patterns" id="toc-weather-vs.-trips-can-we-define-nice-weather-by-looking-at-ridership-patterns" class="nav-link" data-scroll-target="#weather-vs.-trips-can-we-define-nice-weather-by-looking-at-ridership-patterns"><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips: Can we define “nice” weather by looking at ridership patterns?</a>
   <ul class="collapse">
   <li><a href="#count-of-trips" id="toc-count-of-trips" class="nav-link" data-scroll-target="#count-of-trips"><span class="header-section-number">3.4.1</span> Count of trips</a></li>
   </ul></li>
@@ -465,7 +465,7 @@ div.csl-indent {
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Trip Distance"</span></span>
 <span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"GnBu"</span>,</span>
 <span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
 <span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>      <span class="st">"pct_more_than_five"</span> <span class="ot">=</span> <span class="st">"Five to Ten Miles"</span>,</span>
 <span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>      <span class="st">"pct_five_mile"</span> <span class="ot">=</span> <span class="st">"Three to Five Miles"</span>,</span>
@@ -766,8 +766,8 @@ div.csl-indent {
 </div>
 </div>
 </section>
-<section id="weather-vs.-trips." class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="weather-vs.-trips."><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips.</h2>
+<section id="weather-vs.-trips-can-we-define-nice-weather-by-looking-at-ridership-patterns" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="weather-vs.-trips-can-we-define-nice-weather-by-looking-at-ridership-patterns"><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips: Can we define “nice” weather by looking at ridership patterns?</h2>
 <!-- ## Weather vs. Trips. -->
 <p>Now that we have refocused our attention to a smaller subset of the data, we can look at some initial relationships between the two central taxi variables (<code>trip_count</code> and the various distance bands) and the three weather variables, (<code>temperature</code>, <code>cloud_cover</code>, and <code>rain</code>).</p>
 <div class="cell">
@@ -1047,6 +1047,7 @@ div.csl-indent {
 </div>
 </div>
 <p>Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines.</p>
+<p>Rain and cloud and temp together w/ ridership: what defines a “nice” day? Where do we see the most and least ridership?</p>
 </section>
 </section>
 <section id="timeshifts" class="level2" data-number="3.5">

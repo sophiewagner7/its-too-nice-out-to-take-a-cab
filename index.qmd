@@ -1,59 +1,79 @@
 # Introduction
 
-Do you ever wonder how weather influences our everyday choices? In a city like New York, even simple behavioral changes can have macro-level ripple effects. This is what we set out to explore–starting with taxi data.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+library(scales)
+library(RColorBrewer)
+library(lubridate)
 
-At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought like conditions, but Sophie suggested taking it in a different direction: what if we crossed this data with some human behavior, like taxi usage? What might this look like? After a bit of discussion, we landed on a fun hypothesis: people use cabs less often when it is “nice” out in Manhattan – they would rather walk than hail an expensive cab.
+# Use like: scale_y_continuous(labels = thousands) + 
+thousands <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
+}
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+secondary_color <- brewer.pal(n=3, name = "Set2")[2]
+classic <- theme_set(theme_minimal())
+
+temperature_label <- "Temperature (°C)"
+
+```
+
+Do you ever wonder how weather influences our everyday choices? In a city like New York, even simple behavioral changes can have macro-level ripple effects. This is what we set out to explore—starting with taxi data.
+
+At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought-like conditions, but Sophie suggested taking it in a different direction: what if we crossed this data with some human behavior, like taxi usage? What might this look like? After a bit of discussion, we landed on a fun hypothesis: people use cabs less often when it is “nice” out in Manhattan – they would rather walk than hail an expensive cab.
 
 Proving this turned out to be tricky: what is even is "nice" weather? Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impacting people's inclination to walk? And does the effect wear off if there are multiple nice days in a row, as the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead. Instead of proving the hypothesis, we are using taxi data to see if we can define what “nice” weather is.
 
 In short, our project aims to uncover how weather influences small, everyday decisions in urban life. Using taxi data provides a unique lens into how people adapt their transportation preferences due to the weather, serving as a microcosm for understanding human responses to environmental factors. In a city as dynamic as NYC, the answers could be particularly relevant and reveal fascinating insights about how we adapt to our surroundings.
 
-## A high-level look at weather and taxi trends: can we spot a pattern from here?
+## A High-Level Look at Weather and Taxi Trends: Can We Spot a Pattern from Here?
 
-Let's take a quick peek at the data. Below we have weekly averages for daily temperature and taxi rides from January 2019 to June 2024.
+Let's take a quick peek at the data. Below we have weekly averages for daily taxi rides and temperature from January 2019 to June 2024. 
 
 ```{r}
 #| message: false
 #| warning: false
-library(ggplot2)
-library(arrow)
-library(dplyr)
-library(lubridate)
-library(scales)
-library(tidyr)
-library(forcats)
-library(RColorBrewer)
-custom_scale <- function(x) {
-  ifelse(
-    x == 0, 
-    "0",
-    ifelse(
-      x < 1000,
-      as.character(x),
-      label_comma(scale = 1e-3, suffix = "K")(x)
-    )
-  )
-}
-base_color <- brewer.pal(n = 3, name = "Set2")[1]
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+
+double_scale <- function(x) {
+  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
+}
+
 df |> 
   group_by(date) |> 
-  summarize(total_trips_day = sum(trip_count), .groups = "drop",
-            daily_temp = mean(temperature, na.rm = T))  |> 
+  summarize(
+    total_trips_day = sum(trip_count), .groups = "drop",
+    daily_temp = mean(temperature, na.rm = T)
+  )  |> 
   mutate(week_start = floor_date(date, unit = "week")) |> 
   group_by(week_start) |> 
-  summarize(avg_trips_day = mean(total_trips_day),
-            avg_temp_day = mean(daily_temp), .groups = "drop") |> 
-  pivot_longer(cols=c(avg_trips_day, avg_temp_day), names_to="avg_day_metric", values_to="avg_day_value") |>
+  summarize(
+    avg_trips_day = mean(total_trips_day),
+    avg_temp_day = mean(daily_temp), .groups = "drop"
+  ) |> 
+  pivot_longer(
+    cols=c(avg_trips_day, avg_temp_day), 
+    names_to="avg_day_metric", 
+    values_to="avg_day_value"
+  ) |>
   mutate(avg_day_metric=as.factor(avg_day_metric)) |> 
-  mutate(avg_day_metric=fct_recode(avg_day_metric, "Average daily trips"="avg_trips_day", "Average temperature (°C)"="avg_temp_day")) |> 
-  mutate(avg_day_metric=fct_rev(avg_day_metric)) |> 
+  mutate(avg_day_metric=fct_recode(
+    avg_day_metric, 
+    "Average Daily Trips"="avg_trips_day", 
+    "Average Weekly Temperature (°C)"="avg_temp_day")
+  ) |> 
+  mutate(avg_day_metric=fct_rev(avg_day_metric))  |> 
   ggplot(aes(x = week_start, y = avg_day_value)) +
-  geom_point(color = base_color) +
-  geom_line(color = base_color) +
-  facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1, strip.position="top") +
+    geom_point(color = secondary_color, size=0.5) +
+    geom_line(color = base_color) +
+    facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
-  scale_y_continuous(labels=custom_scale) +
+  scale_y_continuous(labels=double_scale) +
   labs(title = "Ridership and temperature trends, Jan 2019 – June 2024",
        x = "Date",
        y = "") +
