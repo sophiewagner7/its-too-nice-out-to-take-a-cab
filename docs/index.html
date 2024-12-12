@@ -193,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
   <ul class="collapse">
-  <li><a href="#a-glance-at-the-data" id="toc-a-glance-at-the-data" class="nav-link" data-scroll-target="#a-glance-at-the-data"><span class="header-section-number">1.1</span> A glance at the data</a></li>
+  <li><a href="#a-high-level-look-at-weather-and-taxi-trends-can-we-spot-a-pattern-from-here" id="toc-a-high-level-look-at-weather-and-taxi-trends-can-we-spot-a-pattern-from-here" class="nav-link" data-scroll-target="#a-high-level-look-at-weather-and-taxi-trends-can-we-spot-a-pattern-from-here"><span class="header-section-number">1.1</span> A High-Level Look at Weather and Taxi Trends: Can We Spot a Pattern from Here?</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sophiewagner7/nyc-weather/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/sophiewagner7/nyc-weather/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -235,33 +235,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought-like conditions, but Sophie suggested crossing in a dataset from a different domain and seeing what kinds of results could emerge. Instead of just looking at the weather, perhaps we can draw a relationship between human behavioral response to the weather and taxi usage. What might this look like? After a bit of discussion, we had a preliminary idea of testing the hypothesis that people use cabs less often when it is “nice” out in Manhattan. That is, they are more inclined to walk to their destination than hail an expensive cab.</p>
-<p>Quickly it was clear, however, that proving this hypothesis would require coming up with a definition of “nice,” so we flipped the project: we’re assuming as true that people are more inclined to walk when the weather is nice, so we are using the taxi data to see if we can define what “nice” weather is. Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impacting people’s inclination to walk? And does the effect wear off if there are multiple nice days in a row, as the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead.</p>
-<p>Overall, our project explores how weather influences the small, everyday decisions which collectively shape urban life. The unique spatial and temporal granularity of taxi data allows us to capture patterns of human mobility with precision. By doing so, we may observe behavioral shifts in response to weather changes in real time. Such a study not only provides a unique lens into how people adapt their transportation preferences due to the weather, but also serves as a microcosm for understanding human responses to environmental factors. Such insights are particularly relevant in a large, dynamic city like New York.</p>
-<section id="a-glance-at-the-data" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="a-glance-at-the-data"><span class="header-section-number">1.1</span> A glance at the data</h2>
+<p>Do you ever wonder how weather influences our everyday choices? In a city like New York, even simple behavioral changes can have macro-level ripple effects. This is what we set out to explore—starting with taxi data.</p>
+<p>At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought-like conditions, but Sophie suggested taking it in a different direction: what if we crossed this data with some human behavior, like taxi usage? What might this look like? After a bit of discussion, we landed on a fun hypothesis: people use cabs less often when it is “nice” out in Manhattan – they would rather walk than hail an expensive cab.</p>
+<p>Proving this turned out to be tricky: what is even is “nice” weather? Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impacting people’s inclination to walk? And does the effect wear off if there are multiple nice days in a row, as the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead. Instead of proving the hypothesis, we are using taxi data to see if we can define what “nice” weather is.</p>
+<p>In short, our project aims to uncover how weather influences small, everyday decisions in urban life. Using taxi data provides a unique lens into how people adapt their transportation preferences due to the weather, serving as a microcosm for understanding human responses to environmental factors. In a city as dynamic as NYC, the answers could be particularly relevant and reveal fascinating insights about how we adapt to our surroundings.</p>
+<section id="a-high-level-look-at-weather-and-taxi-trends-can-we-spot-a-pattern-from-here" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="a-high-level-look-at-weather-and-taxi-trends-can-we-spot-a-pattern-from-here"><span class="header-section-number">1.1</span> A High-Level Look at Weather and Taxi Trends: Can We Spot a Pattern from Here?</h2>
 <p>Let’s take a quick peek at the data. Below we have weekly averages for daily taxi rides and temperature from January 2019 to June 2024.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/complete_weather_and_taxi_data.parquet"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total_trips_day =</span> <span class="fu">sum</span>(trip_count)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, total_trips_day) <span class="sc">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">week_start=</span>lubridate<span class="sc">::</span><span class="fu">floor_date</span>(date, <span class="at">unit=</span><span class="st">"week"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(week_start) <span class="sc">|&gt;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_trips_day =</span> <span class="fu">mean</span>(total_trips_day))<span class="sc">|&gt;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>week_start, <span class="at">y=</span>avg_trips_day)) <span class="sc">+</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color=</span>base_color, <span class="at">size=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color=</span>secondary_color) <span class="sc">+</span> </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %Y"</span>, <span class="at">date_breaks =</span> <span class="st">"1 year"</span>) <span class="sc">+</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> thousands) <span class="sc">+</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">title=</span><span class="st">"Average daily taxi trips per week, January 2019 – June 2024"</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Date"</span>, </span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Average number of trips in a day"</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>double_scale <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(x <span class="sc">&gt;=</span> <span class="dv">1000</span>, <span class="fu">paste0</span>(x <span class="sc">/</span> <span class="dv">1000</span>, <span class="st">"K"</span>), <span class="fu">as.character</span>(x))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_trips_day =</span> <span class="fu">sum</span>(trip_count), <span class="at">.groups =</span> <span class="st">"drop"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">daily_temp =</span> <span class="fu">mean</span>(temperature, <span class="at">na.rm =</span> T)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )  <span class="sc">|&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">week_start =</span> <span class="fu">floor_date</span>(date, <span class="at">unit =</span> <span class="st">"week"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(week_start) <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_trips_day =</span> <span class="fu">mean</span>(total_trips_day),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_temp_day =</span> <span class="fu">mean</span>(daily_temp), <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols=</span><span class="fu">c</span>(avg_trips_day, avg_temp_day), </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to=</span><span class="st">"avg_day_metric"</span>, </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to=</span><span class="st">"avg_day_value"</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_day_metric=</span><span class="fu">as.factor</span>(avg_day_metric)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_day_metric=</span><span class="fu">fct_recode</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    avg_day_metric, </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Average Daily Trips"</span><span class="ot">=</span><span class="st">"avg_trips_day"</span>, </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Average Temperature (°C)"</span><span class="ot">=</span><span class="st">"avg_temp_day"</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_day_metric=</span><span class="fu">fct_rev</span>(avg_day_metric))  <span class="sc">|&gt;</span> </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> week_start, <span class="at">y =</span> avg_day_value)) <span class="sc">+</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> secondary_color, <span class="at">size=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> base_color) <span class="sc">+</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> avg_day_metric, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %Y"</span>, <span class="at">date_breaks =</span> <span class="st">"1 year"</span>) <span class="sc">+</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>double_scale) <span class="sc">+</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average Daily Trips and Weekly Temperature, January 2019 – June 2024"</span>,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -270,40 +292,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-</div>
-<p>Considering the taxi data, there are many narratives that can be told. The most notable observation on the chart is the dramatic decline in ridership in March 2020, coinciding with the emergence of the full impact of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels. This trend is likely influenced by the shift towards a more work-from-home friendly economic environment, along with other behavioral changes.</p>
-<p>We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year. These could be attributed to behavioral changes around the holidays, including increased travel around the holidays, staying in on the holidays themselves, or different travel patterns due to the weather. We will have to look at this with a lot more granularity in order to parse out further trends in the data.</p>
-<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(temperature)) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">daily_temp =</span> <span class="fu">mean</span>(temperature)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date, daily_temp) <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">week_start=</span>lubridate<span class="sc">::</span><span class="fu">floor_date</span>(date, <span class="at">unit=</span><span class="st">"week"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(week_start) <span class="sc">|&gt;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_temp_day =</span> <span class="fu">mean</span>(daily_temp)) <span class="sc">|&gt;</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>week_start, <span class="at">y=</span>avg_temp_day)) <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color=</span>base_color, <span class="at">size=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color=</span>secondary_color) <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>)<span class="sc">+</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %Y"</span>, <span class="at">date_breaks =</span> <span class="st">"1 year"</span>) <span class="sc">+</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Average Weekly Temperature, January 2019 – June 2024"</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Date"</span>, </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> temperature_label</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>   <span class="co"># theme(</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    axis.title.y = element_blank(),</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    axis.text.y = element_blank(),</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   <span class="co"># )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="768"></p>
-</figure>
 </div>
-</div>
-</div>
-<p>Average weekly temperature looks fairly consistent over time, with expected seasonal peaks and valleys across the year. There may be a subtle trend of slightly higher average temperatures in more recent years, but nothing too definitive.</p>
-<p>As just one data point, temperature provides a limited slice into what may distinguish a “nice day.” In the next chapter, we will see that it will be necessary to calculate additional numeric and categorical weather measurements to help establish this definition. Ideas include change in temperature and a simple categorical variable for cloud cover derived from the multiple columns currently devoted to cloud cover.</p>
+<p>🚕 Considering the taxi data, the most notable observation is the dramatic drop in ridership in March 2020, coinciding with the beginning of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels, reflecting increased work-from-home and other behavioral shifts. We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year, possibly tied to holiday travel patterns, weather, or other behavioral changes.</p>
+<p>⛅ Average weekly temperature follows predicted seasonal trends with peaks in the summer and dips in the winter. There may be a subtle trend of slightly higher average temperatures in more recent years, but nothing too definitive. Temperature alone provides a limited slice into what may distinguish a “nice day.” In the next chapter, additional metrics like temperature change and weather categories (e.g.&nbsp;cloud cover, rain) will be explored to refine the relationship between weather and ridership.</p>
+<p>From this broad view, it is really hard to see any clear relationship between ridership and weather. This is what makes our project so interesting–how can we hammer out the data to unveil micro-patterns? We’ll need to conduct a much more granular analysis to get to the bottom of things.</p>
 
 
 </section>
