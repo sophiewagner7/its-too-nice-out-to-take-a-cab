@@ -31,7 +31,7 @@ In short, our project aims to uncover how weather influences small, everyday dec
 
 ## A High-Level Look at Weather and Taxi Trends: Can We Spot a Pattern from Here?
 
-Let's take a quick peek at the data. Below we have weekly averages for daily taxi rides and temperature from January 2019 to June 2024. 
+Let's take a quick peek at the data. Below we have weekly averages for daily taxi rides and temperature from January 2019 to June 2024.
 
 ```{r}
 #| message: false
@@ -63,8 +63,7 @@ df |>
   ) |> 
   mutate(avg_day_metric=fct_rev(avg_day_metric))  |> 
   ggplot(aes(x = week_start, y = avg_day_value)) +
-    geom_point(color = secondary_color, size=0.5) +
-    geom_line(color = base_color) +
+    geom_line(color = base_color, linewidth = 0.7) +
     facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
   scale_y_continuous(labels=double_scale) +
@@ -72,8 +71,9 @@ df |>
        x = "Date",
        y = "") +
   theme_minimal() +
-    theme(
-    strip.text = element_text(hjust = 0, vjust = 0.5, face="bold"),
+  theme(
+    plot.title = element_text(size = 16),
+    strip.text = element_text(size = 12, hjust = 0, vjust = 0.5, face="bold"),
     strip.placement = "outside" 
   )
 ```

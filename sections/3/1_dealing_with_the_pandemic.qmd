@@ -1,13 +1,9 @@
-## Dealing with the Pandemic
-
-Our intial plan was to contain data from 2019 to get a sense of a
-pre-COVID-19 Pandemic baseline against which we could compare our
-post-Pandemic data. 
+From the outset, we knew that we would need to exclude data from the height of Pandemic-era restrictions, as this would likely cloud (no pun intended) relationships between weather and taxi usage. Our intial plan was to contain data from 2019 (pre-Pandemic) to get a baseline to establish normalcy of post-pandemic data. However, we found significant differences in rider behavior between pre- and post-Pandemic periods, forcing us to question the relevance of using pre-Pandemic data at all.
 
 ```{r}
 #| fig-height: 6 
 #| fig-width: 10
-
+fill_colors <-brewer.pal(n = 5, name = "Set2")
 df |>
   mutate(year_month = lubridate::ymd(paste(year, month, "01", sep = "-"))) |>
   pivot_longer(cols=c(
@@ -28,15 +24,9 @@ df |>
     y = "Total Trips",
     fill = "Hired Car Company/Type"
   ) +
-  scale_fill_brewer(
-    palette = "Set2",
-    labels = c(
-      "yellow" = "Yellow Cab",
-      "juno" = "Juno",
-      "lyft" = "Lyft",
-      "via" = "Via",
-      "uber" = "Uber"
-      )
+  scale_fill_manual(
+    values = fill_colors,
+    labels = c("Juno", "Via", "Lyft","Uber","Yellow Cab")
   ) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") +
   scale_y_continuous(labels = millions) + 
@@ -44,8 +34,9 @@ df |>
         legend.position = "bottom") 
 ```
 
-Three details jump out from an initial look at managing the Pandemic. 
-First, we can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.[@shapiro2020] [@nysdoh] The uncertainty over this initial wave halved the March ridership totals in comparison to February. Next, we can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.
+We first looked at trip volume by car type. We knew there was going to be an impact at the height of the Pandemic, but the plot is still striking. We can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.[@shapiro2020] [@nysdoh] The uncertainty over this initial wave halved the March ridership totals in comparison to February.
+
+Ridership slowly increased from thereon. We can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.[@lunden2019] Via also stopped its ride-sharing operations in December 2021.[@fingas2021] The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.
 
 ```{r}
 #| fig-height: 6
@@ -121,19 +112,10 @@ df |>
 
 ```
 
-In addition to using hired cars less often after the Pandemic, 
-perhaps as a consequence of less business-related travel because of flexible work schedules, 
-we see a second behavioral change in the post-Pandemic era, 
-even if it is slight: 
-for the class of trips we are observing, they run longer. 
-Trips of one mile make up a smaller percentage of the total, 
-while trips of more than three miles make up a larger 
-percentage of the total since the onset of the Pandemic. 
+The next question we asked to establish a baseline normal was rider travel distance. If number of riders fell overall, did this come equally across all distances, or are people taking less of certain types of trips?
 
-Both analyses suggest certainly abandoning pre-Pandemic 
-data as well as all of the 2020 data. 
-While the shift in typical distances smooths out already at the beginning of 2021, 
-the number of trips does not reach its new normal until around October 2021, 
-suggesting that is the true step into the post-Pandemic order.
+Plotting the distribution of trip distances helped to answer this question. Perhaps as a consequence of less business-related travel because of flexible work schedules, the trips we observed tended to be longer. Shorter trips--those of one mile--make up a smaller percentage of the total, while trips of more than three miles make up a larger percentage of the total since the onset of the Pandemic.
 
-Moving forward, we will focus only on data from October 2021 onward, then.
+Both analyses suggest certainly abandoning pre-Pandemic data as well as all of the 2020 data. While the distribution of distances stabilizes at the beginning of 2021, the number of trips does not reach its new normal until around October 2021, suggesting that is the true step into the post-Pandemic order.
+
+Given these insights, **we will focus only on data from October 2021 onward** as we move forward with our analysis.
