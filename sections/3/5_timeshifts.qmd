@@ -1,3 +1,30 @@
+<!-- ## Timeshifts -->
+
+
+```{r}
+pivot_trip_distance_df |>
+  mutate(
+    temperature_change_since_prev_day = round(temperature_change_since_prev_day)
+  ) |>
+  filter(
+    temperature > 25,
+  ) |>
+  # group_by(trip_type) |>
+  ggplot(aes(temperature_change_since_prev_day, trip_count_change_since_prev_week)) +
+  geom_hex() +
+  scale_fill_viridis_c(direction=-1) +
+  # scale_fill_distiller(palette="GnBu", direction=-1) +
+  labs(
+    title = "Change in trip by change in temp",
+    x = paste("Change in ", temp_label, "Since 24 Hours Ago"),
+    y = "Change in Trips since a week ago",
+    fill = "trips"
+  )#+
+  # facet_wrap(~trip_type, scales="free_y")
+```
+
+
+
 ## Comparing Different Times to Gauge Behavior Change
 
 The patterns of taxi usage complicate how we can try to analyze weather effects. 

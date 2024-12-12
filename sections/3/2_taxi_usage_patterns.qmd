@@ -1,7 +1,9 @@
 
-The goal of our analysis is to see trends in rider usage in relationship with changes in the weather. In order to make claims about these relationships, we need to limit other components that may influence taxi ridership. Therefore, we explored variations in taxi usage based on hour of the day, day of the week, and month of the year. For example, it doesn't make sense to compare a Wednesday at 3am to peak rush hour traffic Thursday at 5pm. We can't say an increase in ridership is at all related to weather because there is a baseline difference between these times. We must establish a baseline "normal" in taxi ridership in order to have more consistent comparisons. 
+The goal of our analysis is to see trends in rider usage in relationship with changes in the weather. In order to make claims about these relationships, we need to limit other components that may influence taxi ridership. Therefore, we explored variations in taxi usage based on hour of the day, day of the week, and month of the year. For instance, comparing ridership at 3 AM on a Wednesday to 5 PM on a Thursday would be misleading since baseline usage at these times differs inherently. Establishing a consistent baseline for "normal" taxi ridership allows for more meaningful comparisons and insights. But to establish a baseline, we also just need to see what the patterns even are in the data. In the following section we look at hourly, day of the week, and monthly/seasonal trends. 
 
-### Distance of trip only shows hourly trend 
+### Hourly patterns
+
+An interesting result of our analysis is that trip distance did not appear to have any relationship with day of the week or month of the year. However, it did have some variation by time of day. 
 
 ```{r}
 #| fig-height: 6

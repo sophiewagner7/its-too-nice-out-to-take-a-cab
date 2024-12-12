@@ -1,5 +1,25 @@
 # Interactive graph
 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
+```{r}
+df |>
+# pivot_trip_distance_df |>
+  # select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |>
+  select(month, trip_count, temperature, temperature_change_since_prev_day) |>
+  mutate(temperature = round(temperature)) |>
+  mutate(temperature_change_since_prev_day = round(temperature_change_since_prev_day)) |>
+  write_csv("data-for-d3.csv")
+```
+
 <style>
   * {
     font-family: sans-serif;
@@ -10,4 +30,4 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="scripts/myscript.js"></script>
+<script src="scripts/myscript.js" type="module"></script>
