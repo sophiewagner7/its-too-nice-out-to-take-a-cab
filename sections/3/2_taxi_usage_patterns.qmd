@@ -2,27 +2,6 @@
 
 The goal of our analysis is to see trends in rider usage in relationship with changes in the weather. In order to make claims about these relationships, we need to limit other components that may influence taxi ridership. Therefore, we explored variations in taxi usage based on hour of the day, day of the week, and month of the year. For instance, comparing ridership at 3 AM on a Wednesday to 5 PM on a Thursday would be misleading since baseline usage at these times differs inherently. Establishing a consistent baseline for "normal" taxi ridership allows for more meaningful comparisons and insights. But to establish a baseline, we also just need to see what the patterns even are in the data. In the following section we look at hourly, day of the week, and monthly/seasonal trends. 
 
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-library(arrow)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(RColorBrewer)
-library(scales)
-library(patchwork)
-library(ggrepel)
-
-base_color <- brewer.pal(n = 3, name = "Set2")[1]
-classic <- theme_set(theme_minimal())
-
-df <- read_parquet("../../data/complete_weather_and_taxi_data.parquet")
-df <- df |> 
-  filter(date >= as.Date("2021-10-01"))
-```
-
 ### Hourly patterns
 
 An interesting result of our analysis is that trip distance did not appear to have any relationship with day of the week or month of the year. However, it did have some variation by time of day. 

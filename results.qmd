@@ -12,6 +12,7 @@ library(dplyr)
 library(patchwork)
 # library(ggridges)
 library(vcd)
+library(ggrepel)
 # library(ggmosaic)
 
 # Use like: scale_y_continuous(labels = millions) + 
