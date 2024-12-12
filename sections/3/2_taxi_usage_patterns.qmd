@@ -59,7 +59,7 @@ df |>
       fill = "Trip Distance"
   ) +
   scale_fill_brewer(
-    palette = "Blues",
+    palette = "GnBu",
     labels = c(
       "pct_more_than_five" = "Five to Ten Miles",
       "pct_five_mile" = "Three to Five Miles",

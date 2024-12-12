@@ -13,50 +13,67 @@ let temperature = 25;
   
   NA is indicated by "NA." Should only affect temp. change.
 */
-const data = await d3.csv("../data-for-d3.csv");
+const csvRaw = await d3.csv("../data-for-d3.csv");
+const csvData = csvRaw.map(
+  ({ temperature, temperature_change_since_prev_day, month, trip_count }) => (
+  {
+    temperature: +temperature,
+    temperature_change_since_prev_day: +temperature_change_since_prev_day,
+    month: +month,
+    trip_count: +trip_count
+  }
+))
 
 // Build our (square) SVG.
-const plot = d3.select("#plot")
+const plotDiv = d3.select("#plot")
 const width = document.querySelector("main.content").offsetWidth;
-console.log(width);
 const height = .6*width
-const title = plot.append("h2");
-const text = plot.append("p");
-const svg = plot
+const title = plotDiv.append("h2");
+const text = plotDiv.append("p");
+const svg = plotDiv
   .append("svg")
   .attr("width", width) 
   .attr("height", height);
-const inputDiv = plot.append("div")
+const inputDiv = plotDiv.append("div")
 inputDiv.append("input")
   .attr("type", "range")
   .attr("id", "temperature")
   .attr("name", "temperature")
-  .attr("min", d3.min(data.map(n => +n.temperature)))
-  .attr("max", d3.max(data.map(n => +n.temperature)))
+  .attr("min", d3.min(csvData.map(n => +n.temperature)))
+  .attr("max", d3.max(csvData.map(n => +n.temperature)))
   .attr("value", 25)
   .attr("step", 1);
 inputDiv.append("label")
   .style("padding-left", "1.5rem")
   .attr("for", "temperature")
   .text("Temperature (°C)")
-console.log(data.map(n => n.temperature))
    
 // Define our margins.
 const margin = {top: 20, right: 30, bottom: 30, left: 40};
 
+// Create target <g>s.
+const plot = svg.append("g")
+  .attr("transform", `translate (${margin.left}, ${margin.top})`);
+const xG = svg.append("g")
+    .attr("class", "xAxis")
+    .attr("transform", `translate (${margin.left}, ${height - margin.bottom})`)
+const yG =  svg.append("g")
+    .attr("class", "yAxis")
+    .attr("transform", `translate (${margin.left}, ${margin.top})`)
+    
 // Define a fill.
 const color = d3.scaleSequential(d3.interpolatePiYG);
 
-const filterData = (temperature, data) => {
-  const filteredData = data.filter(n => n.temperature == temperature)
+const filterData = (temperature, csvData) => {
+  const filteredData = csvData.filter(n => n.temperature == temperature)
     .filter(n => n.temperature_change_since_prev_day != "NA")
-  const meanTrips = d3.mean(filteredData.map(n => +n.trip_count));
+  const meanTrips = d3.mean(filteredData.map(n => n.trip_count));
   return {
     meanTrips,
     data: d3.flatRollup(
       filteredData, 
       v => d3.mean(v, d => d.trip_count) - meanTrips, 
-      d => temperature + +d.temperature_change_since_prev_day
+      d => +temperature + d.temperature_change_since_prev_day
     )
     .sort((a, b) => a[0] - b[0])
   }
@@ -65,19 +82,20 @@ const filterData = (temperature, data) => {
 // Listen to the slider
 d3.select("#temperature").on("input", function() {
   temperature = this.value
-  makeChart(temperature, data);
+  makeChart(temperature, csvData);
 });
 
 const makeChart = (temperature, csvData) => {
   const {meanTrips, data} = filterData(temperature, csvData);
+  console.log(data);
   const x = data.map(n => n[0]);
   const y = data.map(n => n[1]);
   const xScale = d3.scaleBand(
-    x, 
+    d3.range(d3.min(x), d3.max(x) + 1, 1), 
     [0, width - margin.right - margin.left]
   ).paddingInner(.1);
   const yScale = d3.scaleLinear(
-    [d3.min(y), d3.max(y)], 
+    [ d3.min(y), d3.max(y) ],
     [height - margin.top - margin.bottom, 0]
   );
   
@@ -86,37 +104,39 @@ const makeChart = (temperature, csvData) => {
   const yAxis = d3.axisLeft()
     .scale(yScale);
   
-  //console.log(d3.min(y), d3.max(y));
-  //console.log(yScale(d3.max(y)), yScale(d3.min(y)), yScale(0));
-  svg.selectAll("g").remove()
-  const g = svg.append("g")
-    .attr("transform", `translate (${margin.left}, ${margin.top})`);
-  g.selectAll("rect")
+  plot.selectAll("rect").remove();
+  const bars = plot.selectAll("rect")
     .data(y)
-    .enter() 
+  
+  bars.enter() 
     .append("rect")
-      .attr("x", (d, i) => xScale(i + d3.min(x)))
+      .attr("x", (d, i) => xScale(x[i]))
       .attr("y", d => yScale(d) > yScale(0)? yScale(0) : yScale(d))
-      .attr("width", xScale.bandwidth())
       .attr("height", d => Math.abs(yScale(d) - yScale(0)))
-      .attr("fill", d => color(standardize(d, y)));
+      .attr("fill", d => color(standardize(d, y)))
+      .attr("width", xScale.bandwidth())
+      .attr("data-temperature", (d, i) => x[i]);
+  
+  bars.exit()
+    .remove();
       
-  svg.append("g")
-    .attr("class", "xAxis")
-    .attr("transform", `translate (${margin.left}, ${height - margin.bottom})`)
-    .call(xAxis);
-
-  svg.append("g")
-    .attr("class", "yAxis")
-    .attr("transform", `translate (${margin.left}, ${margin.top})`)
-    .call(yAxis);
+  xG.call(xAxis);
+  yG.call(yAxis);
     
   title.text(`Difference in Average Hourly Trips at ${temperature}° against the Temperature the Previous Day`);
-  text.text(`Since October 2021, an average of ${meanTrips} taxi and 
+  text.text(`Since October 2021, an average of ${f(meanTrips)} taxi and 
   Uber/Lyft rides have been taken in an hour when the weather was ${temperature}°.`);
 }
 
-const standardize = (value, y) => (value - d3.min(y)) / (d3.max(y) - d3.min(y));
-  
+const f = d3.format(",.4r")
+
+const standardize = (value, y) => {
+  if(value >= 0){
+    return .5 * value/d3.max(y) + .5
+  } else {
+    return .5 - .5 * value/d3.min(y)
+  }
+}
+
 // Initial run
-makeChart(temperature, data);
+makeChart(temperature, csvData);
