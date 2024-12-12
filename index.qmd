@@ -23,64 +23,64 @@ temperature_label <- "Temperature (°C)"
 
 ```
 
-At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought-like conditions, but Sophie suggested crossing in a dataset from a different domain and seeing what kinds of results could emerge. Instead of just looking at the weather, perhaps we can draw a relationship between human behavioral response to the weather and taxi usage. What might this look like? After a bit of discussion, we had a preliminary idea of testing the hypothesis that people use cabs less often when it is “nice” out in Manhattan. That is, they are more inclined to walk to their destination than hail an expensive cab.
+Do you ever wonder how weather influences our everyday choices? In a city like New York, even simple behavioral changes can have macro-level ripple effects. This is what we set out to explore—starting with taxi data.
 
-Quickly it was clear, however, that proving this hypothesis would require coming up with a definition of “nice,” so we flipped the project: we're assuming as true that people are more inclined to walk when the weather is nice, so we are using the taxi data to see if we can define what “nice” weather is. Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impacting people's inclination to walk? And does the effect wear off if there are multiple nice days in a row, as the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead.
+At first, Moacir was interested in seeing if there is a relationship between “unseasonably” warm weather and New York and drought-like conditions, but Sophie suggested taking it in a different direction: what if we crossed this data with some human behavior, like taxi usage? What might this look like? After a bit of discussion, we landed on a fun hypothesis: people use cabs less often when it is “nice” out in Manhattan – they would rather walk than hail an expensive cab.
 
-Overall, our project explores how weather influences the small, everyday decisions which collectively shape urban life. The unique spatial and temporal granularity of taxi data allows us to capture patterns of human mobility with precision. By doing so, we may observe behavioral shifts in response to weather changes in real time. Such a study not only provides a unique lens into how people adapt their transportation preferences due to the weather, but also serves as a microcosm for understanding human responses to environmental factors. Such insights are particularly relevant in a large, dynamic city like New York.
+Proving this turned out to be tricky: what is even is "nice" weather? Does it just mean sunny skies, or does it have a relationship to a temperature threshold? How might relative temperature come into play, such as an unusually warm day after a cold spell, impacting people's inclination to walk? And does the effect wear off if there are multiple nice days in a row, as the novelty of walking gives way to taking cabs again? These questions struck us as more amusing and speculative, so we decided to pursue them, instead. Instead of proving the hypothesis, we are using taxi data to see if we can define what “nice” weather is.
 
-## A glance at the data
+In short, our project aims to uncover how weather influences small, everyday decisions in urban life. Using taxi data provides a unique lens into how people adapt their transportation preferences due to the weather, serving as a microcosm for understanding human responses to environmental factors. In a city as dynamic as NYC, the answers could be particularly relevant and reveal fascinating insights about how we adapt to our surroundings.
+
+## A High-Level Look at Weather and Taxi Trends: Can We Spot a Pattern from Here?
+
 Let's take a quick peek at the data. Below we have weekly averages for daily taxi rides and temperature from January 2019 to June 2024. 
 
 ```{r}
 #| message: false
 #| warning: false
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+
+double_scale <- function(x) {
+  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
+}
+
 df |> 
   group_by(date) |> 
-  summarize(total_trips_day = sum(trip_count)) |> 
-  select(date, total_trips_day) |>
-  mutate(week_start=lubridate::floor_date(date, unit="week")) |>
-  group_by(week_start) |>
-  summarize(avg_trips_day = mean(total_trips_day))|>
-  ggplot(aes(x=week_start, y=avg_trips_day)) +
-    geom_point(color=base_color, size=0.5) +
-    geom_line(color=secondary_color) + 
-    scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
-    scale_y_continuous(labels = thousands) +
-    labs(
-      title="Average daily taxi trips per week, January 2019 – June 2024",
-      x = "Date", 
-      y = "Average number of trips in a day"
-    ) 
+  summarize(
+    total_trips_day = sum(trip_count), .groups = "drop",
+    daily_temp = mean(temperature, na.rm = T)
+  )  |> 
+  mutate(week_start = floor_date(date, unit = "week")) |> 
+  group_by(week_start) |> 
+  summarize(
+    avg_trips_day = mean(total_trips_day),
+    avg_temp_day = mean(daily_temp), .groups = "drop"
+  ) |> 
+  pivot_longer(
+    cols=c(avg_trips_day, avg_temp_day), 
+    names_to="avg_day_metric", 
+    values_to="avg_day_value"
+  ) |>
+  mutate(avg_day_metric=as.factor(avg_day_metric)) |> 
+  mutate(avg_day_metric=fct_recode(
+    avg_day_metric, 
+    "Average Daily Trips"="avg_trips_day", 
+    "Average Weekly Temperature (°C)"="avg_temp_day")
+  ) |> 
+  mutate(avg_day_metric=fct_rev(avg_day_metric))  |> 
+  ggplot(aes(x = week_start, y = avg_day_value)) +
+    geom_point(color = secondary_color, size=0.5) +
+    geom_line(color = base_color) +
+    facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
+  scale_y_continuous(labels=double_scale) +
+  labs(title = "Average Daily Trips and Weekly Temperature, January 2019 – June 2024",
+       x = "Date",
+       y = "")
 ```
 
-Considering the taxi data, there are many narratives that can be told. The most notable observation on the chart is the dramatic decline in ridership in March 2020, coinciding with the emergence of the full impact of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels. This trend is likely influenced by the shift towards a more work-from-home friendly economic environment, along with other behavioral changes. 
+🚕 Considering the taxi data, the most notable observation is the dramatic drop in ridership in March 2020, coinciding with the beginning of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels, reflecting increased work-from-home and other behavioral shifts. We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year, possibly tied to holiday travel patterns, weather, or other behavioral changes.
 
-We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year. These could be attributed to behavioral changes around the holidays, including increased travel around the holidays, staying in on the holidays themselves, or different travel patterns due to the weather. We will have to look at this with a lot more granularity in order to parse out further trends in the data. 
+⛅ Average weekly temperature follows predicted seasonal trends with peaks in the summer and dips in the winter. There may be a subtle trend of slightly higher average temperatures in more recent years, but nothing too definitive. Temperature alone provides a limited slice into what may distinguish a "nice day." In the next chapter, additional metrics like temperature change and weather categories (e.g. cloud cover, rain) will be explored to refine the relationship between weather and ridership.
 
-```{r}
-#| fig-height: 4
-#| fig-width: 8
-df |> 
-  filter(!is.na(temperature)) |>
-  group_by(date) |> 
-  summarize(daily_temp = mean(temperature)) |> 
-  select(date, daily_temp) |>
-  mutate(week_start=lubridate::floor_date(date, unit="week")) |>
-  group_by(week_start) |>
-  summarize(avg_temp_day = mean(daily_temp)) |>
-  ggplot(aes(x=week_start, y=avg_temp_day)) +
-    geom_point(color=base_color, size=0.5) +
-    geom_line(color=secondary_color) +
-    geom_hline(yintercept=0)+
-    scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
-    labs(title="Average Weekly Temperature, January 2019 – June 2024",
-         x = "Date", 
-         y = temperature_label
-    ) 
-```
-
-Average weekly temperature looks fairly consistent over time, with expected seasonal peaks and valleys across the year. There may be a subtle trend of slightly higher average temperatures in more recent years, but nothing too definitive. 
-
-As just one data point, temperature provides a limited slice into what may distinguish a "nice day." In the next chapter, we will see that it will be necessary to calculate additional numeric and categorical weather measurements to help establish this definition. Ideas include change in temperature and a simple categorical variable for cloud cover derived from the multiple columns currently devoted to cloud cover. 
+From this broad view, it is really hard to see any clear relationship between ridership and weather. This is what makes our project so interesting–how can we hammer out the data to unveil micro-patterns? We'll need to conduct a much more granular analysis to get to the bottom of things.
