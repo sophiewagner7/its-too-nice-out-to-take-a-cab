@@ -10,11 +10,9 @@ library(scales)
 library(RColorBrewer)
 library(lubridate)
 
-# Use like: scale_y_continuous(labels = thousands) + 
-thousands <- function(x) {
-  ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
+double_scale <- function(x) {
+  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
 }
-
 base_color <- brewer.pal(n = 3, name = "Set2")[1]
 secondary_color <- brewer.pal(n=3, name = "Set2")[2]
 classic <- theme_set(theme_minimal())
@@ -39,10 +37,6 @@ Let's take a quick peek at the data. Below we have weekly averages for daily tax
 #| message: false
 #| warning: false
 df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
-
-double_scale <- function(x) {
-  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
-}
 
 df |> 
   group_by(date) |> 
@@ -74,9 +68,14 @@ df |>
     facet_wrap(~ avg_day_metric, scales = "free_y", ncol=1) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "1 year") +
   scale_y_continuous(labels=double_scale) +
-  labs(title = "Average Daily Trips and Weekly Temperature, January 2019 – June 2024",
+  labs(title = "Ridership and temperature trends, Jan 2019 – June 2024",
        x = "Date",
-       y = "")
+       y = "") +
+  theme_minimal() +
+    theme(
+    strip.text = element_text(hjust = 0, vjust = 0.5, face="bold"),
+    strip.placement = "outside" 
+  )
 ```
 
 🚕 Considering the taxi data, the most notable observation is the dramatic drop in ridership in March 2020, coinciding with the beginning of the COVID-19 pandemic. While ridership has increased since, it has not nearly returned to pre-pandemic levels, reflecting increased work-from-home and other behavioral shifts. We can also observe seasonal fluctuations; for example, it appears that there are dips and peaks around January of each year, possibly tied to holiday travel patterns, weather, or other behavioral changes.
