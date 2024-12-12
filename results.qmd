@@ -1,27 +1,72 @@
 # Results
 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(arrow)
+library(scales)
+library(RColorBrewer)
+library(dplyr)
+library(patchwork)
+# library(ggridges)
+library(vcd)
+# library(ggmosaic)
+
+# Use like: scale_y_continuous(labels = millions) + 
+millions <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-6, suffix = "M")(x))
+}
+
+# Use like: scale_y_continuous(labels = thousands) + 
+thousands <- function(x) {
+  ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
+}
+
+# Use in mutate: mutate(foo= standardize(bar))
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+base_color <- brewer.pal(n = 3, name = "Set2")[1]
+secondary_color <- brewer.pal(n=3, name = "Set2")[2]
+classic <- theme_set(theme_minimal())
+
+temp_label <- "Temperature (°C)"
+
+df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
+```
+
+```{r}
+# Add a month_abbr column.
+df <- df |>
+  mutate(month_abbr = factor(month.abb[month], levels = month.abb)) 
+```
+
+
 {{< include sections/3/1_dealing_with_the_pandemic.qmd >}}
 
-### when did the pandemic end? (perh part of previous section.)
-
-goal: get rid of pandemic data.
+```{r}
+# Filter out pre- and during-Pandemic data.
+df <- df |>
+  filter(df$date >= as.Date("2021-10-01"))
+```
   
 ## Patterns in Taxi Data - 
 
 
 {{< include sections/3/2_taxi_usage_patterns.qmd >}}
 
-## Patterns in weather data? - Moacir
+<!-- ## (3.3) Patterns in weather data? - Moacir -->
+## Patterns in Weather Data
 
-Yes. Use filtered Data. We are telling a story here that is taking a trip.
-
-  Just by month.
-
-  - temp - min/max/avg per month? - candlestick
-  - rain - number of rainy days per month - bar chart
-  - clouds - number of ovc/broken/etc. days per month - stacked bar chart
+{{< include sections/3/3_patterns_in_weather_data.qmd >}}
 
 ## Weather vs. Trips.
+
+{{< include sections/3/4_weather_vs_trips.qmd >}}
+
 
 This is establishing the relationship. Standardize:
 
@@ -53,10 +98,6 @@ In order to determine variations in taxi usage, we needed to establish a baselin
 
 ### When Did the Pandemic “End”?: A Calendar View Approach
 
-```{r}
-post_pandemic_df <- df |>
-  filter(df$date >= as.Date("2021-10-01"))
-```
 
 As mentioned previously, 
 we suspected from our initial charts that cab usage returned to somewhat of a normal around October 2021. 
@@ -185,7 +226,4 @@ Realization that it makes sense to compare usage to the week before at the same 
 Also, note that its pretty consistent pre-pandemic vs post
 
 
-{{< include sections/3/weeks_vs_months.qmd >}}
 
-
-{{< include sections/3/time_shift.qmd >}}
