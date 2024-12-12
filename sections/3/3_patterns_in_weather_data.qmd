@@ -18,10 +18,10 @@ df |>
       y = temp_label
     ) 
 ```
+
+As noted earlier, the temperature fluctuates as we would expect. What struck us in these boxplots is how the outliers are distributed, particularly in March, April, and May, which can run hot. This is a fantastic opportunity for seasonal analysis in limiting our investigation, but we have already trimmed our data down so much. Preparing for a specific springtime analysis would require reconsidering how we collect and pre-process our data.
  
- **discussion**
- 
- Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.
+Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.
  
  Value | Description
  ---|---
@@ -68,8 +68,7 @@ ggplot(aes(x = month_abbr, y = percentage, fill = as.factor(cloud_cover))) +
 ```
  
 
-Cloud cover less obviously seasonal than temperature, and in general days are clear. Likely won't tell us much
-otoh makes cloudy days jump out.
+Cloud cover less obviously seasonal than temperature, and in general days are clear. The lack of clear seasonality helps us generalize over the year, and the trend toward clear days may help cloudiness jump out more as an excuse to take a cab instead of walk.
 
 ```{r}
 #| echo: false
@@ -107,3 +106,5 @@ df |>
     y = "Average Rainy Days"
   )
 ```
+
+In limiting our data just to rush hours, the amount of rain we capture has also been greatly diminished. Where earlier we were averaging about 15 days a month of rain, a lot of that rain fell outside of rush hour, meaning the distribution changes remarkably. This will actually help in later analysis because, like we cloud cover, it makes rain rarer and perhaps a more notable indicator of taxi usage.
