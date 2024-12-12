@@ -75,10 +75,9 @@ df |>
 
 Rider behavior does seem to be influenced by time of day. From the plot above we can see that longer trups are more common during the late-night and early-morning hours. Perhaps this indicates that people travel greater distances for late-night activities. The distribution of trip distances appears to stabilize between 7am and 7pm, with higher proportion of shorter-distance trips compared to long. Interestingly, time of day was the only time-measure that seemed to impact this aspect of rider behavior: day of the week and month do not appear to have any influence on trip distance. This information isn't totally revolutionary, though it may underscore the importance of focusing on particular hours to account for variability in trip length or usage patterns.
 
-
 ### Variations in ridership: rush hour analysis
 
-To better understand ridership trends, we next analyzed volume of trips by hour for each day of the week. 
+With respect to trip volume, there is a significant variation by time of day as anticipated. When plotting all dates, we noticed some clustering in trip counts by hour, and were able to decipher that this behavior is largely related to the day of the week.  
 
 ```{r}
 temp_df <- df |> 
@@ -182,14 +181,13 @@ p1 + p2 +
   plot_layout(axis_titles = "collect")
 ```
 
-Even within the weekday rush hour subset, ridership varies... We see that mondays have the lowest average trip count and narrowest variability. I tie this to the fact that Monday is a common WFH day (explaining lower average) and people tend to be consistent at the start of the week. Tuesday through Thursday we see a pretty consistent average and IQR. Friday we see the highest variability, likely because people engage in social activities after work. 
+Even within the weekday rush hour subset, ridership varies... We see that Mondays have the lowest median trip counts and the most compact IQR. I tie this to the fact that Monday is a common WFH day (explaining lower average) and people tend to be consistent in their behavior at the start of the week (less variability). Tuesday through Thursday we see a pretty consistent median and variabilty. Friday we see the highest variability, likely because people engage in social activities after work. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather coniditions. 
 
-Looking at the trend by month, we can see that july and august have the lowest average ridership. I would say that this is a seasonal trend - lower in the summer months. Perhaps this is because there is less commuting because people go on summer vacations, but perhaps this is also related to warmer weather. January is also low, maybe indicating continued end-of-year holidays and vacations. February through June is fairly consistent.
+Looking at the trend by month, we can see some seasonality. July and August have the edian trip counts and tighter distributions. From this we may be able to infer that there is reduced ridership during summer months, perhaps due to vacations, lighter commuting schedules, or more people deciding not to take a cab if it is nice out! January shows another low median, maybe indicating continued end-of-year holidays and vacations. February through June is fairly consistent in terms of median and IQR.
 
 Even within rush hour periods, external factors like days of the week and time of year still appear to have some influence on ridership. This is important to note because it will impact how we assess changes in ridership due to weather conditions later on.
 
-
-** (Optional) Exploring morning and evening rush hour... **
+**(Optional) Exploring morning and evening rush hour...**
 
 - perhaps morning vs evening rush
 Logic: Morning commuters may be more rigid about travel (e.g., office workers) compared to evening commuters (leisure or flexible activities).
