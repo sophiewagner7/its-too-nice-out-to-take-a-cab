@@ -140,5 +140,7 @@ ggplot(df, aes(x = rush_hour_group, y = trip_count, fill = rain)) +
 
 Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines. 
 
+Rain and cloud and temp together w/ ridership: what defines a "nice" day? Where do we see the most and least ridership?
+
 
 
