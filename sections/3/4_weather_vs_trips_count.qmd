@@ -42,56 +42,22 @@ On the other hand, if it is after work and it is beautiful out, I might take the
 Setting out to answer these questions, I first compared the distribution of trips per hour by rain status. Because rain is relatively infrequent during the specific rush hour periods to which we have subset our data, I decided to scale the distributions to density to get a fair comparison. I also broke it up into temperature groups to eliminate the issue of it raining more often at particular temperatures. 
 
 ```{r}
-temp_df <- df |> mutate(
-  rain=as.factor(ifelse(precipitation!=0, "Raining", "Not raining")),
-         temp.f= as.factor(cut(temperature, breaks = quantile(temperature, probs = seq(0, 1, 0.25), na.rm = TRUE), 
-                             include.lowest = TRUE, 
-                             labels = c("Q1", "Q2", "Q3", "Q4"))))
-temp_df |> 
+df |> mutate(
+  rain=as.factor(ifelse(precipitation!=0, "Raining", "Not raining"))) |> 
   ggplot(aes(x = trip_count, fill = rain)) +
   geom_density(alpha = 0.7) +
   scale_fill_manual(values = c("Not raining" = "grey", "Raining" = rain_color)) +
   scale_x_continuous(labels=thousands)+
   labs(title = "Density of trip count by rain status", x = "Number of trips in an hour", y = "Density", fill = "Rain Status") +
-  theme_minimal() +
-  facet_wrap(~temp.f)
-```
-
-```{r}
-#| warning: false
-temp_df <- df |> mutate(
-  rain=as.factor(ifelse(precipitation!=0, "Raining", "Not raining")),
-         temp.f= as.factor(cut(temperature, breaks = quantile(temperature, probs = seq(0, 1, 0.25), na.rm = TRUE), 
-                             include.lowest = TRUE, 
-                             labels = c("Q1", "Q2", "Q3", "Q4"))))
-temp_df |> 
-  mutate(rain=ifelse(precipitation!=0, "Raining", "Not raining")) |> 
-  ggplot(aes(x = rush_hour_group, y = trip_count, fill = rain)) +
-  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
-  scale_fill_manual(values = c("Not raining" = "grey", "Raining" = rain_color)) +
-  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
-  labs(title = "Trip Count distribution by rain and rush_hour group", x = "", y = "Trip Count", fill = "Rain Status") +
-  theme_minimal()+
-  facet_wrap(~temp.f)
-```
-
-```{r}
-#| warning: false
-temp_df |> 
-  mutate(rain=ifelse(precipitation!=0, "Raining", "Not raining")) |> 
-  ggplot(aes(x = temp.f, y = trip_count, fill = rain)) +
-  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
-  scale_fill_manual(values = c("Not raining" = "grey", "Raining" = rain_color)) +
-  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
-  labs(title = "Trip Count distribution by rain and tempgroup", x = "", y = "Trip Count", fill = "Rain Status") +
   theme_minimal()
 ```
+
 
 The plot above may suggest that there is slightly greater ridership when it is raining. While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for raining days (blue) appears to be slightly shifted right towards higher trip counts. This could indicate a slight increase in trip demand during rainy periods. Moreover, we see more extreme trip counts in the raining distribution: the tail is slightly longer on the right side. More extreme trip counts might imply that often unusually high demand occurs on days that it rains. 
 
 
 
-**Perhaps include:**
+**Perhaps include:** NOPE
 Next, I was curious again about patterns in morning versus evening ridership. Do people have more rigid routines in the morning compared to the evening? Or are they more likely to take a cab in the morning if it is raining because they are worried about their appearance at work? 
 
 From the boxplots, we can see the evening rush hour has a slightly higher median AND IQR when it is raining compared to times it does not rain. This suggests that people are perhaps more flexible in the evening. I might not be planning to walk to work on any given day, but in the summer when it is nice out sometimes I spontaneously walk home from work instead of my usual transportation. On the way to work though, people will hunker down and continue their schedule. Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines.  Why would I pay a lot of money to get to my place of work (vom emoji) after all? 
