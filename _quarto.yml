@@ -33,6 +33,7 @@ format:
   html:
     theme: cosmo
     code-fold: true
+    df-print: kable 
 bibliography: bib.bib
 csl: ieee.csl
 
