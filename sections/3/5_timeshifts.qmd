@@ -27,7 +27,7 @@ df |>
   ) 
 ```
 
-The distribution here suggests that trips don’t change much when the temperature also does not change much. If we squint, we imagine more dots in the II quadrant (negative $x$, positive $y$), which confirms our idea that people ride less when it is nicer out. But maybe it is our imagination.
+The distribution here suggests that trips don’t change much when the temperature also does not change much. If we squint, we imagine more dots in the II quadrant (negative $x$, positive $y$), which confirms our idea that people ride less when it is nicer (read: warmer) out. But maybe it is our imagination.
 
 ```{r}
 df |> 
@@ -43,25 +43,7 @@ df |>
   arrange(desc(n))
 ```
 
-There is not much of an effect here, and, what’s more, as we saw above, “getting warmer” only works until the temperature hits a threshold where it is too hot to walk. Even if we limit ourselves to the band of 17-21°, however, we can still see that the I quadrant is most populated.
-
-```{r}
-df |> 
-  filter(temperature > 17 & temperature < 21) |>
-  mutate(
-    Quadrant = case_when(
-      temperature_change_since_prev_day > 0 & trip_count_change_since_prev_week > 0 ~ "Got Warmer & More Trips (I)",
-      temperature_change_since_prev_day > 0 & trip_count_change_since_prev_week < 0 ~ "Got Warmer & Fewer Trips (IV)",
-      temperature_change_since_prev_day < 0 & trip_count_change_since_prev_week > 0 ~ "Got Cooler & More Trips (II)",
-      temperature_change_since_prev_day < 0 & trip_count_change_since_prev_week < 0 ~ "Got Cooler  & Fewer Trips (III)"
-    )
-  ) |>
-  drop_na(Quadrant) |>
-  count(Quadrant) |>
-  arrange(desc(n))
-```
-
-Our efforts to relativize probably require more finesse, but it did inspire us to craft the interactive visualization in the next chapter.
+While we do not see much of an effect here, the effect we do see matches our intuition. In general, warmer weather means fewer taxi rides, while cooler weather occasions more trips. We will try to reason out this relativization in the next section. 
 
 ```{r}
 #| message: false
