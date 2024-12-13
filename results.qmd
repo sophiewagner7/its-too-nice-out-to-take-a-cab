@@ -105,33 +105,10 @@ pivot_trip_distance_df <- df |>
 {{< include sections/3/4_weather_vs_trips.qmd >}}
 
 
-
-This is establishing the relationship. Standardize:
-
-( x - min ) / (max - min)
-
-weather: rain y/n , cloud cover categorical , temp numeric
-
-trips: count, cat distance chunks
-
-two variable fights:
-  - scatterplot
-  - boxplot/cat vs num
-  
-  
-## Timeshifts
+## Doing the Timeshift
 
 {{< include sections/3/5_timeshifts.qmd >}}
 
-### last week vs. yesterday
-
-Chat piece about doing this weird choice.
-
-### comparing yesterday to today and lastweek to today.
-
-prob for d3. start with r charts though to see wht seems salient.
-
----
 
 ## Patterns across Hours, Days, and Seasons
 

@@ -1,41 +1,76 @@
 <!-- ## Timeshifts -->
 
+With these provocative initial conclusions, we decided to move forward to see if we could relativize the concept of “nice.” 
+The issue here became so perceptual, however, we are not certain we solved a way out of it. After all, “it’s too nice out to take a cab” implicitly invokes a rather recent moment in time when it was not nice. Perhaps it is too nice since it is abnormally warm, or sunny after a week of clouds. Or sunny in the early evening after a rainy morning. We could track those kinds of patterns. However, mapping it onto the taxi data presents special challenges.
+
+That is, the distinct variability from day-to-day of taxi usage, even limiting ourselves to rush hour on weekdays, means we cannot chain multi-day patterns as in the distinctions above. 
+
+So we invented a workaround and wanted to see how it would help. 
+To wit, we compared hourly trip counts on a given day to the same hour on the same day of the week the previous week. 
+Additionally, we compared weather data to the same hour of the previous day. Our hope was that this would capture some of the compressed sense of “nice” as opposed to “unnice” with a comparison to a similar day for ridership. Perhaps we would see a similar effect as above.
+
+We also decided to stick to analyzing temperature alone, given time considerations.
 
 ```{r}
-pivot_trip_distance_df |>
-  mutate(
-    temperature_change_since_prev_day = round(temperature_change_since_prev_day)
-  ) |>
-  filter(
-    temperature > 25,
-  ) |>
-  # group_by(trip_type) |>
-  ggplot(aes(temperature_change_since_prev_day, trip_count_change_since_prev_week)) +
-  geom_hex() +
-  scale_fill_viridis_c(direction=-1) +
-  # scale_fill_distiller(palette="GnBu", direction=-1) +
+#| message: false
+#| warning: false
+df |>
+  ggplot(aes(temperature_change_since_prev_day, trip_count_change_since_prev_week, fill=temperature)) +
+  geom_point(alpha=.15, size=3, stroke=0, shape=21 ) +
+  scale_fill_distiller(palette="GnBu", direction=-1) +
+  scale_y_continuous(labels=thousands) +
   labs(
-    title = "Change in trip by change in temp",
+    title = "Change in Hourly Trip Count by Change in Temperature",
     x = paste("Change in ", temp_label, "Since 24 Hours Ago"),
-    y = "Change in Trips since a week ago",
-    fill = "trips"
-  )#+
-  # facet_wrap(~trip_type, scales="free_y")
+    y = "Change in Trips Since a Week Ago",
+    fill = paste("“Current”", temp_label)
+  ) 
 ```
 
+The distribution here suggests that trips don’t change much when the temperature also does not change much. If we squint, we imagine more dots in the II quadrant (negative $x$, positive $y$), which confirms our idea that people ride less when it is nicer out. But maybe it is our imagination.
 
+```{r}
+df |> 
+  mutate(
+    Quadrant = case_when(
+      temperature_change_since_prev_day > 0 & trip_count_change_since_prev_week > 0 ~ "Got Warmer & More Trips (I)",
+      temperature_change_since_prev_day > 0 & trip_count_change_since_prev_week < 0 ~ "Got Warmer & Fewer Trips (IV)",
+      temperature_change_since_prev_day < 0 & trip_count_change_since_prev_week > 0 ~ "Got Cooler & More Trips (II)",
+      temperature_change_since_prev_day < 0 & trip_count_change_since_prev_week < 0 ~ "Got Cooler  & Fewer Trips (III)"
+    )
+  ) |>
+  count(Quadrant) |>
+  arrange(desc(n))
+```
 
-## Comparing Different Times to Gauge Behavior Change
+There is not much of an effect here, and, what’s more, as we saw above, “getting warmer” only works until the temperature hits a threshold where it is too hot to walk. Even if we limit ourselves to the band of 17-21°, however, we can still see that the I quadrant is most populated.
 
-The patterns of taxi usage complicate how we can try to analyze weather effects. 
-That is, the strong weekly cycle of increasing ridership as the week goes on
-contrasts with the relative sense of a “nice” day. 
-If we typically take a cab on Friday, 
-but elect not to on a specific Friday because the weather is nice,
-we are not probably comparing that Friday’s weather to the previous Friday’s.
-Instead, we are likely comparing to yesterday’s weather or even this 
-morning’s weather.
+```{r}
+df |> 
+  filter(temperature > 17 & temperature < 21) |>
+  mutate(
+    Quadrant = case_when(
+      temperature_change_since_prev_day > 0 & trip_count_change_since_prev_week > 0 ~ "Got Warmer & More Trips (I)",
+      temperature_change_since_prev_day > 0 & trip_count_change_since_prev_week < 0 ~ "Got Warmer & Fewer Trips (IV)",
+      temperature_change_since_prev_day < 0 & trip_count_change_since_prev_week > 0 ~ "Got Cooler & More Trips (II)",
+      temperature_change_since_prev_day < 0 & trip_count_change_since_prev_week < 0 ~ "Got Cooler  & Fewer Trips (III)"
+    )
+  ) |>
+  drop_na(Quadrant) |>
+  count(Quadrant) |>
+  arrange(desc(n))
+```
 
-This means that while taxi ridership has to be compared against 
-data from a week previous, 
-weather data has to be compared against data from a day previous.
+Our efforts to relativize probably require more finesse, but it did inspire us to craft the interactive visualization in the next chapter.
+
+```{r}
+#| message: false
+#| warning: false
+df |>
+# pivot_trip_distance_df |>
+  # select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |>
+  select(month, trip_count, temperature, temperature_change_since_prev_day) |>
+  mutate(temperature = round(temperature)) |>
+  mutate(temperature_change_since_prev_day = round(temperature_change_since_prev_day)) |>
+  write_csv("data-for-d3.csv")
+```
