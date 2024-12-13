@@ -1,4 +1,4 @@
-### Count of trips 
+Now that we have looked at initial patterns in ridership and weather separately, let's put them together and see if we can make any initial interpretations regarding how weather might impact rider behavior. We have two variables to assess ridership (`trip_count` and its various distance bands) and the three weather variables, (`temperature`, `cloud_cover`, and `rain`). 
 
 ```{r}
 #| message: false
@@ -8,8 +8,8 @@ df |>
   summarize(avg_trips_by_degree=mean(trip_count), .groups = "drop") |>
   ggplot(aes(x = temperature, y = avg_trips_by_degree)) +
   geom_point(alpha = 0.9, color = base_color) +
-  geom_smooth(method = "loess", se = T, color = secondary_color, alpha=0.15) +
-  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
+  geom_smooth(method = "loess", se = T, color = secondary_color, alpha=0.15, span=0.75) +
+  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3), limits=c(10000,20000)) +
   labs(
     title = "Hourly Trip Count by Integral Temperature", 
     x = "Temperature (°C)", 
@@ -17,17 +17,8 @@ df |>
   theme_minimal()
 ```
 
-Here we see our first possible indication of “nice”: it is not nice when it is 30° outside. Additionally, 
-we see a pronounced dip at 20°, suggesting that is a great time for walking. It is neither too hot, nor too cold.  
-
-
-
-
-
-
-We see a higher amount of variability in the lower temperatures. We see an increase in trip count at higher temps, specifically above 30* celsius. This may make sense. If it is hot out maybe I dont want to walk. 
-
-On the other hand it levels out in moderate temperatures 
+Looking at average trip count at different temperatures, we can point out some obvious things. The data is a lot more sparse at extreme temperatures, so even taking the average per integer temperature, we get some weird values and higher variability. This is particularly true on the cold side. Hourly ridership seems to kind of stabilize in the middle temperatures. We see a slight increase in ridership at the high extremes, particularly above 30°C, suggesting that people may prefer to take a cab instead of walk home on extremely hot days. Additionally, 
+we see a subtle dip at 20°C, suggesting that is a great time for walking-- it is neither too hot, nor too cold. These could be our first indications of what we may consider to be a "nice" day. 
 
 ```{r}
 ggplot(df, aes(x = cloud_cover, y = trip_count, fill=cloud_cover)) +
@@ -35,40 +26,39 @@ ggplot(df, aes(x = cloud_cover, y = trip_count, fill=cloud_cover)) +
   geom_boxplot(alpha=0.7, outlier.alpha=1, color="black", outlier.color="black", linewidth=0.55) +
   scale_fill_brewer(palette = "GnBu") +
   scale_y_continuous(labels=thousands, breaks = pretty_breaks(n = 3)) +
-  labs(title = "Distribution of trip counts by over", x = "Cloud Cover", y = "Trip Count", fill="Cloud Cover") +
+  labs(title = "Distribution of trip counts by cloud cover", x = "Cloud Cover", y = "Trip Count", fill="Cloud Cover") +
   theme_minimal() +
   theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank())
 ```
 
-The vast majority of days are either clear or overcast. This doesn't really tell us much - those values are very similar, the middle plots could really just be explained by variability and smaller sample size. potensh remove --unless we just want for due diligence. 
+Trends in ridership according to cloud cover are a bit difficult to parse out. The vast majority of days fall into either clear or overcast categories, and their values are quite similar. Variations in the intermediate categories could likely be driven by the smaller sample size, rather than any meaningful difference in rider behavior.
+
+### Just another rainy day  
+
+Coming into this analysis, I speculated that rain might be a driving factor in ridership patterns. Going to work, the desire to arrive at work looking presentable, instead of with soaked clothes or damaged belongings, might lead people to opt for more comfortable transportation. Sometimes even the trek to the subway is too much! The same could be true of the evening, however, if you have after-work drinks and want to look nice, or again ur belongings.  sometimes you want to look presentable for a meeting instead of walking, biking, or sometimes even just trekking to a subway.
+
+On the other hand, if it is after work and it is beautiful out, I might take the time to walk the 3 miles home. And while I am a person who loves going on a walk or run in the rain, I have to be in the right mood for it. If I am coming home from a stressful day at work, getting soaked in rain might set me over the edge. Sometimes your comfort is worth the expense! Both of these might lead to a greater difference in activity on raining vs non raining days. 
+
+Setting out to answer these questions, I first compared the distribution of trips per hour by rain status. Because rain is relatively infrequent during the specific rush hour periods to which we have subset our data, I decided to scale the distributions to density to get a fair comparison. I also broke it up into temperature groups to eliminate the issue of it raining more often at particular temperatures. 
 
 ```{r}
-ggplot(df, aes(x = trip_count, fill = rain)) +
+df |> mutate(
+  rain=as.factor(ifelse(precipitation!=0, "Raining", "Not raining"))) |> 
+  ggplot(aes(x = trip_count, fill = rain)) +
   geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("Not raining" = "grey", "Raining" = "cornflowerblue")) +
+  scale_fill_manual(values = c("Not raining" = "grey", "Raining" = rain_color)) +
   scale_x_continuous(labels=thousands)+
   labs(title = "Density of trip count by rain status", x = "Number of trips in an hour", y = "Density", fill = "Rain Status") +
   theme_minimal()
 ```
 
-The plot above may suggest that there is greater ridership when it is raining. While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for "Raining" days (blue) appears to be slightly shifted towards higher trip counts compared to "Not raining" days (grey). This could indicate a slight increase in trip demand during rainy periods, potentially due to fewer people walking or biking. Moreover, we see more extreme values in the "Raining" distribution: the tail is slightly longer on the right side, suggests that more extreme trip counts (i.e. higher demand) occurs more frequently during rain.
 
-**Perhaps include:**
-I made the plot below just to test again that idea of does rain impact evening rush hour more than morning rush hour. Below, we can see the evening rush hour (**I need to reorder these still**) has a slightly higher median AND IQR for raining vs not raining. Idk I think this is somewhat of note -- people are perhaps more flexible in the evening. I might not be planning to walk to work on any given day, but in the summer when it is nice out sometimes I spontaneously walk home from work instead of my usual transportation. 
-
-```{r}
-#| warning: false
-ggplot(df, aes(x = rush_hour_group, y = trip_count, fill = rain)) +
-  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
-  scale_fill_manual(values = c("Not raining" = "grey", "Raining" = "cornflowerblue")) +
-  scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3)) +
-  labs(title = "Trip Count distribution by rain and rush_hour group", x = "", y = "Trip Count", fill = "Rain Status") +
-  theme_minimal()
-```
-
-Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines. 
-
-Rain and cloud and temp together w/ ridership: what defines a "nice" day? Where do we see the most and least ridership?
+The plot above may suggest that there is slightly greater ridership when it is raining. While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for raining days (blue) appears to be slightly shifted right towards higher trip counts. This could indicate a slight increase in trip demand during rainy periods. Moreover, we see more extreme trip counts in the raining distribution: the tail is slightly longer on the right side. More extreme trip counts might imply that often unusually high demand occurs on days that it rains. 
 
 
+
+**Perhaps include:** NOPE
+Next, I was curious again about patterns in morning versus evening ridership. Do people have more rigid routines in the morning compared to the evening? Or are they more likely to take a cab in the morning if it is raining because they are worried about their appearance at work? 
+
+From the boxplots, we can see the evening rush hour has a slightly higher median AND IQR when it is raining compared to times it does not rain. This suggests that people are perhaps more flexible in the evening. I might not be planning to walk to work on any given day, but in the summer when it is nice out sometimes I spontaneously walk home from work instead of my usual transportation. On the way to work though, people will hunker down and continue their schedule. Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines.  Why would I pay a lot of money to get to my place of work (vom emoji) after all? 
 

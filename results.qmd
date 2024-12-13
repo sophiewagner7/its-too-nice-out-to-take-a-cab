@@ -30,6 +30,7 @@ standardize <- function(x) {
 
 base_color <- brewer.pal(n = 3, name = "Set2")[1]
 secondary_color <- brewer.pal(n=3, name = "Set2")[2]
+rain_color <- brewer.pal(n=3, name = "Set2")[3]
 classic <- theme_set(theme_minimal())
 
 temp_label <- "Temperature (°C)"
@@ -38,10 +39,10 @@ df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
 ```
 
 ```{r}
+#| echo: false
 # Add a month_abbr column.
 df <- df |>
   mutate(month_abbr = factor(month.abb[month], levels = month.abb)) 
-
 ```
 
 ## A New Normal: How the COVID-19 Pandemic Reshaped Taxi Ridership Patterns
