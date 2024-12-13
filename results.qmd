@@ -23,6 +23,10 @@ thousands <- function(x) {
   ifelse(x == 0, "0", label_comma(scale = 1e-3, suffix = "K")(x))
 }
 
+double_scale <- function(x) {
+  ifelse(x >= 1000, paste0(x / 1000, "K"), as.character(x))
+}
+
 # Use in mutate: mutate(foo= standardize(bar))
 standardize <- function(x) {
   (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)

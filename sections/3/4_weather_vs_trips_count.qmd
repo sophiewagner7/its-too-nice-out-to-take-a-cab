@@ -2,7 +2,7 @@ Now that we have looked at initial patterns in ridership and weather separately,
 
 ### Influence of Weather on Trip Count
 
-We will first analyze trends in ridership (`trip count`) in relation to the weather. We hypothesize that ridership should decrease on a "nice" day. The following analysis should help to uncover what the characteristics of such a day. 
+We will first analyze trends in ridership (`trip_count`) in relation to the weather. We hypothesize that ridership should decrease on a "nice" day. The following analysis should help to uncover what the characteristics of such a day. 
 
 #### Too Hot, Too Cold, Just Right: Ridership Across the Temperature Spectrum
 
@@ -17,14 +17,14 @@ df |>
   geom_smooth(method = "loess", se = T, color = secondary_color, alpha=0.15, span=0.75) +
   scale_y_continuous(labels = thousands, breaks = pretty_breaks(n = 3), limits=c(0,20000)) +
   labs(
-    title = "Hourly trips by temperature", 
+    title = "Average Hourly trips by temperature", 
     x = "Temperature (°C)", 
-    y = "Hourly Trip Count") +
+    y = "Average Hourly Trip Count") +
   theme_minimal()
 ```
 
 Looking at average trip count at different temperatures, we can point out some obvious things. The data is a lot more sparse at extreme temperatures, so even taking the average per integer temperature, we get some weird values and higher variability. This is particularly true on the cold side. Hourly ridership seems to kind of stabilize in the middle temperatures. We see a slight increase in ridership at the high extremes, particularly above 30°C, suggesting that people may prefer to take a cab instead of walk home on extremely hot days. Additionally, 
-we see a subtle dip at 20°C, suggesting that is a great time for walking-- it is neither too hot, nor too cold. These could be our first indications of what we may consider to be a "nice" day. 
+we see a subtle dip at 20°C, suggesting that is a great time for walking—it is neither too hot, nor too cold. These could be our first indications of what we may consider to be a "nice" day. 
 
 #### Cloud Cover: Do Riders Prefer Clear Skies?
 
@@ -43,9 +43,17 @@ Trends in ridership according to cloud cover are a bit difficult to parse out. T
 
 #### Weathering the Storm: Does Rain Influence Trip Counts?
 
-Coming into this analysis, we speculated that rain might be a driving factor in ridership patterns. Going to work, the desire to arrive at work looking presentable, instead of with soaked clothes or damaged belongings, might lead people to opt for more comfortable transportation. On the other hand, if it is beautiful out, I might take the time to walk the few miles home from work. And while I am a person who loves going on a walk or run in the rain, I have to be in the right mood for it. If I am coming home from a stressful day at work, getting soaked in rain might set me over the edge, making my comfortable ride worth the extra expense. These considerations might lead to a difference in ridership between rainy and non-rainy days.
+Coming into this analysis, we speculated that rain might be a driving factor in ridership patterns. Going to work, the desire to arrive at work looking presentable, instead of with soaked clothes or damaged belongings, might lead people to opt for more comfortable transportation. On the other hand, if it is beautiful out, 
+one might take the time to walk the few miles home from work. 
+And while we might love going on a walk or run in the rain, 
+we have to be in the right mood for it. 
+When coming home from a stressful day at work, 
+getting soaked in rain might set one over the edge, 
+making a comfortable ride worth the extra expense. 
+These considerations might lead to a difference in ridership between rainy and non-rainy days.
 
-Setting out to answer these questions, we first compared the distribution of trips per hour by rain status. Because rain is relatively infrequent during the specific rush hour periods to which we have subset our data, I decided to scale the distributions to density to get a fair comparison. 
+Setting out to answer these questions, we first compared the distribution of trips per hour by rain status. Because rain is relatively infrequent during the specific rush hour periods to which we have subset our data, 
+we decided to scale the distributions to density to get a fair comparison. 
 
 ```{r}
 df |> mutate(
@@ -58,4 +66,10 @@ df |> mutate(
   theme_minimal()
 ```
 
-The plot above may suggest that there is slightly greater ridership when it is raining. While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for raining days (blue) appears to be slightly shifted right towards higher trip counts. This could indicate a slight increase in trip demand during rainy periods. Moreover, we see more extreme trip counts in the raining distribution: the tail is slightly longer on the right side. More extreme trip counts might imply that often unusually high demand occurs on days that it rains. 
+While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. 
+First, 
+the distribution of number of trips for raining days (blue) appears to be slightly shifted right towards higher trip counts. 
+This could indicate a slight increase in trip demand during rainy periods. 
+Moreover, we see more extreme trip counts in the raining distribution: 
+the tail is slightly longer on the right side. 
+More extreme trip counts might imply that often unusually high demand occurs on days that it rains. 
