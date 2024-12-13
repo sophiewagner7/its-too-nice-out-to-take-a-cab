@@ -174,9 +174,9 @@ df |>
   ggplot(aes(x = day, y = trip_count, fill=rush_hour_group)) +
   geom_boxplot(color = "black", outlier.color = "black", outlier.size = 1) +
   scale_y_continuous(label=thousands)+
-  scale_fill_manual(values = c("Overall" = base_color, 
-                               "Morning rush hour (7-9am)" = secondary_color, 
-                               "Evening rush hour (5-7pm)" = brewer.pal(n = 8, name = "Set2")[3])) +
+  scale_fill_manual(values = c("Overall" = "grey", 
+                               "Morning rush hour (7-9am)" = base_color, 
+                               "Evening rush hour (5-7pm)" = secondary_color))  +
   labs(title = "Number of trips by day of the week", x = "Day of week", y = "Number of trips", fill="") +
   theme_minimal() +
   theme(legend.position="bottom")
