@@ -9,6 +9,7 @@ weather variables, (`temperature`, `cloud_cover`, and `rain`).
 #| message: false
 #| warning: false
 pivot_trip_distance_df <- df |>
+  mutate(temperature = round(temperature)) |>
   mutate(
     up_to_ten_mile_trips = trip_count - rowSums(across(ends_with("mile_trips")))
   ) |>
@@ -44,12 +45,12 @@ pivot_trip_distance_df |>
     .groups = "drop"
   ) |>
   ggplot(aes(temperature, avg_trips_by_degree)) +
-    geom_point(color=base_color, size=1, alpha=0.5) +
+    geom_point(color=base_color, size=1, alpha=0.9) +
     scale_y_continuous(
       labels = thousands,
       breaks = pretty_breaks(n = 3)
     ) +
-    geom_smooth(color=secondary_color, method="loess", linewidth=1, se=TRUE, alpha=0.15)+
+    geom_smooth(color=secondary_color, method="loess", linewidth=1, se=TRUE, alpha=0.15, span=0.75)+
     labs(
       title = "Average Hourly Trips Per Hour by Temperature across Trip Distance",
       y = "Average Hourly Trips",

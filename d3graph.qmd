@@ -5,9 +5,17 @@ between changes in temperature from 24 hours earlier and changes in taxi
 ridership from a week ago. 
 Instead of presenting all of the data at once, however, we let the user target
 a specific temperature and see how ridership differs when the  previous day 
-was warmer or colder and by how much. The farther right along the $x$ axis, 
-the warmer “today” was than “yesterday.” The farther up the $y$ axis,
-the more taxi trips taken “today” compared to “last week.”
+was warmer or colder and by how much. 
+The farther up the $y$ axis,
+the more taxi trips taken “today” compared to “last week,” where each “today”
+corresponds to the temperature chosen by the slider, 
+and we see the universe of last weeks when it was a different temperature.
+
+Hence, for the default temperature, 20°, 
+we see that if yesterday was around the same temperature,
+in general fewer trips were taken today. But if yesterday was much colder or
+much warmer, paradoxically to our general conclusions, more trips were taken 
+today. 
 
 We have limited ourselves, as in the previous section, to post-Pandemic, rush
 hour traffic when the temperature was -5°-30°.
@@ -24,5 +32,3 @@ hour traffic when the temperature was -5°-30°.
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="scripts/myscript.js" type="module"></script>
 
-
--- change rain to blue.

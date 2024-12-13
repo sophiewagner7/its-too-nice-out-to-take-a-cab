@@ -1,7 +1,7 @@
 // add your JavaScript/D3 to this file
 
 // Set a baseline temperature
-let temperature = 25;
+let temperature = 20;
 
 /* Await loading the data
  interface TaxiWeatherData {
@@ -41,7 +41,7 @@ inputDiv.append("input")
   .attr("name", "temperature")
   .attr("min", d3.min(csvData.map(n => +n.temperature)))
   .attr("max", d3.max(csvData.map(n => +n.temperature)))
-  .attr("value", 25)
+  .attr("value", temperature)
   .attr("step", 1);
 inputDiv.append("label")
   .style("padding-left", "1.5rem")
