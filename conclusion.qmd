@@ -1,28 +1,9 @@
 # Conclusion
 
-we set out to define what "nice" is in the context of it being too nice out to take a cab.
+We set out to define what "nice" is in the context of it being too nice out to take a cab. In doing so, we worked off of the assumption that there *is* a relationship between the weather and taxi usage, i.e. that people change their routines according to the weather. However, trying to assess the "when" and "how" of it all proved to be very challenging. First, we used the most recent 5 years of data available, which meant that we ran into the fated Pandemic Issue, causing us to toss out half of our data. Working on limited data, we pushed forward, but still found it hard to establish a "normal" taxi day or hour against which we could compare, because the weather seasonal, and taxis are hebdomadal. We tried to limit variability by limiting the scope to rush hour times; this was somewhat promising, but the effects we noticed were faint. Future work would test the effects against a null hypothesis.
 
-we assumed a relationship between the weather and taxi usage
+With our rough data, we still tried to relativize and find any trends, but the results were confusing. What we learned without a doubt is that if there is a relationship to taxi use and temperature, it is not linear, and there is a sweet spot at around 20°, when it is nice enough to walk instead of ride for a short trip, but not so hot to be annoying. We saw that more extreme demand times seemed to be during rainy days compared to nonrainy. We also learned that rain and cloud cover have small effects on short trip likelihood.
 
-first, the pandemic ruined half of our data
-
-it was very hard to develop a "normal" taxi day or hour against which we could compare, because the weather seasonal, and taxis are hebdomadal.
-
-We tried to limit variability, and that was somewhat promising, but the effects we noticed were faint. Future work would test the effects against a null hypothesis.
-
-we tried to relativize, but the results were confusing. 
-
-What we learned without a doubt is that if there is a relaitonship to taxi use and temperature, it is not linear, and there is a sweet spot at around 20°, when it is nice enough to walk instead of ride for a short trip, but not so hot to be annoying.
-
-We also learned that rain and cloud cover have small effects on short trip likelihood.
-
-Future steps:
-
-Were we to continue...
-
-not assume independence of weather variables
-model the data instead of relying purely on EDA.
-use different bins for trip distances to account for the number of trips between one and two miles.
-Have more calendar data. would've been great if we had five years. OR control for the pandemic.:w
+Were we to continue, we would do a lot of things. One in particular is not assume independence of weather variables - this was a weak assumption to make but it had to be done. Obviously weather is not independent. In order to parse this out, it would be good to model the data instead of relying purely on EDA. Otherwise, it would be nice to use different bins for trip distances to account for the number of trips between one and two miles - this grouping may have obscured some trends. And finally, Have more calendar data. would've been great if we had five years. OR control for the pandemic.:w
 
 
