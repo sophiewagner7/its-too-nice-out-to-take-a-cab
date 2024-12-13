@@ -4,7 +4,7 @@ In this section, we carry over our efforts to relativize the relationship
 between changes in temperature from 24 hours earlier and changes in taxi 
 ridership from a week ago. 
 Instead of presenting all of the data at once, however, we let the user target
-a specific temperature and see how ridership differs when the previous day 
+a specific temperature and see how ridership differs when the  previous day 
 was warmer or colder and by how much. The farther right along the $x$ axis, 
 the warmer “today” was than “yesterday.” The farther up the $y$ axis,
 the more taxi trips taken “today” compared to “last week.”
@@ -23,3 +23,11 @@ hour traffic when the temperature was -5°-30°.
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="scripts/myscript.js" type="module"></script>
+
+
+-- change point about running hot
+-- change integral title for temp histogram
+-- add subheads to weather analysis.
+-- Add fancy way for showing tables
+-- cut 3.6
+-- change rain to blue.
