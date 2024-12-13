@@ -1,6 +1,6 @@
 <!-- ## Patterns in Weather Data -->
 
-### Temperature during Rush Hour
+### Temperature during Rush Hour, Seasonal as Ever
 
 We chose to limit our weather analysis to three variables: 
 temperature, cloud cover, and rain. 
@@ -43,7 +43,7 @@ df |>
     title = "Distribution of Rush Hour Temperatures", x = "Temperature (°C)", y = "Count")
 ``` 
 
-Moving forward, we will limit our analysis to temperatures between -5° and 30°.
+Moving forward, **we will limit our analysis to temperatures between -5° and 30°**.
 
 ```{r}
 df <- df |>
@@ -51,7 +51,7 @@ df <- df |>
   filter(temperature <= 30)
 ```
 
-### Cloud Cover during Rush Hour
+### Cloud Cover during Rush Hour and Gloomy Januarys
 
 Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.
  
@@ -100,9 +100,13 @@ ggplot(aes(x = month_abbr, y = percentage, fill = as.factor(cloud_cover))) +
 ```
  
 
-Cloud cover less obviously seasonal than temperature, and in general days are clear. The lack of clear seasonality helps us generalize over the year, and the trend toward clear days may help cloudiness jump out more as an excuse to take a cab instead of walk.
+Cloud cover is less obviously seasonal than temperature, 
+and in general days are clear. 
+The lack of clear seasonality helps us generalize over the year, 
+and the trend toward clear days may help cloudiness jump out 
+more as an excuse to take a cab instead of walk.
 
-### Rain during Rush Hour
+### Rain during Rush Hour and Even Gloomier Januarys
 
 ```{r}
 #| echo: false
@@ -141,4 +145,9 @@ df |>
   )
 ```
 
-In limiting our data just to rush hours, the amount of rain we capture has also been greatly diminished. Where earlier we were averaging about 15 days a month of rain, a lot of that rain fell outside of rush hour, meaning the distribution changes remarkably. This will actually help in later analysis because, like we cloud cover, it makes rain rarer and perhaps a more notable indicator of taxi usage.
+In limiting our data just to rush hours, the amount of rain we capture has also been greatly diminished. 
+Where earlier we were averaging about 15 days a month of rain, 
+a lot of that rain fell outside of rush hour, 
+meaning the distribution changes remarkably. 
+This will actually help in later analysis because, like with cloud cover, 
+it makes rain rarer and perhaps a more notable indicator of taxi usage.
