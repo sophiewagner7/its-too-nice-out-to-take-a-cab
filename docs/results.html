@@ -246,13 +246,14 @@ window.Quarto = {
   </ul></li>
   <li><a href="#patterns-in-weather-data" id="toc-patterns-in-weather-data" class="nav-link" data-scroll-target="#patterns-in-weather-data"><span class="header-section-number">3.3</span> Patterns in Weather Data</a>
   <ul class="collapse">
-  <li><a href="#temperature-during-rush-hour" id="toc-temperature-during-rush-hour" class="nav-link" data-scroll-target="#temperature-during-rush-hour"><span class="header-section-number">3.3.1</span> Temperature during Rush Hour</a></li>
-  <li><a href="#cloud-cover-during-rush-hour" id="toc-cloud-cover-during-rush-hour" class="nav-link" data-scroll-target="#cloud-cover-during-rush-hour"><span class="header-section-number">3.3.2</span> Cloud Cover during Rush Hour</a></li>
-  <li><a href="#rain-during-rush-hour" id="toc-rain-during-rush-hour" class="nav-link" data-scroll-target="#rain-during-rush-hour"><span class="header-section-number">3.3.3</span> Rain during Rush Hour</a></li>
+  <li><a href="#temperature-during-rush-hour-seasonal-as-ever" id="toc-temperature-during-rush-hour-seasonal-as-ever" class="nav-link" data-scroll-target="#temperature-during-rush-hour-seasonal-as-ever"><span class="header-section-number">3.3.1</span> Temperature during Rush Hour, Seasonal as Ever</a></li>
+  <li><a href="#cloud-cover-during-rush-hour-and-gloomy-januarys" id="toc-cloud-cover-during-rush-hour-and-gloomy-januarys" class="nav-link" data-scroll-target="#cloud-cover-during-rush-hour-and-gloomy-januarys"><span class="header-section-number">3.3.2</span> Cloud Cover during Rush Hour and Gloomy Januarys</a></li>
+  <li><a href="#rain-during-rush-hour-and-even-gloomier-januarys" id="toc-rain-during-rush-hour-and-even-gloomier-januarys" class="nav-link" data-scroll-target="#rain-during-rush-hour-and-even-gloomier-januarys"><span class="header-section-number">3.3.3</span> Rain during Rush Hour and Even Gloomier Januarys</a></li>
   </ul></li>
   <li><a href="#weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns" id="toc-weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns" class="nav-link" data-scroll-target="#weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns"><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips: Can We Define “Nice” Weather from Ridership Patterns?</a>
   <ul class="collapse">
-  <li><a href="#just-another-rainy-day" id="toc-just-another-rainy-day" class="nav-link" data-scroll-target="#just-another-rainy-day"><span class="header-section-number">3.4.1</span> Just another rainy day</a></li>
+  <li><a href="#influence-of-weather-on-trip-count" id="toc-influence-of-weather-on-trip-count" class="nav-link" data-scroll-target="#influence-of-weather-on-trip-count"><span class="header-section-number">3.4.1</span> Influence of Weather on Trip Count</a></li>
+  <li><a href="#influence-of-weather-on-trip-distances" id="toc-influence-of-weather-on-trip-distances" class="nav-link" data-scroll-target="#influence-of-weather-on-trip-distances"><span class="header-section-number">3.4.2</span> Influence of Weather on Trip Distances</a></li>
   </ul></li>
   <li><a href="#doing-the-timeshift" id="toc-doing-the-timeshift" class="nav-link" data-scroll-target="#doing-the-timeshift"><span class="header-section-number">3.5</span> Doing the Timeshift</a></li>
   </ul>
@@ -282,7 +283,7 @@ window.Quarto = {
 
 <section id="a-new-normal-how-the-covid-19-pandemic-reshaped-taxi-ridership-patterns" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="a-new-normal-how-the-covid-19-pandemic-reshaped-taxi-ridership-patterns"><span class="header-section-number">3.1</span> A New Normal: How the COVID-19 Pandemic Reshaped Taxi Ridership Patterns</h2>
-<p>From the outset, we knew that we would need to exclude data from the height of Pandemic-era restrictions, as this would likely cloud (no pun intended) relationships between weather and taxi usage. Our intial plan was to contain data from 2019 (pre-Pandemic) to get a baseline to establish normalcy of post-pandemic data. However, we found significant differences in rider behavior between pre- and post-Pandemic periods, forcing us to question the relevance of using pre-Pandemic data at all.</p>
+<p>From the outset, we knew that we would need to exclude data from the height of Pandemic-era restrictions, as this would likely cloud (no pun intended) relationships between weather and taxi usage. Our intial plan was to contain data from 2019 (pre-Pandemic) to get a baseline to establish normalcy of post-Pandemic data. However, we found significant differences in rider behavior between pre- and post-Pandemic periods, forcing us to question the relevance of using pre-Pandemic data at all.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -325,7 +326,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We first looked at trip volume by car type. We knew there was going to be an impact at the height of the Pandemic, but the plot is still striking. We can see when the Pandemic hit in March, 2020. New York City schools closed on March 16, as cases went from a seven-day average of 0 per 100,000 inhabitants at the start of March to an initial peak of about 60 at the end of the month.<span class="citation" data-cites="shapiro2020"><a href="references.html#ref-shapiro2020" role="doc-biblioref">[1]</a></span> <span class="citation" data-cites="nysdoh"><a href="references.html#ref-nysdoh" role="doc-biblioref">[2]</a></span> The uncertainty over this initial wave halved the March ridership totals in comparison to February.</p>
-<p>Ridership slowly increased from thereon. We can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.<span class="citation" data-cites="lunden2019"><a href="references.html#ref-lunden2019" role="doc-biblioref">[3]</a></span> Via also stopped its ride-sharing operations in December 2021.<span class="citation" data-cites="fingas2021"><a href="references.html#ref-fingas2021" role="doc-biblioref">[4]</a></span> The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.</p>
+<p>Ridership slowly increased from thereon. We can see that two of the FHVHV companies, though only holding small portions of the market, disappeared from the picture. Juno shut down operations in November 2019, with drivers being offered to join Lyft.<span class="citation" data-cites="lunden2019"><a href="references.html#ref-lunden2019" role="doc-biblioref">[3]</a></span> Via also stopped its ride-sharing operations in December 2021.<span class="citation" data-cites="fingas2021"><a href="references.html#ref-fingas2021" role="doc-biblioref">[4]</a></span> The cessation of rides from these two companies only lead us toward the most striking aspect of hired car and taxi usage in Manhattan. Not only did usage fall during the Pandemic, but we seem to be in a new normal, averaging about 7.5 million rides a month across yellow cabs, Lyft, and Uber. These numbers have held since October 2021, suggesting it may make sense to abandon all data from before this time in order to get a good rhythm of usage.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -408,7 +409,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The next question we asked to establish a baseline normal was rider travel distance. If number of riders fell overall, did this come equally across all distances, or are people taking less of certain types of trips?</p>
-<p>Plotting the distribution of trip distances helped to answer this question. Perhaps as a consequence of less business-related travel because of flexible work schedules, the trips we observed tended to be longer. Shorter trips–those of one mile–make up a smaller percentage of the total, while trips of more than three miles make up a larger percentage of the total since the onset of the Pandemic.</p>
+<p>Plotting the distribution of trip distances helped to answer this question. Perhaps as a consequence of less business-related travel because of flexible work schedules, the trips we observed tended to be longer. Shorter trips—those of one mile—make up a smaller percentage of the total, while trips of more than three miles make up a larger percentage of the total since the onset of the Pandemic.</p>
 <p>Both analyses suggest certainly abandoning pre-Pandemic data as well as all of the 2020 data. While the distribution of distances stabilizes at the beginning of 2021, the number of trips does not reach its new normal until around October 2021, suggesting that is the true step into the post-Pandemic order.</p>
 <p>Given these insights, <strong>we will focus only on data from October 2021 onward</strong> as we move forward with our analysis.</p>
 <div class="cell">
@@ -538,7 +539,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Rider behavior does seem to be influenced by time of day. From the plot above we can see that longer trups are more common during the late-night and early-morning hours. Perhaps this indicates that people travel greater distances for late-night activities. The distribution of trip distances appears to stabilize between 7am and 7pm, with higher proportion of shorter-distance trips compared to long. Interestingly, time of day was the only time-measure that seemed to impact this aspect of rider behavior: day of the week and month do not appear to have any influence on trip distance. This information isn’t totally revolutionary, though it may underscore the importance of focusing on particular hours to account for variability in trip length or usage patterns.</p>
+<p>From the plot above we can see that longer trips are more common during the late-night and early-morning hours. Perhaps this indicates that people travel greater distances for late-night activities. The distribution of trip distances appears to stabilize between 7am and 7pm, with higher proportion of shorter-distance trips compared to long. Interestingly, time of day was the only time-measure that seemed to impact this aspect of rider behavior: day of the week and month do not appear to have any influence on trip distance. This information isn’t totally revolutionary, though it may underscore the importance of focusing on particular hours to account for variability in trip length or usage patterns.</p>
 <p>With respect to trip volume, there is a significant variation by time of day as anticipated. When plotting all dates, we noticed some clustering in trip counts by hour, and were able to decipher that this behavior is largely related to the day of the week.</p>
 <div class="cell">
 <details class="code-fold">
@@ -570,9 +571,9 @@ window.Quarto = {
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">23</span>, <span class="at">by =</span> <span class="dv">3</span>)) <span class="sc">+</span></span>
 <span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>thousands) <span class="sc">+</span></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Trip Counts by Hour with Day of Week Labels"</span>,</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Hourly Trips by Day of the Week"</span>,</span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Hour of the Day"</span>,</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Trip Count"</span>,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Number of Trips"</span>,</span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Day Type"</span></span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
@@ -587,8 +588,8 @@ window.Quarto = {
 </div>
 </div>
 <p>After identifying clusters in ridership patterns, we were able to delineate that a major source of variation in rider usage of hours of the day came from if it was a weekday or weekend. It appears that weekdays follow a somewhat similar trend by hour, with weekends exhibiting more unique trends. Saturday and Sunday show similar ridership in the morning (relatively high, carryover ridership from people going out late the previous night). However, Sunday has noticeably lower ridership in the evening; logically this makes sense as people are likely not engaging in as much nighttime activity before the workweek begins again. Because these patterns are distinct from one another and differ from the work-week trends, it will likely be better to stick to weekdays moving forward where the pattern is more consistent.</p>
-<p>Looking at weekdays,we notice strong bimodality during rush hour periods (7am-9am, 5pm-7pm). Perhaps we should limit our focus to just rush hour during working days to limit some variability or influence of time on taxi usage. Logically we might frame it as taking a taxi to and from work, but if its a nice day, I might decide to walk home from the office. If it’s below freezing, I am not going to go out of my way to walk 40 minutes home, though!</p>
-<p>Moving forward, <strong>we’ll restrict the analysis to non-holiday weekday rush hour periods</strong> (<a href="https://www.nytimes.com/fodors/top/features/travel/destinations/unitedstates/newyork/newyorkcity/fdrs_tips_111_2.html">7-9 AM and 5-7 PM</a>) to reduce variability and emphasize patterns tied to commuting behavior.</p>
+<p>Looking at weekdays,we notice strong bimodality during rush hour periods (7am–9am, 5pm–7pm). Perhaps we should limit our focus to just rush hour during working days to limit some variability or influence of time on taxi usage. Logically we might frame it as taking a taxi to and from work, but if its a nice day, I might decide to walk home from the office. If it’s below freezing, I am not going to go out of my way to walk 40 minutes home, though!</p>
+<p>Moving forward, <strong>we’ll restrict the analysis to non-holiday weekday rush hour periods</strong> (<a href="https://www.nytimes.com/fodors/top/features/travel/destinations/unitedstates/newyork/newyorkcity/fdrs_tips_111_2.html">7am–9am and 5pm–7pm</a>) to reduce variability and emphasize patterns tied to commuting behavior.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -648,9 +649,9 @@ window.Quarto = {
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> trip_count, <span class="at">fill=</span>rush_hour_group)) <span class="sc">+</span></span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">outlier.color =</span> <span class="st">"black"</span>, <span class="at">outlier.size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">label=</span>thousands)<span class="sc">+</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Overall"</span> <span class="ot">=</span> base_color, </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Morning rush hour (7-9am)"</span> <span class="ot">=</span> secondary_color, </span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Evening rush hour (5-7pm)"</span> <span class="ot">=</span> <span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">8</span>, <span class="at">name =</span> <span class="st">"Set2"</span>)[<span class="dv">3</span>])) <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Overall"</span> <span class="ot">=</span> <span class="st">"grey"</span>, </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Morning rush hour (7-9am)"</span> <span class="ot">=</span> base_color, </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Evening rush hour (5-7pm)"</span> <span class="ot">=</span> secondary_color))  <span class="sc">+</span></span>
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of trips by day of the week"</span>, <span class="at">x =</span> <span class="st">"Day of week"</span>, <span class="at">y =</span> <span class="st">"Number of trips"</span>, <span class="at">fill=</span><span class="st">""</span>) <span class="sc">+</span></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -663,7 +664,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Even within the weekday rush hour subset, ridership varies. We see that Mondays have the lowest median trip counts and the most compact IQR, which could be related to Monday as a common WFH day (explaining lower average) and people tend to be consistent in their behavior at the start of the week (less variability). Tuesday through Thursday, we see a pretty consistent median and variabilty. Friday, we see the highest variability, likely because people engage in social activities after work. Tuesday through Thursday show relatively consistent median trip counts and narrower distributions, reflecting more regular commuting patterns. There are some outliers visible on the plot worth investigating, perhaps relating to around-holiday times, special events, or weather conditions.</p>
+<p>Even within the weekday rush hour subset, ridership varies. Mondays and Fridays have the lowest median trip counts in the morning rush hour, which could be related to both days as a common WFH day. Tuesday through Thursday, we see a pretty consistent median and variability in the morning rush hour. However, we see an upward trend in the median number of evening rush hour trips, peaking at Friday, which also has the highest variability. This upward trend reflects people’s proclivity to engaging in social activities later in the week, whereas earlier in the week they might be on the straight and narrow.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -689,8 +690,8 @@ window.Quarto = {
 <section id="patterns-in-weather-data" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="patterns-in-weather-data"><span class="header-section-number">3.3</span> Patterns in Weather Data</h2>
 <!-- ## Patterns in Weather Data -->
-<section id="temperature-during-rush-hour" class="level3" data-number="3.3.1">
-<h3 data-number="3.3.1" class="anchored" data-anchor-id="temperature-during-rush-hour"><span class="header-section-number">3.3.1</span> Temperature during Rush Hour</h3>
+<section id="temperature-during-rush-hour-seasonal-as-ever" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="temperature-during-rush-hour-seasonal-as-ever"><span class="header-section-number">3.3.1</span> Temperature during Rush Hour, Seasonal as Ever</h3>
 <p>We chose to limit our weather analysis to three variables: temperature, cloud cover, and rain. This provides three kinds of variables (numeric, categorical, boolean) while also giving a sense of easy to understand information that might be used by a traveler electing to walk or not. That is, a consideration of whether it is sunny or not is perhaps clearer to a person choosing to ride the cab than the dew point.</p>
 <div class="cell">
 <details class="code-fold">
@@ -732,7 +733,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Moving forward, we will limit our analysis to temperatures between -5° and 30°.</p>
+<p>Moving forward, <strong>we will limit our analysis to temperatures between -5° and 30°</strong>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -742,8 +743,8 @@ window.Quarto = {
 </details>
 </div>
 </section>
-<section id="cloud-cover-during-rush-hour" class="level3" data-number="3.3.2">
-<h3 data-number="3.3.2" class="anchored" data-anchor-id="cloud-cover-during-rush-hour"><span class="header-section-number">3.3.2</span> Cloud Cover during Rush Hour</h3>
+<section id="cloud-cover-during-rush-hour-and-gloomy-januarys" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="cloud-cover-during-rush-hour-and-gloomy-januarys"><span class="header-section-number">3.3.2</span> Cloud Cover during Rush Hour and Gloomy Januarys</h3>
 <p>Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.</p>
 <table class="caption-top table">
 <thead>
@@ -805,10 +806,10 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Cloud cover less obviously seasonal than temperature, and in general days are clear. The lack of clear seasonality helps us generalize over the year, and the trend toward clear days may help cloudiness jump out more as an excuse to take a cab instead of walk.</p>
+<p>Cloud cover is less obviously seasonal than temperature, and in general days are clear. The lack of clear seasonality helps us generalize over the year, and the trend toward clear days may help cloudiness jump out more as an excuse to take a cab instead of walk.</p>
 </section>
-<section id="rain-during-rush-hour" class="level3" data-number="3.3.3">
-<h3 data-number="3.3.3" class="anchored" data-anchor-id="rain-during-rush-hour"><span class="header-section-number">3.3.3</span> Rain during Rush Hour</h3>
+<section id="rain-during-rush-hour-and-even-gloomier-januarys" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="rain-during-rush-hour-and-even-gloomier-januarys"><span class="header-section-number">3.3.3</span> Rain during Rush Hour and Even Gloomier Januarys</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -840,12 +841,17 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>In limiting our data just to rush hours, the amount of rain we capture has also been greatly diminished. Where earlier we were averaging about 15 days a month of rain, a lot of that rain fell outside of rush hour, meaning the distribution changes remarkably. This will actually help in later analysis because, like we cloud cover, it makes rain rarer and perhaps a more notable indicator of taxi usage.</p>
+<p>In limiting our data just to rush hours, the amount of rain we capture has also been greatly diminished. Where earlier we were averaging about 15 days a month of rain, a lot of that rain fell outside of rush hour, meaning the distribution changes remarkably. This will actually help in later analysis because, like with cloud cover, it makes rain rarer and perhaps a more notable indicator of taxi usage.</p>
 </section>
 </section>
 <section id="weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns"><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips: Can We Define “Nice” Weather from Ridership Patterns?</h2>
 <p>Now that we have looked at initial patterns in ridership and weather separately, let’s put them together and see if we can make any initial interpretations regarding how weather might impact rider behavior. We have two variables to assess ridership (<code>trip_count</code> and its various distance bands) and the three weather variables, (<code>temperature</code>, <code>cloud_cover</code>, and <code>rain</code>).</p>
+<section id="influence-of-weather-on-trip-count" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="influence-of-weather-on-trip-count"><span class="header-section-number">3.4.1</span> Influence of Weather on Trip Count</h3>
+<p>We will first analyze trends in ridership (<code>trip_count</code>) in relation to the weather. We hypothesize that ridership should decrease on a “nice” day. The following analysis should help to uncover what the characteristics of such a day.</p>
+<section id="too-hot-too-cold-just-right-ridership-across-the-temperature-spectrum" class="level4" data-number="3.4.1.1">
+<h4 data-number="3.4.1.1" class="anchored" data-anchor-id="too-hot-too-cold-just-right-ridership-across-the-temperature-spectrum"><span class="header-section-number">3.4.1.1</span> Too Hot, Too Cold, Just Right: Ridership Across the Temperature Spectrum</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -856,11 +862,11 @@ window.Quarto = {
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> temperature, <span class="at">y =</span> avg_trips_by_degree)) <span class="sc">+</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.9</span>, <span class="at">color =</span> base_color) <span class="sc">+</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> T, <span class="at">color =</span> secondary_color, <span class="at">alpha=</span><span class="fl">0.15</span>, <span class="at">span=</span><span class="fl">0.75</span>) <span class="sc">+</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> thousands, <span class="at">breaks =</span> <span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">3</span>), <span class="at">limits=</span><span class="fu">c</span>(<span class="dv">10000</span>,<span class="dv">20000</span>)) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> thousands, <span class="at">breaks =</span> <span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">3</span>), <span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">20000</span>)) <span class="sc">+</span></span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Hourly Trip Count by Integral Temperature"</span>, </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Hourly trips by temperature"</span>, </span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Temperature (°C)"</span>, </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Hourly Trip Count"</span>) <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Hourly Trip Count"</span>) <span class="sc">+</span></span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
@@ -871,7 +877,10 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Looking at average trip count at different temperatures, we can point out some obvious things. The data is a lot more sparse at extreme temperatures, so even taking the average per integer temperature, we get some weird values and higher variability. This is particularly true on the cold side. Hourly ridership seems to kind of stabilize in the middle temperatures. We see a slight increase in ridership at the high extremes, particularly above 30°C, suggesting that people may prefer to take a cab instead of walk home on extremely hot days. Additionally, we see a subtle dip at 20°C, suggesting that is a great time for walking– it is neither too hot, nor too cold. These could be our first indications of what we may consider to be a “nice” day.</p>
+<p>Looking at average trip count at different temperatures, we can point out some obvious things. The data is a lot more sparse at extreme temperatures, so even taking the average per integer temperature, we get some weird values and higher variability. This is particularly true on the cold side. Hourly ridership seems to kind of stabilize in the middle temperatures. We see a slight increase in ridership at the high extremes, particularly above 30°C, suggesting that people may prefer to take a cab instead of walk home on extremely hot days. Additionally, we see a subtle dip at 20°C, suggesting that is a great time for walking—it is neither too hot, nor too cold. These could be our first indications of what we may consider to be a “nice” day.</p>
+</section>
+<section id="cloud-cover-do-riders-prefer-clear-skies" class="level4" data-number="3.4.1.2">
+<h4 data-number="3.4.1.2" class="anchored" data-anchor-id="cloud-cover-do-riders-prefer-clear-skies"><span class="header-section-number">3.4.1.2</span> Cloud Cover: Do Riders Prefer Clear Skies?</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -893,11 +902,11 @@ window.Quarto = {
 </div>
 </div>
 <p>Trends in ridership according to cloud cover are a bit difficult to parse out. The vast majority of days fall into either clear or overcast categories, and their values are quite similar. Variations in the intermediate categories could likely be driven by the smaller sample size, rather than any meaningful difference in rider behavior.</p>
-<section id="just-another-rainy-day" class="level3" data-number="3.4.1">
-<h3 data-number="3.4.1" class="anchored" data-anchor-id="just-another-rainy-day"><span class="header-section-number">3.4.1</span> Just another rainy day</h3>
-<p>Coming into this analysis, I speculated that rain might be a driving factor in ridership patterns. Going to work, the desire to arrive at work looking presentable, instead of with soaked clothes or damaged belongings, might lead people to opt for more comfortable transportation. Sometimes even the trek to the subway is too much! The same could be true of the evening, however, if you have after-work drinks and want to look nice, or again ur belongings. sometimes you want to look presentable for a meeting instead of walking, biking, or sometimes even just trekking to a subway.</p>
-<p>On the other hand, if it is after work and it is beautiful out, I might take the time to walk the 3 miles home. And while I am a person who loves going on a walk or run in the rain, I have to be in the right mood for it. If I am coming home from a stressful day at work, getting soaked in rain might set me over the edge. Sometimes your comfort is worth the expense! Both of these might lead to a greater difference in activity on raining vs non raining days.</p>
-<p>Setting out to answer these questions, I first compared the distribution of trips per hour by rain status. Because rain is relatively infrequent during the specific rush hour periods to which we have subset our data, I decided to scale the distributions to density to get a fair comparison. I also broke it up into temperature groups to eliminate the issue of it raining more often at particular temperatures.</p>
+</section>
+<section id="weathering-the-storm-does-rain-influence-trip-counts" class="level4" data-number="3.4.1.3">
+<h4 data-number="3.4.1.3" class="anchored" data-anchor-id="weathering-the-storm-does-rain-influence-trip-counts"><span class="header-section-number">3.4.1.3</span> Weathering the Storm: Does Rain Influence Trip Counts?</h4>
+<p>Coming into this analysis, we speculated that rain might be a driving factor in ridership patterns. Going to work, the desire to arrive at work looking presentable, instead of with soaked clothes or damaged belongings, might lead people to opt for more comfortable transportation. On the other hand, if it is beautiful out, one might take the time to walk the few miles home from work. And while we might love going on a walk or run in the rain, we have to be in the right mood for it. When coming home from a stressful day at work, getting soaked in rain might set one over the edge, making a comfortable ride worth the extra expense. These considerations might lead to a difference in ridership between rainy and non-rainy days.</p>
+<p>Setting out to answer these questions, we first compared the distribution of trips per hour by rain status. Because rain is relatively infrequent during the specific rush hour periods to which we have subset our data, we decided to scale the distributions to density to get a fair comparison.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -918,63 +927,68 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The plot above may suggest that there is slightly greater ridership when it is raining. While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for raining days (blue) appears to be slightly shifted right towards higher trip counts. This could indicate a slight increase in trip demand during rainy periods. Moreover, we see more extreme trip counts in the raining distribution: the tail is slightly longer on the right side. More extreme trip counts might imply that often unusually high demand occurs on days that it rains.</p>
-<p><strong>Perhaps include:</strong> NOPE Next, I was curious again about patterns in morning versus evening ridership. Do people have more rigid routines in the morning compared to the evening? Or are they more likely to take a cab in the morning if it is raining because they are worried about their appearance at work?</p>
-<p>From the boxplots, we can see the evening rush hour has a slightly higher median AND IQR when it is raining compared to times it does not rain. This suggests that people are perhaps more flexible in the evening. I might not be planning to walk to work on any given day, but in the summer when it is nice out sometimes I spontaneously walk home from work instead of my usual transportation. On the way to work though, people will hunker down and continue their schedule. Potentially illuminates that people are slightly more rigid in morning routines compared to evening routines. Why would I pay a lot of money to get to my place of work (vom emoji) after all?</p>
+<p>While the density curves largely overlap, suggesting some but not a substantial impact of rain on trip distribution, there are some things to take note of. First, the distribution of number of trips for raining days (blue) appears to be slightly shifted right towards higher trip counts. This could indicate a slight increase in trip demand during rainy periods. Moreover, we see more extreme trip counts in the raining distribution: the tail is slightly longer on the right side. More extreme trip counts might imply that often unusually high demand occurs on days that it rains.</p>
 <!-- ## Weather vs. Trips. -->
-<p>Now that we have refocused our attention to a smaller subset of the data, we can look at some initial relationships between the two central taxi variables (<code>trip_count</code> and its various distance bands) and the three weather variables, (<code>temperature</code>, <code>cloud_cover</code>, and <code>rain</code>).</p>
+</section>
+</section>
+<section id="influence-of-weather-on-trip-distances" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="influence-of-weather-on-trip-distances"><span class="header-section-number">3.4.2</span> Influence of Weather on Trip Distances</h3>
+<p>In addition to limiting our data to trips of ten or fewer miles, we also binned them into groups we thought would be instructive: trips under half a mile, trips up one mile, up to two miles, up to three miles, and up to five miles.</p>
+<section id="shorter-trips-and-higher-temperatures" class="level4" data-number="3.4.2.1">
+<h4 data-number="3.4.2.1" class="anchored" data-anchor-id="shorter-trips-and-higher-temperatures"><span class="header-section-number">3.4.2.1</span> Shorter Trips and Higher Temperatures</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pivot_trip_distance_df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">up_to_ten_mile_trips =</span> trip_count <span class="sc">-</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">ends_with</span>(<span class="st">"mile_trips"</span>)))</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols=</span><span class="fu">c</span>(<span class="fu">ends_with</span>(<span class="st">"mile_trips"</span>)),</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to=</span><span class="st">"trip_type"</span>,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to=</span><span class="st">"trip_type_count"</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">trip_type =</span> <span class="fu">factor</span>(trip_type, </span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"half_mile_trips"</span>, </span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"one_mile_trips"</span>, </span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">"two_mile_trips"</span>, </span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"three_mile_trips"</span>, </span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"five_mile_trips"</span>, </span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"up_to_ten_mile_trips"</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Half-Mile Trips"</span>,</span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to One-Mile Trips"</span>,</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Two-Mile Trips"</span>,</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Three-Mile Trips"</span>,</span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Five-Mile Trips"</span>,</span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Ten-Mile Trips"</span></span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>pivot_trip_distance_df <span class="sc">|&gt;</span></span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(trip_type, temperature) <span class="sc">|&gt;</span></span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_trips_by_degree=</span><span class="fu">mean</span>(trip_type_count),</span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(temperature, avg_trips_by_degree)) <span class="sc">+</span></span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color=</span>base_color, <span class="at">size=</span><span class="dv">1</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> thousands,</span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">breaks =</span> <span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">3</span>)</span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">color=</span>secondary_color, <span class="at">method=</span><span class="st">"loess"</span>, <span class="at">linewidth=</span><span class="dv">1</span>, <span class="at">se=</span><span class="cn">TRUE</span>, <span class="at">alpha=</span><span class="fl">0.15</span>)<span class="sc">+</span></span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Average Hourly Trips Per Hour by Temperature across Trip Distance"</span>,</span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Average Hourly Trips"</span>,</span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> temp_label,</span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Count"</span></span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> trip_type, <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">scales=</span><span class="st">"free_y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature =</span> <span class="fu">round</span>(temperature)) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">up_to_ten_mile_trips =</span> trip_count <span class="sc">-</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">ends_with</span>(<span class="st">"mile_trips"</span>)))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols=</span><span class="fu">c</span>(<span class="fu">ends_with</span>(<span class="st">"mile_trips"</span>)),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to=</span><span class="st">"trip_type"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to=</span><span class="st">"trip_type_count"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">trip_type =</span> <span class="fu">factor</span>(trip_type, </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"half_mile_trips"</span>, </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">"one_mile_trips"</span>, </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"two_mile_trips"</span>, </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"three_mile_trips"</span>, </span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"five_mile_trips"</span>, </span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"up_to_ten_mile_trips"</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Half-Mile Trips"</span>,</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to One-Mile Trips"</span>,</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Two-Mile Trips"</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Three-Mile Trips"</span>,</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Five-Mile Trips"</span>,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Up to Ten-Mile Trips"</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>pivot_trip_distance_df <span class="sc">|&gt;</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(trip_type, temperature) <span class="sc">|&gt;</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_trips_by_degree=</span><span class="fu">mean</span>(trip_type_count),</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(temperature, avg_trips_by_degree)) <span class="sc">+</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color=</span>base_color, <span class="at">size=</span><span class="dv">1</span>, <span class="at">alpha=</span><span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> double_scale,</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">breaks =</span> <span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">3</span>)</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">color=</span>secondary_color, <span class="at">method=</span><span class="st">"loess"</span>, <span class="at">linewidth=</span><span class="dv">1</span>, <span class="at">se=</span><span class="cn">TRUE</span>, <span class="at">alpha=</span><span class="fl">0.15</span>, <span class="at">span=</span><span class="fl">0.75</span>)<span class="sc">+</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Average Hourly Trips Per Hour by Temperature across Trip Distance"</span>,</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Average Hourly Trips"</span>,</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> temp_label,</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Count"</span></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> trip_type, <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">scales=</span><span class="st">"free_y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -984,7 +998,10 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>In retrospect, our distance bins may have been a bit optimistic, as no matter how nice it is, there is probably not much of a difference between a five-mile and ten-mile trip if you would rather walk. But on the shorter trips, where the choice between taxi and walk might be more salient, especially during rush hour,</p>
+<p>In retrospect, our distance bins may have been a bit optimistic, as no matter how nice it is, there is probably not much of a difference between a five-mile and ten-mile trip if you would rather walk. But on the shorter trips, where the choice between taxi and walk might be more salient, especially during rush hour, we can see that sweet spot at around 20° noted in the aggregated data above. The flares in the confidence intervals at the edges indicate the issues of data sparseness, even after we have trimmed by temperature, but for short trips (up to two miles), the sweet spot stands out in the distribution.</p>
+</section>
+<section id="its-sunny.-lets-walk." class="level4" data-number="3.4.2.2">
+<h4 data-number="3.4.2.2" class="anchored" data-anchor-id="its-sunny.-lets-walk."><span class="header-section-number">3.4.2.2</span> It’s Sunny. Let’s Walk.</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -998,7 +1015,7 @@ window.Quarto = {
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> cloud_cover, <span class="at">y =</span> avg_trips, <span class="at">fill =</span> cloud_cover)) <span class="sc">+</span></span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>trip_type, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">label=</span>comma)<span class="sc">+</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>double_scale)<span class="sc">+</span></span>
 <span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"GnBu"</span>) <span class="sc">+</span></span>
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Hourly Trips by Cloud Cover and Trip Distance"</span>,</span>
@@ -1020,6 +1037,10 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>In comparing average numbers of trips for different cloud covers, the distinctions are subtle, but notable, especially comparing short trips to long. For trips of up to one mile, we see that cloudy circumstances have higher averages than clear days, while the distinction is far more muted in longer trips.</p>
+</section>
+<section id="on-not-destroying-ones-clothing-walking-in-the-rain" class="level4" data-number="3.4.2.3">
+<h4 data-number="3.4.2.3" class="anchored" data-anchor-id="on-not-destroying-ones-clothing-walking-in-the-rain"><span class="header-section-number">3.4.2.3</span> On Not Destroying One’s Clothing Walking in the Rain</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1034,13 +1055,13 @@ window.Quarto = {
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_errorbar(aes(ymin = avg_trips - se, ymax = avg_trips + se),</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#               width = 0.2, position = position_dodge(0.9)) +</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>comma)<span class="sc">+</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(base_color, rain_color)) <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>thousands)<span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>, rain_color), <span class="at">labels=</span><span class="st">"Not raining"</span>, <span class="st">"Raining"</span>) <span class="sc">+</span></span>
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Hourly Trips by Rain and Trip Distance"</span>,</span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Rain"</span>,</span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Hourly Trips"</span>,</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Rain"</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">""</span></span>
 <span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
 <span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>trip_type, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
@@ -1057,6 +1078,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>This distribution marks perhaps most clearly the relationship that trip distance probably has as a background cause of whether one walks or not. If we assume no one wants to walk in the rain, the distinction between rainy hours and non rainy hours for short trips makes perfect sense. But for trips over five miles, the distinction washes out, suggesting rain plays no role in deciding whether to take a five mile or longer trip.</p>
+</section>
 </section>
 </section>
 <section id="doing-the-timeshift" class="level2" data-number="3.5">
@@ -1089,7 +1112,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The distribution here suggests that trips don’t change much when the temperature also does not change much. If we squint, we imagine more dots in the II quadrant (negative <span class="math inline">\(x\)</span>, positive <span class="math inline">\(y\)</span>), which confirms our idea that people ride less when it is nicer out. But maybe it is our imagination.</p>
+<p>The distribution here suggests that trips don’t change much when the temperature also does not change much. If we squint, we imagine more dots in the II quadrant (negative <span class="math inline">\(x\)</span>, positive <span class="math inline">\(y\)</span>), which confirms our idea that people ride less when it is nicer (read: warmer) out. But maybe it is our imagination.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1140,66 +1163,17 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>There is not much of an effect here, and, what’s more, as we saw above, “getting warmer” only works until the temperature hits a threshold where it is too hot to walk. Even if we limit ourselves to the band of 17-21°, however, we can still see that the I quadrant is most populated.</p>
+<p>While we do not see much of an effect here, the effect we do see matches our intuition. In general, warmer weather means fewer taxi rides, while cooler weather occasions more trips. We will try to reason out this relativization in the next section.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(temperature <span class="sc">&gt;</span> <span class="dv">17</span> <span class="sc">&amp;</span> temperature <span class="sc">&lt;</span> <span class="dv">21</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Quadrant =</span> <span class="fu">case_when</span>(</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Warmer &amp; More Trips (I)"</span>,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Warmer &amp; Fewer Trips (IV)"</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Cooler &amp; More Trips (II)"</span>,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Cooler  &amp; Fewer Trips (III)"</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(Quadrant) <span class="sc">|&gt;</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Quadrant) <span class="sc">|&gt;</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Quadrant</th>
-<th style="text-align: right;">n</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Got Warmer &amp; Fewer Trips (IV)</td>
-<td style="text-align: right;">139</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Got Cooler &amp; Fewer Trips (III)</td>
-<td style="text-align: right;">131</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Got Warmer &amp; More Trips (I)</td>
-<td style="text-align: right;">130</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Got Cooler &amp; More Trips (II)</td>
-<td style="text-align: right;">99</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>Our efforts to relativize probably require more finesse, but it did inspire us to craft the interactive visualization in the next chapter.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pivot_trip_distance_df |&gt;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |&gt;</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, trip_count, temperature, temperature_change_since_prev_day) <span class="sc">|&gt;</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature =</span> <span class="fu">round</span>(temperature)) <span class="sc">|&gt;</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature_change_since_prev_day =</span> <span class="fu">round</span>(temperature_change_since_prev_day)) <span class="sc">|&gt;</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"data-for-d3.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pivot_trip_distance_df |&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, trip_count, temperature, temperature_change_since_prev_day) <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature =</span> <span class="fu">round</span>(temperature)) <span class="sc">|&gt;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature_change_since_prev_day =</span> <span class="fu">round</span>(temperature_change_since_prev_day)) <span class="sc">|&gt;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"data-for-d3.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 

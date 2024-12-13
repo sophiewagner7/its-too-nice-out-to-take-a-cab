@@ -175,17 +175,10 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>we set out to define what “nice” is in the context of it being too nice out to take a cab.</p>
-<p>we assumed a relationship between the weather and taxi usage</p>
-<p>first, the pandemic ruined half of our data</p>
-<p>it was very hard to develop a “normal” taxi day or hour against which we could compare, because the weather seasonal, and taxis are hebdomadal.</p>
-<p>We tried to limit variability, and that was somewhat promising, but the effects we noticed were faint. Future work would test the effects against a null hypothesis.</p>
-<p>we tried to relativize, but the results were confusing.</p>
-<p>What we learned without a doubt is that if there is a relaitonship to taxi use and temperature, it is not linear, and there is a sweet spot at around 20°, when it is nice enough to walk instead of ride for a short trip, but not so hot to be annoying.</p>
-<p>We also learned that rain and cloud cover have small effects on short trip likelihood.</p>
-<p>Future steps:</p>
-<p>Were we to continue…</p>
-<p>not assume independence of weather variables model the data instead of relying purely on EDA. use different bins for trip distances to account for the number of trips between one and two miles. Have more calendar data. would’ve been great if we had five years. OR control for the pandemic.:w</p>
+<p>We set out to define what makes a day “nice” in the context of it being too nice out to take a cab. In doing so, we worked off of the assumption that there <em>is</em> a relationship between the weather and taxi or Uber/Lyft usage, i.e.&nbsp; that people change their routines according to the weather. However, trying to assess exactly “when” and “how” these changes occur proved to be very challenging.</p>
+<p>To start, we used the most recent five years of weather and taxi data available for NYC. This meant that we ran into the fated Pandemic Issue, causing us to toss out half of our data. Our transportation habits did not bounce back after restrictions were lifted; instead our behavior is fundamentally different. Working with a reduced dataset, we pushed foward. Still, we found it hard to establish a “normal” taxi day or hour against which we could compare because the weather is seasonal, and taxi usage is hebdomadal. To account for the latter effect, we narrowed our scope to rush hour times. This reduced some variability and was somewhat promising, but the effects we noticed were faint. Future work would test the effects against a null hypothesis.</p>
+<p>Despite these limitations, we still tried to analyze trends broad trends in weather and taxi usage, but the results were confusing. One of the stronger conclusions we were able to make was that if there is a relationship to taxi use and temperature, it is not linear. There seems to be a sweet spot at around 20°, when it is nice enough to walk instead of ride for a short trip, but not so hot to be annoying. Also, we saw that more extreme demand times were more likely on rainy days than non-rainy ones. We also learned that rain and cloud cover have small effects on short trip likelihood.</p>
+<p>Were we to continue, there would be several areas of improvement to address. One in particular is to account for the interdependence of weather variables. Modeling this data instead of relying purely on EDA would help understand this issue better. Further, we’d recommend re-binning trip distances to account for the number of trips between one and two miles—our loose grouping may have obscured some trends. And, finally, having a full-five year dataset would be incredibly helpful. Or, conceivably, we could imagine a way to control for the Pandemic.</p>
 
 
 
