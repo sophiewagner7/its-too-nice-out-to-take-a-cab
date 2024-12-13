@@ -1,24 +1,16 @@
 # Interactive graph
 
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-library(tidyverse)
-library(arrow)
+In this section, we carry over our efforts to relativize the relationship 
+between changes in temperature from 24 hours earlier and changes in taxi 
+ridership from a week ago. 
+Instead of presenting all of the data at once, however, we let the user target
+a specific temperature and see how ridership differs when the previous day 
+was warmer or colder and by how much. The farther right along the $x$ axis, 
+the warmer “today” was than “yesterday.” The farther up the $y$ axis,
+the more taxi trips taken “today” compared to “last week.”
 
-df <- read_parquet("data/complete_weather_and_taxi_data.parquet")
-```
-
-```{r}
-df |>
-# pivot_trip_distance_df |>
-  # select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |>
-  select(month, trip_count, temperature, temperature_change_since_prev_day) |>
-  mutate(temperature = round(temperature)) |>
-  mutate(temperature_change_since_prev_day = round(temperature_change_since_prev_day)) |>
-  write_csv("data-for-d3.csv")
-```
+We have limited ourselves, as in the previous section, to post-Pandemic, rush
+hour traffic when the temperature was -5°-30°.
 
 <style>
   * {
