@@ -244,13 +244,17 @@ window.Quarto = {
   <li><a href="#ridership-by-the-clock-when-are-we-hailing-taxis-and-where-are-we-going" id="toc-ridership-by-the-clock-when-are-we-hailing-taxis-and-where-are-we-going" class="nav-link" data-scroll-target="#ridership-by-the-clock-when-are-we-hailing-taxis-and-where-are-we-going"><span class="header-section-number">3.2.1</span> Ridership by the Clock: When Are We Hailing Taxis, And Where Are We Going?</a></li>
   <li><a href="#rush-hour-routines-patterns-across-days-and-seasons" id="toc-rush-hour-routines-patterns-across-days-and-seasons" class="nav-link" data-scroll-target="#rush-hour-routines-patterns-across-days-and-seasons"><span class="header-section-number">3.2.2</span> Rush Hour Routines: Patterns Across Days and Seasons</a></li>
   </ul></li>
-  <li><a href="#patterns-in-weather-data" id="toc-patterns-in-weather-data" class="nav-link" data-scroll-target="#patterns-in-weather-data"><span class="header-section-number">3.3</span> Patterns in Weather Data</a></li>
+  <li><a href="#patterns-in-weather-data" id="toc-patterns-in-weather-data" class="nav-link" data-scroll-target="#patterns-in-weather-data"><span class="header-section-number">3.3</span> Patterns in Weather Data</a>
+  <ul class="collapse">
+  <li><a href="#temperature-during-rush-hour" id="toc-temperature-during-rush-hour" class="nav-link" data-scroll-target="#temperature-during-rush-hour"><span class="header-section-number">3.3.1</span> Temperature during Rush Hour</a></li>
+  <li><a href="#cloud-cover-during-rush-hour" id="toc-cloud-cover-during-rush-hour" class="nav-link" data-scroll-target="#cloud-cover-during-rush-hour"><span class="header-section-number">3.3.2</span> Cloud Cover during Rush Hour</a></li>
+  <li><a href="#rain-during-rush-hour" id="toc-rain-during-rush-hour" class="nav-link" data-scroll-target="#rain-during-rush-hour"><span class="header-section-number">3.3.3</span> Rain during Rush Hour</a></li>
+  </ul></li>
   <li><a href="#weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns" id="toc-weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns" class="nav-link" data-scroll-target="#weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns"><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips: Can We Define “Nice” Weather from Ridership Patterns?</a>
   <ul class="collapse">
   <li><a href="#just-another-rainy-day" id="toc-just-another-rainy-day" class="nav-link" data-scroll-target="#just-another-rainy-day"><span class="header-section-number">3.4.1</span> Just another rainy day</a></li>
   </ul></li>
   <li><a href="#doing-the-timeshift" id="toc-doing-the-timeshift" class="nav-link" data-scroll-target="#doing-the-timeshift"><span class="header-section-number">3.5</span> Doing the Timeshift</a></li>
-  <li><a href="#patterns-across-hours-days-and-seasons" id="toc-patterns-across-hours-days-and-seasons" class="nav-link" data-scroll-target="#patterns-across-hours-days-and-seasons"><span class="header-section-number">3.6</span> Patterns across Hours, Days, and Seasons</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sophiewagner7/nyc-weather/edit/main/results.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/sophiewagner7/nyc-weather/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -685,6 +689,8 @@ window.Quarto = {
 <section id="patterns-in-weather-data" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="patterns-in-weather-data"><span class="header-section-number">3.3</span> Patterns in Weather Data</h2>
 <!-- ## Patterns in Weather Data -->
+<section id="temperature-during-rush-hour" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="temperature-during-rush-hour"><span class="header-section-number">3.3.1</span> Temperature during Rush Hour</h3>
 <p>We chose to limit our weather analysis to three variables: temperature, cloud cover, and rain. This provides three kinds of variables (numeric, categorical, boolean) while also giving a sense of easy to understand information that might be used by a traveler electing to walk or not. That is, a consideration of whether it is sunny or not is perhaps clearer to a person choosing to ride the cab than the dew point.</p>
 <div class="cell">
 <details class="code-fold">
@@ -706,8 +712,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>As noted earlier, the temperature fluctuates as we would expect. What struck us in these boxplots is how the outliers are distributed, particularly in March, April, and May, which can run hot. This is a fantastic opportunity for seasonal analysis in limiting our investigation, but we have already trimmed our data down so much. Preparing for a specific springtime analysis would require reconsidering how we collect and pre-process our data.</p>
-<p>Another point of analysis, however, is to note that everything below -10° or above 30° or so seems to be an outlier. If we consider the distribution all temperatures, we can see that those tails are small and long and might affect the analysis we do moving forward.</p>
+<p>As noted earlier, the temperature fluctuates as we would expect. What struck us in these boxplots is how the outliers are distributed, particularly in March and April, which can run hot. This is a fantastic opportunity for seasonal analysis in future investigation, but we have already trimmed our data down so much. Preparing for a specific springtime analysis would require reconsidering how we collect and pre-process our data.</p>
+<p>Another point of analysis, however, is to note that nearly everything below -5° or above 30° or so seems to be an outlier. If we consider the distribution of all temperatures, we can see that those tails are small and long and might affect the analysis we do moving forward.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -716,7 +722,7 @@ window.Quarto = {
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color=</span><span class="st">"white"</span>, <span class="at">fill=</span>base_color) <span class="sc">+</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>thousands) <span class="sc">+</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Integral Temperatures"</span>, <span class="at">x =</span> <span class="st">"Temperature (°C)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Rush Hour Temperatures"</span>, <span class="at">x =</span> <span class="st">"Temperature (°C)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -735,6 +741,9 @@ window.Quarto = {
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(temperature <span class="sc">&lt;=</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="cloud-cover-during-rush-hour" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="cloud-cover-during-rush-hour"><span class="header-section-number">3.3.2</span> Cloud Cover during Rush Hour</h3>
 <p>Cloud cover is measured in “oktas,” which we have converted to an ordinal categorical variable, that turns “less cloudy” into a positive measure when comparing two different weather reports.</p>
 <table class="caption-top table">
 <thead>
@@ -797,6 +806,9 @@ window.Quarto = {
 </div>
 </div>
 <p>Cloud cover less obviously seasonal than temperature, and in general days are clear. The lack of clear seasonality helps us generalize over the year, and the trend toward clear days may help cloudiness jump out more as an excuse to take a cab instead of walk.</p>
+</section>
+<section id="rain-during-rush-hour" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="rain-during-rush-hour"><span class="header-section-number">3.3.3</span> Rain during Rush Hour</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -813,7 +825,7 @@ window.Quarto = {
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month_abbr) <span class="sc">|&gt;</span></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_rainy_days =</span> <span class="fu">mean</span>(rainy_days)) <span class="sc">|&gt;</span></span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> month_abbr, <span class="at">y =</span> avg_rainy_days)) <span class="sc">+</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> base_color) <span class="sc">+</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> rain_color) <span class="sc">+</span></span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Number of Days with at Least Trace Amounts of Rain"</span>,</span>
 <span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Month"</span>,</span>
@@ -829,6 +841,7 @@ window.Quarto = {
 </div>
 </div>
 <p>In limiting our data just to rush hours, the amount of rain we capture has also been greatly diminished. Where earlier we were averaging about 15 days a month of rain, a lot of that rain fell outside of rush hour, meaning the distribution changes remarkably. This will actually help in later analysis because, like we cloud cover, it makes rain rarer and perhaps a more notable indicator of taxi usage.</p>
+</section>
 </section>
 <section id="weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="weather-vs.-trips-can-we-define-nice-weather-from-ridership-patterns"><span class="header-section-number">3.4</span> Weather vs.&nbsp;Trips: Can We Define “Nice” Weather from Ridership Patterns?</h2>
@@ -1022,7 +1035,7 @@ window.Quarto = {
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_errorbar(aes(ymin = avg_trips - se, ymax = avg_trips + se),</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#               width = 0.2, position = position_dodge(0.9)) +</span></span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>comma)<span class="sc">+</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(base_color, rain_color)) <span class="sc">+</span></span>
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Hourly Trips by Rain and Trip Distance"</span>,</span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Rain"</span>,</span>
@@ -1092,62 +1105,103 @@ window.Quarto = {
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Quadrant) <span class="sc">|&gt;</span></span>
 <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 2
-  Quadrant                            n
-  &lt;chr&gt;                           &lt;int&gt;
-1 Got Warmer &amp; Fewer Trips (IV)     980
-2 Got Warmer &amp; More Trips (I)       959
-3 Got Cooler &amp; More Trips (II)      953
-4 Got Cooler  &amp; Fewer Trips (III)   717
-5 &lt;NA&gt;                              237</code></pre>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Quadrant</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Got Warmer &amp; Fewer Trips (IV)</td>
+<td style="text-align: right;">980</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Got Warmer &amp; More Trips (I)</td>
+<td style="text-align: right;">959</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Got Cooler &amp; More Trips (II)</td>
+<td style="text-align: right;">953</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Got Cooler &amp; Fewer Trips (III)</td>
+<td style="text-align: right;">717</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">237</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>There is not much of an effect here, and, what’s more, as we saw above, “getting warmer” only works until the temperature hits a threshold where it is too hot to walk. Even if we limit ourselves to the band of 17-21°, however, we can still see that the I quadrant is most populated.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(temperature <span class="sc">&gt;</span> <span class="dv">17</span> <span class="sc">&amp;</span> temperature <span class="sc">&lt;</span> <span class="dv">21</span>) <span class="sc">|&gt;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Quadrant =</span> <span class="fu">case_when</span>(</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Warmer &amp; More Trips (I)"</span>,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Warmer &amp; Fewer Trips (IV)"</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Cooler &amp; More Trips (II)"</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Cooler  &amp; Fewer Trips (III)"</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(Quadrant) <span class="sc">|&gt;</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Quadrant) <span class="sc">|&gt;</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(temperature <span class="sc">&gt;</span> <span class="dv">17</span> <span class="sc">&amp;</span> temperature <span class="sc">&lt;</span> <span class="dv">21</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Quadrant =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Warmer &amp; More Trips (I)"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Warmer &amp; Fewer Trips (IV)"</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Cooler &amp; More Trips (II)"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      temperature_change_since_prev_day <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> trip_count_change_since_prev_week <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Got Cooler  &amp; Fewer Trips (III)"</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(Quadrant) <span class="sc">|&gt;</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Quadrant) <span class="sc">|&gt;</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 2
-  Quadrant                            n
-  &lt;chr&gt;                           &lt;int&gt;
-1 Got Warmer &amp; Fewer Trips (IV)     139
-2 Got Cooler  &amp; Fewer Trips (III)   131
-3 Got Warmer &amp; More Trips (I)       130
-4 Got Cooler &amp; More Trips (II)       99</code></pre>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Quadrant</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Got Warmer &amp; Fewer Trips (IV)</td>
+<td style="text-align: right;">139</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Got Cooler &amp; Fewer Trips (III)</td>
+<td style="text-align: right;">131</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Got Warmer &amp; More Trips (I)</td>
+<td style="text-align: right;">130</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Got Cooler &amp; More Trips (II)</td>
+<td style="text-align: right;">99</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Our efforts to relativize probably require more finesse, but it did inspire us to craft the interactive visualization in the next chapter.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pivot_trip_distance_df |&gt;</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |&gt;</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, trip_count, temperature, temperature_change_since_prev_day) <span class="sc">|&gt;</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature =</span> <span class="fu">round</span>(temperature)) <span class="sc">|&gt;</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature_change_since_prev_day =</span> <span class="fu">round</span>(temperature_change_since_prev_day)) <span class="sc">|&gt;</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"data-for-d3.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pivot_trip_distance_df |&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(month, trip_count, trip_type, trip_type_count, temperature, temperature_change_since_prev_day) |&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, trip_count, temperature, temperature_change_since_prev_day) <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature =</span> <span class="fu">round</span>(temperature)) <span class="sc">|&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature_change_since_prev_day =</span> <span class="fu">round</span>(temperature_change_since_prev_day)) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"data-for-d3.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
-<section id="patterns-across-hours-days-and-seasons" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="patterns-across-hours-days-and-seasons"><span class="header-section-number">3.6</span> Patterns across Hours, Days, and Seasons</h2>
-<p>In order to determine variations in taxi usage, we needed to establish a baseline “normal” in order to verify fluctuations in the data. How can we infer an abberration if we don’t know what normal is? How does cab usage regularly fluctate across the week according to work-life patterns, and how does it fluctuate by season?</p>
 
 
 <div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">

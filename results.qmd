@@ -110,9 +110,3 @@ pivot_trip_distance_df <- df |>
 
 {{< include sections/3/5_timeshifts.qmd >}}
 
-
-## Patterns across Hours, Days, and Seasons
-
-In order to determine variations in taxi usage, we needed to establish a baseline "normal" in order to verify fluctuations in the data. How can we infer an abberration if we don't know what normal is? How does cab usage regularly fluctate across the week according to work-life patterns, and how does it fluctuate by season?
-
-

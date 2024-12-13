@@ -25,9 +25,4 @@ hour traffic when the temperature was -5°-30°.
 <script src="scripts/myscript.js" type="module"></script>
 
 
--- change point about running hot
--- change integral title for temp histogram
--- add subheads to weather analysis.
--- Add fancy way for showing tables
--- cut 3.6
 -- change rain to blue.
