@@ -27,7 +27,7 @@ York and historical weather data.
 For both datasets, we initally planned to limit our
 analysis to 2019-02-01 00:00:00 – 2024-06-25 23:00:00, 
 in the interest of trying to catch about a
-year of pre-pandemic norms to help interpret pandemic and post-pandemic use
+year of pre-Pandemic norms to help interpret Pandemic and post-Pandemic use
 of taxis. 
 As noted in [the next chapter](./results), we had to abandon this scope.
 The inital upper bound reflects the extent of the weather data, and we

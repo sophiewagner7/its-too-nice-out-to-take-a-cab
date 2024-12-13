@@ -18,7 +18,7 @@ much warmer, paradoxically to our general conclusions, more trips were taken
 today. 
 
 We have limited ourselves, as in the previous section, to post-Pandemic, rush
-hour traffic when the temperature was -5°-30°.
+hour traffic when the temperature was -5°–30°.
 
 <style>
   * {
