@@ -10,9 +10,6 @@ weather variables, (`temperature`, `cloud_cover`, and `rain`).
 #| warning: false
 pivot_trip_distance_df <- df |>
   mutate(
-    temperature = round(temperature)
-  ) |>
-  mutate(
     up_to_ten_mile_trips = trip_count - rowSums(across(ends_with("mile_trips")))
   ) |>
   pivot_longer(
@@ -37,7 +34,8 @@ pivot_trip_distance_df <- df |>
       "Up to Five-Mile Trips",
       "Up to Ten-Mile Trips"
     ),
-    ordered = TRUE)) 
+    ordered = TRUE)
+  ) 
 
 pivot_trip_distance_df |>
   group_by(trip_type, temperature) |>
@@ -53,7 +51,7 @@ pivot_trip_distance_df |>
     ) +
     geom_smooth(color=secondary_color, method="loess", linewidth=1, se=TRUE, alpha=0.15)+
     labs(
-      title = "Average Hourly Trips Per Hour by Integral Temperature across Trip Distance",
+      title = "Average Hourly Trips Per Hour by Temperature across Trip Distance",
       y = "Average Hourly Trips",
       x = temp_label,
       fill = "Count"
@@ -102,7 +100,7 @@ pivot_trip_distance_df |>
   geom_bar(stat = "identity", position = "dodge") +
   # geom_errorbar(aes(ymin = avg_trips - se, ymax = avg_trips + se),
   #               width = 0.2, position = position_dodge(0.9)) +
-  scale_y_continuous(label=comma)+
+  scale_y_continuous(labels=comma)+
   scale_fill_brewer(palette = "Set2") +
   labs(
     title = "Average Hourly Trips by Rain and Trip Distance",
