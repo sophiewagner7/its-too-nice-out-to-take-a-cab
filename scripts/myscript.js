@@ -13,7 +13,9 @@ let temperature = 20;
   
   NA is indicated by "NA." Should only affect temp. change.
 */
-const csvRaw = await d3.csv("../data-for-d3.csv");
+const dataUrl = "https://raw.githubusercontent.com/sophiewagner7/its-too-nice-out-to-take-a-cab/refs/heads/main/data-for-d3.csv"
+// const csvRaw = await d3.csv("../data-for-d3.csv");
+const csvRaw = await d3.csv(dataUrl);
 const csvData = csvRaw.map(
   ({ temperature, temperature_change_since_prev_day, month, trip_count }) => (
   {
